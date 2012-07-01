@@ -47,6 +47,7 @@ if(version && version != '') { // executed with args: Deploy node version
 }else{  // executed without args: List installed builds
 
   nodist.determineVersion(n.target, function (err, current) {// determine version of currently used build
+    
     // display all versions
     n.list(function() {
       console.log('No builds installed, yet.');

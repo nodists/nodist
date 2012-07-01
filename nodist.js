@@ -21,23 +21,43 @@ nodist.compareable = function compareable(ver) {
 }
 
 nodist.determineVersion = function determineVersion(file, cb) {
-  exec(file, ['-v']).stdout.on('data', function (data) {
+  var returned = false;
+  
+  var node = exec(file, ['-v']);
+  node.stdout.on('data', function (data) {
     var version = data.toString().trim().replace(nodist.semver, '$1');
-    cb(null, version);
+    if(!returned) cb(null, version);
+    returned = true;
+  });
+  node.on('error', function (err) {
+    if(!returned) cb(err);
+    returned = true;
+  });
+  node.on('exit', function (err) {
+    if(!returned) cb(err);
+    returned = true;
   });
 }
 
 nodist.prototype.fetch = function fetch(version, fetch_target, cb) {
+  var n = this;
   var url = this.sourceUrl+'/'+(version=='latest'?'':'v')+version+'/node.exe';
+  var canTerminate = false
   var stream = request(url, function(err, resp){
     if(err || resp.statusCode != 200) {
       fs.unlinkSync(fetch_target);
-      return cb(new Error);
+      fs.unlinkSync(n.target);
+      return cb(err || new Error('HTTP '+resp.statusCode));
     }
-  })
-  stream.pipe(fs.createWriteStream(fetch_target))
-  stream.pipe(fs.createWriteStream(this.target))
-  stream.on('end', cb);
+    cb();
+  });
+  stream.pipe(fs.createWriteStream(fetch_target));
+  stream.pipe(fs.createWriteStream(this.target));
+  stream.on('error', function(err) {
+    fs.unlinkSync(fetch_target);
+    fs.unlinkSync(n.target);
+    cb(err);
+  });
 };
 
 nodist.prototype.deploy = function deploy(version, cb) {
@@ -57,13 +77,13 @@ nodist.prototype.deploy = function deploy(version, cb) {
   // fetch build online
   this.fetch(version, source, function(err) {
     if(err) {
-      cb(new Error('Couldn\'t fetch v'+version+'.'));
+      cb(new Error('Couldn\'t fetch '+version+' ('+err.message+').'));
     }
     
     if(version == 'latest') {// clean up "latest.exe"
       nodist.determineVersion(source, function (err, real_version) {
         fs.renameSync(source, n.sourceDir+'/'+real_version+'.exe');
-        console.log('v'+real_version);
+        console.log(real_version);
         cb();
       });
     }else
@@ -72,7 +92,7 @@ nodist.prototype.deploy = function deploy(version, cb) {
 };
 
 nodist.prototype.checkout = function checkout(source, cb) {
-  fs.createReadStream(source).pipe(fs.createWriteStream(this.target)).on('end', cb);
+  fs.createReadStream(source).pipe(fs.createWriteStream(this.target)).on('close', cb);
 };
 
 nodist.prototype.list = function list(empty_cb) {
