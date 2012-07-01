@@ -29,13 +29,15 @@ nodist.determineVersion = function determineVersion(file, cb) {
 
 nodist.prototype.fetch = function fetch(version, fetch_target, cb) {
   var url = this.sourceUrl+'/'+(version=='latest'?'':'v')+version+'/node.exe';
-  request(url, function(err, resp){
+  var stream = request(url, function(err, resp){
     if(err || resp.statusCode != 200) {
       fs.unlinkSync(fetch_target);
       return cb(new Error);
     }
-    cb();
-  }).pipe(fs.createWriteStream(fetch_target));
+  })
+  stream.pipe(fs.createWriteStream(fetch_target))
+  stream.pipe(fs.createWriteStream(this.target))
+  stream.on('end', cb);
 };
 
 nodist.prototype.deploy = function deploy(version, cb) {
@@ -44,13 +46,12 @@ nodist.prototype.deploy = function deploy(version, cb) {
   
   // checkout source if it exists
   if(fs.existsSync(source)) {
-    this.checkout(source);
-    return cb();
+    return this.checkout(source, cb);
   }
   
   // Check online availability
   if(nodist.compareable(version) < nodist.compareable('0.5.1')) {
-    cb(new Error('There are no builds available for versions older than 0.5.1.'));
+    return cb(new Error('There are no builds available for versions older than 0.5.1.'));
   }
   
   // fetch build online
@@ -58,7 +59,6 @@ nodist.prototype.deploy = function deploy(version, cb) {
     if(err) {
       cb(new Error('Couldn\'t fetch v'+version+'.'));
     }
-    n.checkout(source);
     
     if(version == 'latest') {// clean up "latest.exe"
       nodist.determineVersion(source, function (err, real_version) {
@@ -71,8 +71,8 @@ nodist.prototype.deploy = function deploy(version, cb) {
   });
 };
 
-nodist.prototype.checkout = function checkout(source) {
-  fs.writeFileSync(this.target, fs.readFileSync(source));
+nodist.prototype.checkout = function checkout(source, cb) {
+  fs.createReadStream(source).pipe(fs.createWriteStream(this.target)).on('end', cb);
 };
 
 nodist.prototype.list = function list(empty_cb) {
