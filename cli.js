@@ -13,6 +13,15 @@ var nodistPath = path.dirname(fs.realpathSync(process.execPath));
 
 process.title = 'nodist';
 
+if(process.argv[2] == '--help') {
+  console.log("nodist is a node version manager for windows\r\n");
+  console.log('Usage:');
+  console.log('  nodist             Displays all installed node versions');
+  console.log('  nodist <VERSION>   Globally use the specified node version');
+  console.log('  nodist --help      Display this help');
+  exit(0);
+}
+
 
 var n = new nodist(nodistPath+'/../../node.exe', nodistPath+'/v');
   n.sourceUrl  = 'http://nodejs.org/dist';
