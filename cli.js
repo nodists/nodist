@@ -13,6 +13,7 @@ var nodistPath = path.dirname(fs.realpathSync(process.execPath));
 
 process.title = 'nodist';
 
+// --help switch
 if(process.argv[2] == '--help') {
   console.log("nodist is a node version manager for windows\r\n");
   console.log('Usage:');
@@ -23,8 +24,11 @@ if(process.argv[2] == '--help') {
 }
 
 
-var n = new nodist(nodistPath+'/../../node.exe', nodistPath+'/v');
-  n.sourceUrl  = 'http://nodejs.org/dist';
+var n = new nodist(
+  nodistPath+'/../../node.exe',
+  'http://nodejs.org/dist',
+  nodistPath+'/v'
+);
 
 if(version && version != '') { // executed with args: Deploy node version
 
@@ -40,11 +44,13 @@ if(version && version != '') { // executed with args: Deploy node version
     exit(0);
   });
   
-}else{  // executed without args: Provide node versions
+}else{  // executed without args: List installed builds
 
   nodist.determineVersion(n.target, function (err, current) {// determine version of currently used build
     // display all versions
-    n.list().forEach(function(version) {
+    n.list(function() {
+      console.log('No builds installed, yet.');
+    }).forEach(function(version) {
       var del = (version == current) ? '> ' : '  ';// highlight current
       console.log(del+version);
     });

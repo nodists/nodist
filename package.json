@@ -1,5 +1,5 @@
 { "name" : "nodist",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Natural node version management for windows.",
   "author": "Marcel Klehr <mklehr@gmx.net>",
   "dependencies": {
