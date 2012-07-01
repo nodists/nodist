@@ -72,11 +72,16 @@ nodist.determineVersion = function determineVersion(file, cb) {
 nodist.prototype.fetch = function fetch(version, fetch_target, cb) {
   var n = this;
   var url = this.sourceUrl+'/'+(version=='latest'?'':'v')+version+'/node.exe';
+  
+  // Check online availability
+  if(nodist.compareable(version) < nodist.compareable('0.5.1')) {
+    return cb(new Error('There are no builds available for versions older than 0.5.1.'));
+  }
+  
   var canTerminate = false
   var stream = request(url, function(err, resp){
     if(err || resp.statusCode != 200) {
       fs.unlinkSync(fetch_target);
-      fs.unlinkSync(n.target);
       return cb(err || new Error('HTTP '+resp.statusCode));
     }
     cb();
@@ -115,18 +120,13 @@ nodist.prototype.deploy = function deploy(version, cb) {
     return this.checkout(source, cb);
   }
   
-  // Check online availability
-  if(nodist.compareable(version) < nodist.compareable('0.5.1')) {
-    return cb(new Error('There are no builds available for versions older than 0.5.1.'));
-  }
-  
   // fetch build online
   this.fetch(version, source, function(err) {
     if(err) {
       cb(new Error('Couldn\'t fetch '+version+' ('+err.message+').'));
     }
     
-    n.checkout(source, function() {);
+    n.checkout(source, function() {
       if(version == 'latest') {
         // clean up "latest.exe"
         nodist.determineVersion(source, function (err, real_version) {
