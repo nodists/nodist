@@ -1,0 +1,17 @@
+{ "name" : "nodist",
+  "version": "0.1.0",
+  "description": "Natural node version management on windows.",
+  "author": "Marcel Klehr <mklehr@gmx.net>",
+  "dependencies": {
+    "request": "latest",
+    "mkdirp": "latest"
+  },
+  "os" : [ "win32" ],
+  "engines": { "node": ">= 0.1.0" },
+  "preferGlobal": true,
+  "main" : "./nodist.js",
+  "scripts": {
+    "install": "copy bin\\bin.cmd %npm_config_prefix%\\nodist.cmd",
+    "postuninstall": "del %npm_config_prefix%\\nodist.cmd"
+  }
+}
