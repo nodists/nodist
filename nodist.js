@@ -82,10 +82,8 @@ nodist.prototype.fetch = function fetch(version, fetch_target, cb) {
     cb();
   });
   stream.pipe(fs.createWriteStream(fetch_target));
-  stream.pipe(fs.createWriteStream(this.target));
   stream.on('error', function(err) {
     fs.unlinkSync(fetch_target);
-    fs.unlinkSync(n.target);
     cb(err);
   });
 };
@@ -128,18 +126,21 @@ nodist.prototype.deploy = function deploy(version, cb) {
       cb(new Error('Couldn\'t fetch '+version+' ('+err.message+').'));
     }
     
-    if(version == 'latest') {// clean up "latest.exe"
-      nodist.determineVersion(source, function (err, real_version) {
-        fs.renameSync(source, n.sourceDir+'/'+real_version+'.exe');
-        console.log(real_version);
-        cb();
-      });
-    }else
-    return cb();
+    n.checkout(source, function() {);
+      if(version == 'latest') {
+        // clean up "latest.exe"
+        nodist.determineVersion(source, function (err, real_version) {
+          fs.renameSync(source, n.sourceDir+'/'+real_version+'.exe');
+          console.log(real_version);
+          cb();
+        });
+      }else
+      return cb();
+    });
   });
 };
 
-nodist.prototype.unlink = function deploy(version, cb) {
+nodist.prototype.unlink = function unlink(version, cb) {
   var n = this;
   var source  = this.sourceDir+'/'+version+'.exe';
   
