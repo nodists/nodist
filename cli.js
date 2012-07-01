@@ -74,7 +74,7 @@ command = argv._[0];
 
 // Display nodist version
 if(argv.v) {
-  console.log(require('package.json').version);
+  console.log(require('./package.json').version);
   exit();
 }
 
