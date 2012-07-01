@@ -129,6 +129,22 @@ if ((command == 'remove' || command == 'rm' || command == '-') && argv._[1]) {
   });
 }else
 
+// Fetch a specific build
+if ((command == 'fetch' || command == 'install' || command == 'i') && argv._[1]) {
+  var version = argv._[1];
+  
+  // validate version number
+  version = nodist.validateVersion(version)
+  if (!version) {
+    abort('Please provide a valid version number.');
+  }
+  
+  n.fetch(version, n.sourceDir+'/'+version+'.exe', function(err) {
+    if(err) abort('Couldn\'t fetch '+version+' ('+err.message+'). Sorry.');
+    exit();
+  });
+}else
+
 // Globally use the latest available node version
 if (command == 'latest') {
   n.deploy('latest', function(err) {
