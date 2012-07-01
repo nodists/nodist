@@ -129,8 +129,23 @@ if ((command == 'remove' || command == 'rm' || command == '-') && argv._[1]) {
   });
 }else
 
+// Run a specific build
+if ((command == 'run' || command == 'r') && argv._[1]) {
+  var version = argv._[1];
+  
+  // validate version number
+  version = nodist.validateVersion(version)
+  if (!version) {
+    abort('Please provide a valid version number.');
+  }
+  
+  n.run(version, argv._.splice(2), function() {
+    exit();
+  });
+}else
+
 // Fetch a specific build
-if ((command == 'fetch' || command == 'install' || command == 'i') && argv._[1]) {
+if ((command == 'install' || command == 'i') && argv._[1]) {
   var version = argv._[1];
   
   // validate version number
@@ -140,7 +155,7 @@ if ((command == 'fetch' || command == 'install' || command == 'i') && argv._[1])
   }
   
   n.fetch(version, n.sourceDir+'/'+version+'.exe', function(err) {
-    if(err) abort('Couldn\'t fetch '+version+' ('+err.message+'). Sorry.');
+    if(err) abort(err.message+'. Sorry.');
     exit();
   });
 }else

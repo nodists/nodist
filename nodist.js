@@ -82,7 +82,7 @@ nodist.prototype.fetch = function fetch(version, fetch_target, cb) {
   var stream = request(url, function(err, resp){
     if(err || resp.statusCode != 200) {
       fs.unlinkSync(fetch_target);
-      return cb(err || new Error('HTTP '+resp.statusCode));
+      return cb(new Error('Couldn\'t fetch '+version+' ('+(err.msg || 'HTTP '+resp.statusCode)+').'));
     }
     cb();
   });
@@ -123,7 +123,7 @@ nodist.prototype.deploy = function deploy(version, cb) {
   // fetch build online
   this.fetch(version, source, function(err) {
     if(err) {
-      cb(new Error('Couldn\'t fetch '+version+' ('+err.message+').'));
+      return cb(err);
     }
     
     n.checkout(source, function() {
@@ -150,4 +150,25 @@ nodist.prototype.unlink = function unlink(version, cb) {
   }
   
   return cb();
+};
+
+nodist.prototype.run = function run(version, args, cb) {
+  var n = this;
+  var source = this.sourceDir+'/'+version+'.exe';
+  var run = function(err) {
+    if(err) return cb(err);
+    var node = exec(source, args);
+    node.stdout.pipe(process.stdout);
+    node.stderr.pipe(process.stderr);
+    //process.stdin.pipe(node.stdin);
+    node.on('exit', cb);
+    node.on('error', cb);
+  }
+  
+  // fetch source if it doesn't exist
+  if(!fs.existsSync(source)) {
+    this.fetch(version, source, run);
+  }
+  
+  return run();
 };
