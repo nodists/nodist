@@ -12,7 +12,7 @@ npm install -g nodist
 ### Install from source.
 ```
 git clone git://github.com/marcelklehr/nodist.git
-cd
+cd nodist
 npm link
 ```
 
@@ -27,7 +27,7 @@ npm link
 ## Details
 `nodist` by default stores node executables in `<NPM_PREFIX>\node_modules\nodist\v\`, from where it can see what you have currently installed, and activate previously installed versions of node when `nodist <version>` is invoked again.
 
-When a node is activated, nodist copies the version to `path\to\global-npm\node.exe`. This path may be altered using the *NODIST_PREFIX* env variable.
+When a node is activated, nodist copies the version to `path\to\global-npm\node.exe`. This path may be altered using the **NODIST_PREFIX** env variable.
 
 As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
 
