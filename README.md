@@ -18,18 +18,26 @@ npm link
 
 ## Usage
 ```
+A node version manager for windows
 Usage:
+
     nodist              List all installed node versions.
+    nodist list
+    nodist ls
+
     nodist <version>    Use the specified node version globally (downloads the executable, if necessary).
+
     nodist rm <version> Uninstall the specified node version.
     nodist - <version>
-    nodist -v           Display nodist version
+
     nodist --help       Display this help
+
+    nodist -v           Display nodist version
 
 Examples:
 
-    nodist 0.8.1        Use node v0.8.1 globally
-    nodist v0.5.10      Use node v0.5.10 globally
+    nodist 0.8.1        Globally use node v0.8.1
+    nodist v0.5.10      Globally use node v0.5.10
     nodist rm 0.5.10    Uninsall node v0.5.10
 ```
 
