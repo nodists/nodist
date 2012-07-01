@@ -160,7 +160,7 @@ nodist.prototype.run = function run(version, args, cb) {
     var node = exec(source, args);
     node.stdout.pipe(process.stdout);
     node.stderr.pipe(process.stderr);
-    //process.stdin.pipe(node.stdin);
+    process.stdin.pipe(node.stdin);
     node.on('exit', cb);
     node.on('error', cb);
   }
@@ -168,6 +168,7 @@ nodist.prototype.run = function run(version, args, cb) {
   // fetch source if it doesn't exist
   if(!fs.existsSync(source)) {
     this.fetch(version, source, run);
+    return;
   }
   
   return run();
