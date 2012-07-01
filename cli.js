@@ -40,7 +40,7 @@ var abort = function abort(msg) {
 }
 
 // get path to the nodist folder
-var nodistPath = path.dirname(fs.realpathSync(process.execPath));
+var nodistPath = fs.realpathSync(path.dirname(process.argv[1]+'.'));
 
 process.title = 'nodist';
 function help() {
