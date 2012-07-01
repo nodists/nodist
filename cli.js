@@ -47,24 +47,31 @@ function help() {
 console.log('A node version manager for windows');
   console.log('Usage:');
   console.log('');
-  console.log('    nodist              List all installed node versions.');
-  console.log('    nodist list         ');
-  console.log('    nodist ls           ');
+  console.log('    nodist                         List all installed node versions.');
+  console.log('    nodist list                    ');
+  console.log('    nodist ls                      ');
   console.log('');
-  console.log('    nodist <version>    Use the specified node version globally (downloads the executable, if necessary).');
+  console.log('    nodist <version>               Use the specified node version globally (downloads the executable, if necessary).');
   console.log('');
-  console.log('    nodist rm <version> Uninstall the specified node version.');
-  console.log('    nodist - <version>  ');
+  console.log('    nodist add <version>           Download the specified node version.');
+  console.log('    nodist + <version>             ');
   console.log('');
-  console.log('    nodist --help       Display this help');
+  console.log('    nodist run <version> -- <file> Run <file> with the specified node version (downloads the executable, if necessary).');
+  console.log('    nodist r <version> -- <file>   ');
   console.log('');
-  console.log('    nodist -v           Display nodist version');
+  console.log('    nodist rm <version>            Uninstall the specified node version.');
+  console.log('    nodist - <version>             ');
+  console.log('');
+  console.log('    nodist --help                  Display this help');
+  console.log('');
+  console.log('    nodist -v                      Display nodist version');
   console.log('');
   console.log('Examples:');
   console.log('');
-  console.log('    nodist 0.8.1        Globally use node v0.8.1');
-  console.log('    nodist v0.5.10      Globally use node v0.5.10');
-  console.log('    nodist rm 0.5.10    Uninsall node v0.5.10');
+  console.log('    nodist 0.8.1                   Use node v0.8.1 globally');
+  console.log('    nodist v0.5.10                 Use node v0.5.10 globally');
+  console.log('    nodist r 0.8.1 -- foo.js -s    Run `foo.js -s` with node v0.8.1, regardless of the global version');
+  console.log('    nodist - 0.5.10                Uninstall node v0.5.10');
 }
 
 var n = new nodist(
@@ -92,7 +99,7 @@ if(argv.help) {
 }
 
 // bare call -> list
-if (!argv._[0]) {
+if (!argv._[0] && !process.argv[2]) {
   command = 'list';
 }
 
@@ -145,7 +152,7 @@ if ((command == 'run' || command == 'r') && argv._[1]) {
 }else
 
 // Fetch a specific build
-if ((command == 'install' || command == 'i') && argv._[1]) {
+if ((command == 'add' || command == '+') && argv._[1]) {
   var version = argv._[1];
   
   // validate version number
@@ -180,4 +187,10 @@ if (argv._[0] && nodist.validateVersion(argv._[0])) {
     if(err) abort(err.message+' Sorry.');
     exit();
   });
+}else
+
+// unknown parameters -> display help
+{
+  help();
+  exit();
 }
