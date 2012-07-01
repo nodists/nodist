@@ -49,7 +49,9 @@ console.log('A node version manager for windows');
   console.log('    nodist              List all installed node versions.');
   console.log('    nodist <version>    Use the specified node version globally (downloads the executable, if necessary).');
   console.log('    nodist rm <version> Uninstall the specified node version.');
-  console.log('    nodist - <version>');
+  console.log('    nodist - <version>  ');
+  console.log('    nodist -v           Display nodist version');
+  console.log('    nodist --help       Display this help');
   console.log('');
   console.log('Examples:');
   console.log('');
@@ -97,7 +99,7 @@ if (command == 'list' || command == 'ls') {
       if(err) abort('Reading the version directory '+n.sourceDir+' failed.');
       if(ls.length == 0) abort('No builds installed, yet.');
       ls.forEach(function(version) {
-        var del = (version == current) ? 'o ' : '  ';// highlight current
+        var del = (version == current) ? '> ' : '  ';// highlight current
         console.log(del+version);
       });
       exit();
