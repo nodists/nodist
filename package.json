@@ -6,7 +6,8 @@
   "homepage": "https://github.com/marcelklehr/nodist",
   "dependencies": {
     "request": "~2.9",
-    "mkdirp": "~0.3"
+    "mkdirp": "~0.3",
+    "optimist": "latest"
   },
   "os" : [ "win32" ],
   "engines": { "node": ">= 0.1.0" },
@@ -14,6 +15,6 @@
   "main" : "./nodist.js",
   "scripts": {
     "install": "copy bin\\bin.cmd %npm_config_prefix%\\nodist.cmd",
-    "postuninstall": "del %npm_config_prefix%\\nodist.cmd"
+    "preuninstall": "del %npm_config_prefix%\\nodist.cmd"
   }
 }

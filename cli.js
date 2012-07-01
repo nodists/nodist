@@ -24,65 +24,120 @@
  */
 
 var version = process.argv[2]
-  , nodist  = require('./nodist')
-  , fs      = require('fs')
-  , path    = require('path')
-  , exit = function exit(code, msg) {
-      if(msg) console.log(msg);
-      process.exit(code);
-    }
+  , nodist   = require('./nodist')
+  , program  = require('optimist')
+  , fs       = require('fs')
+  , path     = require('path')
 ;
+
+var exit = function abort(code, msg) {
+  if(msg) console.log(msg);
+  process.exit(code);
+}
+
+var abort = function abort(msg) {
+  exit(1, msg);
+}
 
 // get path to the nodist folder
 var nodistPath = path.dirname(fs.realpathSync(process.execPath));
 
 process.title = 'nodist';
-
-// --help switch
-if(process.argv[2] == '--help') {
-  console.log("nodist is a node version manager for windows\r\n");
+function help() {
+console.log('A node version manager for windows');
   console.log('Usage:');
-  console.log('  nodist             Displays all installed node versions');
-  console.log('  nodist <VERSION>   Globally use the specified node version');
-  console.log('  nodist --help      Display this help');
-  exit(0);
+  console.log('    nodist              List all installed node versions.');
+  console.log('    nodist <version>    Use the specified node version globally (downloads the executable, if necessary).');
+  console.log('    nodist rm <version> Uninstall the specified node version.');
+  console.log('    nodist - <version>');
+  console.log('');
+  console.log('Examples:');
+  console.log('');
+  console.log('    nodist 0.8.1        Globally use node v0.8.1');
+  console.log('    nodist v0.5.10      Globally use node v0.5.10');
+  console.log('    nodist rm 0.5.10    Uninsall node v0.5.10');
 }
-
 
 var n = new nodist(
   (process.env['NODIST_PREFIX']
-  ? process.env['NODIST_PREFIX'] : nodistPath+'/../../' )+'node.exe',
+    ? process.env['NODIST_PREFIX']
+    : nodistPath+'/../../' )
+  +'node.exe',
   'http://nodejs.org/dist',
   nodistPath+'/v'
 );
 
-if(version && version != '') { // executed with args: Deploy node version
+argv = program.argv;
+command = argv._[0];
 
+// Display nodist version
+if(argv.v) {
+  console.log(require('package.json').version);
+  exit();
+}
+
+// Display help
+if(argv.help) {
+  help();
+  exit();
+}
+
+// bare call -> list
+if (!argv._[0]) {
+  command = 'list';
+}
+
+// List all installed buids
+if (command == 'list' || command == 'ls') {
+
+  nodist.determineVersion(n.target, function (err, current) {
+    // if(err) -- don't bother, if we don't know current version
+    // display all versions
+    n.list(function(err, ls) {
+      if(err) abort('Reading the version directory '+n.sourceDir+' failed.');
+      if(ls.length == 0) abort('No builds installed, yet.');
+      ls.forEach(function(version) {
+        var del = (version == current) ? 'o ' : '  ';// highlight current
+        console.log(del+version);
+      });
+      exit();
+    });
+  });
+}else
+
+// Remove an installed build
+if ((command == 'remove' || command == 'rm' || command == '-') && argv._[1]) {
+  var version = argv._[1];
+  
   // validate version number
-  if (!version.match(nodist.semver)) {
-    exit(1, 'Please provide a valid version number.');
+  version = nodist.validateVersion(version)
+  if (!version) {
+    abort('Please provide a valid version number.');
   }
   
-  version = version.replace(nodist.semver,'$1');
+  n.unlink(version, function() {
+    exit();
+  });
+}else
+
+// Globally use the latest available node version
+if (command == 'latest') {
+  n.deploy('latest', function(err) {
+    if(err) abort(err.message+' Sorry.');
+    exit();
+  });
+}else
+
+// Globally use the specified node version
+if (argv._[0] && nodist.validateVersion(argv._[0])) {
+  // validate version number
+  version = nodist.validateVersion(version)
+  if (!version) {
+    abort('Please provide a valid version number.');
+  }
   
   n.deploy(version, function(err) {
-    if(err) exit(1, err.message+' Sorry.');
-    exit(0);
-  });
-  
-}else{  // executed without args: List installed builds
-
-  nodist.determineVersion(n.target, function (err, current) {// determine version of currently used build
-    
-    // display all versions
-    n.list(function() {
-      console.log('No builds installed, yet.');
-    }).forEach(function(version) {
-      var del = (version == current) ? '> ' : '  ';// highlight current
-      console.log(del+version);
-    });
-    
-    // and exit.
-    exit(0);
+    if(err) abort(err.message+' Sorry.');
+    exit();
   });
 }

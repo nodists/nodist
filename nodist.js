@@ -38,7 +38,12 @@ module.exports = nodist = function nodist(target, sourceUrl, sourceDir) {
   mkdirp(sourceDir);
 }
 
-nodist.semver = /^v?(\d+\.\d+\.\d+|latest)$/ //| @TODO: Allow `0.6` -> node-v0.6.15
+nodist.semver = /^v?(\d+\.\d+\.\d+)$/ //| @TODO: Allow `0.6` -> node-v0.6.15
+
+nodist.validateVersion = function validateVersion(ver) {
+  if(!ver.match(nodist.semver)) return false;
+  return ver.replace(nodist.semver,'$1');
+}
 
 nodist.compareable = function compareable(ver) {
   var parts = ver.split('.');
@@ -85,6 +90,24 @@ nodist.prototype.fetch = function fetch(version, fetch_target, cb) {
   });
 };
 
+nodist.prototype.checkout = function checkout(source, cb) {
+  fs.createReadStream(source).pipe(fs.createWriteStream(this.target)).on('close', cb);
+};
+
+nodist.prototype.list = function list(cb) {
+  fs.readdir(this.sourceDir, function(err, ls){
+    if(err) return cb(err);
+    
+    ls = ls.map(function(v) {
+      return v.replace(/^(.+)\.exe$/, '$1');
+    });
+    ls.sort(function(val1, val2){
+      return nodist.compareable(val1) > nodist.compareable(val2) ? 1 : -1;
+    });
+    return cb(null, ls);
+  })
+};
+
 nodist.prototype.deploy = function deploy(version, cb) {
   var n = this;
   var source  = this.sourceDir+'/'+version+'.exe';
@@ -116,17 +139,14 @@ nodist.prototype.deploy = function deploy(version, cb) {
   });
 };
 
-nodist.prototype.checkout = function checkout(source, cb) {
-  fs.createReadStream(source).pipe(fs.createWriteStream(this.target)).on('close', cb);
-};
-
-nodist.prototype.list = function list(empty_cb) {
-  var list = fs.readdirSync(this.sourceDir).map(function(v) {
-    return v.replace(/^(.+)\.exe$/, '$1');
-  })
-  .sort(function(val1, val2){
-    return nodist.compareable(val1) > nodist.compareable(val2) ? 1 : -1;
-  });
-  if(list.length == 0) empty_cb();
-  return list;
+nodist.prototype.unlink = function deploy(version, cb) {
+  var n = this;
+  var source  = this.sourceDir+'/'+version+'.exe';
+  
+  // delete source if it exists
+  if(fs.existsSync(source)) {
+    return fs.unlink(source, cb);
+  }
+  
+  return cb();
 };
