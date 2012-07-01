@@ -82,7 +82,7 @@ nodist.prototype.fetch = function fetch(version, fetch_target, cb) {
   var stream = request(url, function(err, resp){
     if(err || resp.statusCode != 200) {
       fs.unlinkSync(fetch_target);
-      return cb(new Error('Couldn\'t fetch '+version+' ('+(err.msg || 'HTTP '+resp.statusCode)+').'));
+      return cb(new Error('Couldn\'t fetch '+version+' ('+(err.message || 'HTTP '+resp.statusCode)+')'));
     }
     cb();
   });
