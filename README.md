@@ -2,18 +2,11 @@
 A Node version manager for the windows folks out there.
 
 ## Install
-Install node and npm using the [msi installer](http://nodejs.org/#download).
+Install node and npm at once, using the [msi installer](http://nodejs.org/#download).
 
-Install nodist globally.
+Install nodist globally. That's all!
 ```sh
 npm install -g nodist
-```
-
-### Install from source.
-```
-git clone git://github.com/marcelklehr/nodist.git
-cd nodist
-npm link
 ```
 
 ## Usage
