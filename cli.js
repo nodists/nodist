@@ -59,7 +59,6 @@ console.log('A node version manager for windows');
   console.log('    nodist ls                      ');
   console.log('');
   console.log('    nodist <version>               Use the specified node version globally (downloads the executable, if necessary).');
-  console.log('    nodist latest                  Use the latest available node version globally (downloads the executable, if necessary).');
   console.log('');
   console.log('    nodist add <version>           Download the specified node version.');
   console.log('    nodist + <version>             ');
@@ -78,8 +77,9 @@ console.log('A node version manager for windows');
   console.log('');
   console.log('    nodist 0.8.1                   Use node v0.8.1 globally');
   console.log('    nodist v0.5.10                 Use node v0.5.10 globally');
-  console.log('    nodist r 0.8.1 -- foo.js -s    Run `foo.js -s` with node v0.8.1, regardless of the global version');
+  console.log('    nodist r v0.8.1 -- foo.js -s   Run `foo.js -s` with node v0.8.1, regardless of the global version');
   console.log('    nodist - 0.5.10                Uninstall node v0.5.10');
+  console.log('    nodist latest                  Use the latest available node version globally (downloads the executable, if necessary).');
 }
 
 var n = new nodist(

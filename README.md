@@ -20,7 +20,6 @@ Usage:
     nodist ls
 
     nodist <version>               Use the specified node version globally (downloads the executable, if necessary).
-    nodist latest                  Use the latest available node version globally (downloads the executable, if necessary).
 
     nodist add <version>           Download the specified node version.
     nodist + <version>
@@ -41,6 +40,7 @@ Examples:
     nodist v0.5.10                 Use node v0.5.10 globally
     nodist r 0.8.1 -- foo.js -s    Run `foo.js -s` with node v0.8.1, regardless of the global version
     nodist - 0.5.10                Uninstall node v0.5.10
+    nodist latest                  Use the latest available node version globally (downloads the executable, if necessary).
 ```
 
 ## Details
@@ -50,7 +50,7 @@ When a version is activated, `nodist` copies it to `<NPM_PREFIX>\node.exe`. This
 As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
 
 ## What's with the name?
-The name nodist was chosen to emphasise the puristic approach of implementing a node version manager and is not to be confused with the term 'nudist'. It was never my intention to make a connection between these two subjects by giving this program a similar name. How, dare you!?
+The name nodist was chosen to emphasise the puristic approach of implementing a node version manager and is not to be confused with the term 'nudist'. It was never my intention to make a connection between these two subjects by giving this program a similar name. What did you think?!
 
 ## Legal
 Copyright (c) 2012 by Marcel Klehr  
