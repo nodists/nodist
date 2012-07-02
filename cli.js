@@ -36,7 +36,7 @@ var exit = function abort(code, msg) {
 };
 
 var abort = function abort(msg) {
-  exit(1, msg);
+  exit(1, !msg? null : msg.split('. ').join('.\r\n'));
 };
 
 var sanitizeVersion = function sanitizeVersion(v) {
@@ -118,7 +118,7 @@ if (command == 'list' || command == 'ls') {
     if(err) void(0); //don't bother, if we don't know current version
     
     n.listInstalled(function(err, ls) {
-      if(err) abort('Reading the version directory '+n.sourceDir+' failed. Sorry.');
+      if(err) abort(err.message+'. Sorry.');
       if(ls.length == 0) abort('No builds installed, yet.');
       
       // display all versions

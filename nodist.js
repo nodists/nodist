@@ -79,11 +79,11 @@ nodist.prototype.fetch = function fetch(version, fetch_target, _cb) {
     return _cb(new Error('There are no builds available for versions older than 0.5.1'));
   }
   
-  // Clean up things on error and rename latest to real version
+  // Clean up things on error and rename 'latest' to real version
   var cb = function(err) {
     if(err) {
       fs.unlink(fetch_target, function(e) {// clean up
-        if(e) return _cb(new Error(err.message+'. Couldn\'t clean up local copy of '+version));
+        if(e) return _cb(new Error(err.message+'. Couldn\'t clean after error: '+e.message));
         _cb(err);// pass on error
       });
       return;
@@ -92,10 +92,10 @@ nodist.prototype.fetch = function fetch(version, fetch_target, _cb) {
     if(version == 'latest') {
       // clean up "latest.exe"
       nodist.determineVersion(fetch_target, function (err, real_version) {
-        if(err) return _cb(new Error(err.message+'. Couldn\'t get version number of latest. Please run `nodist - latest` and try again'));
+        if(err) return _cb(new Error('Couldn\'t determine version number of latest: '+err.message+'. Please run `nodist - latest` before you try again'));
         
         fs.rename(fetch_target, n.sourceDir+'/'+real_version+'.exe', function(err) {
-          if(err) return _cb(new Error(err.message+'. Couldn\'t rename latest. Please run `nodist - latest` and try again'));
+          if(err) return _cb(new Error('Couldn\'t rename fetched executable: '+err.message+'. Please run `nodist - latest` before you try again'));
           _cb(null, real_version);
         });
         
@@ -112,24 +112,33 @@ nodist.prototype.fetch = function fetch(version, fetch_target, _cb) {
     cb();
   });
   stream.pipe(fs.createWriteStream(fetch_target));
-  stream.on('error', cb);
+  stream.on('error', function(err) {
+    cb(new Error('Couldn\'t write fetched data to file: '+err.message));
+  });
 };
 
 nodist.prototype.checkout = function checkout(source, cb) {
   var n = this;
-  source = fs.createReadStream(source);
-  source.pipe(fs.createWriteStream(this.target)).on('close', cb);
-  source.on('error', function(err) {
+  
+  var onerror = function(err) {
+    var str = 'Couldn\'t activate version: '+err.message;
     fs.unlink(n.target, function(e) {
-      if(e) return cb(new Error(err.msg+'. Couldn\'t clean up globally used version ('+e.message+')'));
-      cb(new Error(err.message));
+      if(e) return cb(new Error(str+'. Couldn\'t clean up after error: '+e.message));
+      cb(new Error(str+'. Removed globally used version'));
     });
-  });
+  };
+  
+  source = fs.createReadStream(source);
+  source.pipe(fs.createWriteStream(this.target))
+  .on('close', cb)
+  .on('error', onerror);
+  source.on('error', onerror);
 };
 
 nodist.prototype.listInstalled = function listInstalled(cb) {
+  var n = this;
   fs.readdir(this.sourceDir, function(err, ls){
-    if(err) return cb(err);
+    if(err) return cb('Reading the version directory '+n.sourceDir+' failed: '+err.message);
     
     ls = ls.map(function(v) {
       return v.replace(/^(.+)\.exe$/, '$1');
