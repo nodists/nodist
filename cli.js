@@ -33,11 +33,18 @@ var version = process.argv[2]
 var exit = function abort(code, msg) {
   if(msg) console.log(msg);
   process.exit(code);
-}
+};
 
 var abort = function abort(msg) {
   exit(1, msg);
-}
+};
+
+var sanitizeVersion = function sanitizeVersion(v) {
+  if (!nodist.validateVersion(v)) {
+    abort('Please provide a valid version number.');
+  }
+  return v.replace(nodist.semver,'$1');
+};
 
 // get path to the nodist folder
 var nodistPath = fs.realpathSync(path.dirname(process.argv[1]+'.'));
@@ -108,11 +115,13 @@ if (!argv._[0] && !process.argv[2]) {
 if (command == 'list' || command == 'ls') {
 
   nodist.determineVersion(n.target, function (err, current) {
-    // if(err) -- don't bother, if we don't know current version
-    // display all versions
-    n.list(function(err, ls) {
-      if(err) abort('Reading the version directory '+n.sourceDir+' failed.');
+    if(err) void(0); //don't bother, if we don't know current version
+    
+    n.listInstalled(function(err, ls) {
+      if(err) abort('Reading the version directory '+n.sourceDir+' failed. Sorry.');
       if(ls.length == 0) abort('No builds installed, yet.');
+      
+      // display all versions
       ls.forEach(function(version) {
         var del = (version == current) ? '> ' : '  ';// highlight current
         console.log(del+version);
@@ -125,14 +134,9 @@ if (command == 'list' || command == 'ls') {
 // Remove an installed build
 if ((command == 'remove' || command == 'rm' || command == '-') && argv._[1]) {
   var version = argv._[1];
+  version = sanitizeVersion(version);
   
-  // validate version number
-  version = nodist.validateVersion(version)
-  if (!version) {
-    abort('Please provide a valid version number.');
-  }
-  
-  n.unlink(version, function() {
+  n.remove(version, function() {
     exit();
   });
 }else
@@ -140,15 +144,10 @@ if ((command == 'remove' || command == 'rm' || command == '-') && argv._[1]) {
 // Run a specific build
 if ((command == 'run' || command == 'r') && argv._[1]) {
   var version = argv._[1];
+  version = sanitizeVersion(version)
   
-  // validate version number
-  version = nodist.validateVersion(version)
-  if (!version) {
-    abort('Please provide a valid version number.');
-  }
-  
-  n.run(version, argv._.splice(2), function(err, code) {
-    if(err) abort(err.message+' Sorry.');
+  n.emulate(version, argv._.splice(2), function(err, code) {
+    if(err) abort(err.message+'. Sorry.');
     exit(code);
   });
 }else
@@ -156,37 +155,23 @@ if ((command == 'run' || command == 'r') && argv._[1]) {
 // Fetch a specific build
 if ((command == 'add' || command == '+') && argv._[1]) {
   var version = argv._[1];
+  version = sanitizeVersion(version)
   
-  // validate version number
-  version = nodist.validateVersion(version)
-  if (!version) {
-    abort('Please provide a valid version number.');
-  }
-  
-  n.fetch(version, n.sourceDir+'/'+version+'.exe', function(err) {
+  n.fetch(version, n.sourceDir+'/'+version+'.exe', function(err, real_version) {
     if(err) abort(err.message+'. Sorry.');
-    exit();
-  });
-}else
-
-// Globally use the latest available node version
-if (command == 'latest') {
-  n.deploy('latest', function(err) {
-    if(err) abort(err.message+' Sorry.');
+    if(version == 'latest') console.log(real_version);
     exit();
   });
 }else
 
 // Globally use the specified node version
-if (argv._[0] && nodist.validateVersion(argv._[0])) {
-  // validate version number
-  version = nodist.validateVersion(version)
-  if (!version) {
-    abort('Please provide a valid version number.');
-  }
+if (argv._[0]) {
+  var version = argv._[0];
+  version = sanitizeVersion(version);
   
-  n.deploy(version, function(err) {
-    if(err) abort(err.message+' Sorry.');
+  n.deploy(version, function(err, real_version) {
+    if(err) abort(err.message+'. Sorry.');
+    if(version == 'latest') console.log(real_version);
     exit();
   });
 }else

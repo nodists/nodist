@@ -39,11 +39,11 @@ module.exports = nodist = function nodist(target, sourceUrl, sourceDir) {
   mkdirp(sourceDir);
 }
 
-nodist.semver = /^v?(\d+\.\d+\.\d+)$/ //| @TODO: Allow `0.6` -> node-v0.6.15
+nodist.semver = /^v?(\d+\.\d+\.\d+|latest)$/ //| @TODO: Allow `0.6` -> node-v0.6.15
 
 nodist.validateVersion = function validateVersion(ver) {
   if(!ver.match(nodist.semver)) return false;
-  return ver.replace(nodist.semver,'$1');
+  return true;
 }
 
 nodist.compareable = function compareable(ver) {
@@ -70,35 +70,55 @@ nodist.determineVersion = function determineVersion(file, cb) {
   });
 }
 
-nodist.prototype.fetch = function fetch(version, fetch_target, cb) {
+nodist.prototype.fetch = function fetch(version, fetch_target, _cb) {
   var n = this;
   var url = this.sourceUrl+'/'+(version=='latest'?'':'v')+version+'/node.exe';
   
   // Check online availability
   if(nodist.compareable(version) < nodist.compareable('0.5.1')) {
-    return cb(new Error('There are no builds available for versions older than 0.5.1.'));
+    return _cb(new Error('There are no builds available for versions older than 0.5.1.'));
   }
   
-  var canTerminate = false
+  // Clean up things on error and rename latest to real version
+  var cb = function(err) {
+    if(err) {
+      fs.unlinkSync(fetch_target);
+      return _cb(err);
+    }
+    if(version == 'latest') {
+      // clean up "latest.exe"
+      nodist.determineVersion(fetch_target, function (err, real_version) {
+        fs.renameSync(fetch_target, n.sourceDir+'/'+real_version+'.exe');
+        _cb(null, real_version);
+      });
+    }else
+    return _cb(null, version);
+  };
+  
+  // fetch from url
   var stream = request(url, function(err, resp){
     if(err || resp.statusCode != 200) {
-      fs.unlinkSync(fetch_target);
       return cb(new Error('Couldn\'t fetch '+version+' ('+(err? err.message : 'HTTP '+resp.statusCode)+')'));
     }
     cb();
   });
   stream.pipe(fs.createWriteStream(fetch_target));
-  stream.on('error', function(err) {
-    fs.unlinkSync(fetch_target);
-    cb(err);
-  });
+  stream.on('error', cb);
 };
 
 nodist.prototype.checkout = function checkout(source, cb) {
-  fs.createReadStream(source).pipe(fs.createWriteStream(this.target)).on('close', cb);
+  var n = this;
+  source = fs.createReadStream(source);
+  source.pipe(fs.createWriteStream(this.target)).on('close', cb);
+  source.on('error', function(err) {
+    fs.unlink(n.target, function(e) {
+      if(e) return cb(new Error(err.msg+'. Couldn\'t clean up globally used version ('+e.message+')'));
+      cb(new Error(err.message));
+    });
+  });
 };
 
-nodist.prototype.list = function list(cb) {
+nodist.prototype.listInstalled = function listInstalled(cb) {
   fs.readdir(this.sourceDir, function(err, ls){
     if(err) return cb(err);
     
@@ -114,34 +134,30 @@ nodist.prototype.list = function list(cb) {
 
 nodist.prototype.deploy = function deploy(version, cb) {
   var n = this;
-  var source  = this.sourceDir+'/'+version+'.exe';
+  var source = this.sourceDir+'/'+version+'.exe';
   
   // checkout source if it exists
   if(fs.existsSync(source)) {
-    return this.checkout(source, cb);
+    return this.checkout(source, function(err) {
+      if(err) return cb(err);
+      cb(null, version);
+    });
   }
   
   // fetch build online
-  this.fetch(version, source, function(err) {
+  this.fetch(version, source, function(err, real_version) {
     if(err) {
       return cb(err);
     }
     
-    n.checkout(source, function() {
-      if(version == 'latest') {
-        // clean up "latest.exe"
-        nodist.determineVersion(source, function (err, real_version) {
-          fs.renameSync(source, n.sourceDir+'/'+real_version+'.exe');
-          console.log(real_version);
-          cb();
-        });
-      }else
-      return cb();
+    n.checkout(n.sourceDir+'/'+real_version+'.exe', function(err) {
+      if(err) return cb(err);
+      cb(null, real_version);
     });
   });
 };
 
-nodist.prototype.unlink = function unlink(version, cb) {
+nodist.prototype.remove = function unlink(version, cb) {
   var n = this;
   var source  = this.sourceDir+'/'+version+'.exe';
   
@@ -153,15 +169,18 @@ nodist.prototype.unlink = function unlink(version, cb) {
   return cb();
 };
 
-nodist.prototype.run = function run(version, args, cb) {
+nodist.prototype.emulate = function emulate(version, args, cb) {
   var n = this;
   var source = this.sourceDir+'/'+version+'.exe';
-  var run = function(err) {
+  var run = function(err, real_version) {
     if(err) return cb(err);
+    
+    source = n.sourceDir+'/'+real_version+'.exe';
     var node = exec(source, args, {
       stdio: 'inherit',
       cwd: path.resolve('.')
     });
+    // onexit: cb(err=null, code)
     node.on('exit', cb.bind(n, null));
   }
   
