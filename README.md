@@ -1,5 +1,5 @@
 # nodist
-A Node version manager for the windows folks out there.
+A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n).
 
 ## Install
 Install node and npm at once, using the [msi installer](http://nodejs.org/#download).
@@ -44,9 +44,8 @@ Examples:
 ```
 
 ## Details
-`nodist` by default stores node executables in `<NPM_PREFIX>\node_modules\nodist\v\`, from where it can see what you have currently installed, and activate previously installed versions of node when `nodist <version>` is invoked again.
-
-When a node is activated, nodist copies the version to `path\to\global-npm\node.exe`. This path may be altered using the **NODIST_PREFIX** env variable.
+`nodist` stores your node executables in `<NPM_PREFIX>\node_modules\nodist\v\`, from there it can see what's installed and activate previously installed versions when `nodist <version>` is invoked again.  
+When a version is activated, `nodist` copies it to `<NPM_PREFIX>\node.exe`. This path may be altered using the **NODIST_PREFIX** env variable.
 
 As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
 
