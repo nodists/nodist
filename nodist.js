@@ -72,7 +72,7 @@ nodist.determineVersion = function determineVersion(file, cb) {
 
 nodist.prototype.fetch = function fetch(version, fetch_target, _cb) {
   var n = this;
-  var url = this.sourceUrl+'/'+(version=='latest'?'':'v')+version+'/node.exe';
+  var url = this.sourceUrl+'\\'+(version=='latest'?'':'v')+version+'\\node.exe';
   
   // Check online availability
   if(nodist.compareable(version) < nodist.compareable('0.5.1')) {
@@ -94,7 +94,7 @@ nodist.prototype.fetch = function fetch(version, fetch_target, _cb) {
       nodist.determineVersion(fetch_target, function (err, real_version) {
         if(err) return _cb(new Error('Couldn\'t determine version number of latest: '+err.message+'. Please run `nodist - latest` before you try again'));
         
-        fs.rename(fetch_target, n.sourceDir+'/'+real_version+'.exe', function(err) {
+        fs.rename(fetch_target, n.sourceDir+'\\'+real_version+'.exe', function(err) {
           if(err) return _cb(new Error('Couldn\'t rename fetched executable: '+err.message+'. Please run `nodist - latest` before you try again'));
           _cb(null, real_version);
         });
@@ -107,13 +107,13 @@ nodist.prototype.fetch = function fetch(version, fetch_target, _cb) {
   // fetch from url
   var stream = request(url, function(err, resp){
     if(err || resp.statusCode != 200) {
-      return cb(new Error('Couldn\'t fetch '+version+' ('+(err? err.message : 'HTTP '+resp.statusCode)+')'));
+      return cb(new Error('Couldn\'t fetch '+version+': '+(err? err.message : 'HTTP '+resp.statusCode)));
     }
     cb();
   });
   stream.pipe(fs.createWriteStream(fetch_target));
   stream.on('error', function(err) {
-    cb(new Error('Couldn\'t write fetched data to file: '+err.message));
+    cb(new Error('Couldn\'t fetch '+version+': '+err.message));
   });
 };
 
@@ -152,7 +152,7 @@ nodist.prototype.listInstalled = function listInstalled(cb) {
 
 nodist.prototype.deploy = function deploy(version, cb) {
   var n = this;
-  var source = this.sourceDir+'/'+version+'.exe';
+  var source = this.sourceDir+'\\'+version+'.exe';
   
   fs.exists(source, function(exists) {
     if(exists) {
@@ -168,7 +168,7 @@ nodist.prototype.deploy = function deploy(version, cb) {
         return cb(err);
       }
       
-      n.checkout(n.sourceDir+'/'+real_version+'.exe', function(err) {
+      n.checkout(n.sourceDir+'\\'+real_version+'.exe', function(err) {
         if(err) return cb(err);
         cb(null, real_version);
       });
@@ -178,7 +178,7 @@ nodist.prototype.deploy = function deploy(version, cb) {
 
 nodist.prototype.remove = function remove(version, cb) {
   var n = this;
-  var source  = this.sourceDir+'/'+version+'.exe';
+  var source  = this.sourceDir+'\\'+version+'.exe';
   
   fs.exists(source, function(exists) {
     if(exists) return fs.unlink(source, cb);
@@ -188,12 +188,12 @@ nodist.prototype.remove = function remove(version, cb) {
 
 nodist.prototype.emulate = function emulate(version, args, cb) {
   var n = this;
-  var source = this.sourceDir+'/'+version+'.exe';
+  var source = this.sourceDir+'\\'+version+'.exe';
   
   var run = function(err, real_version) {
     if(err) return cb(err);
     
-    var node = exec(n.sourceDir+'/'+real_version+'.exe', args, {
+    var node = exec(n.sourceDir+'\\'+real_version+'.exe', args, {
       stdio: 'inherit',
       cwd: path.resolve('.')
     });

@@ -63,11 +63,13 @@ console.log('A node version manager for windows');
   console.log('    nodist add <version>           Download the specified node version.');
   console.log('    nodist + <version>             ');
   console.log('');
+  console.log('    nodist rm <version>            Uninstall the specified node version.');
+  console.log('    nodist - <version>             ');
+  console.log('');
   console.log('    nodist run <version> -- <file> Run <file> with the specified node version (downloads the executable, if necessary).');
   console.log('    nodist r <version> -- <file>   ');
   console.log('');
-  console.log('    nodist rm <version>            Uninstall the specified node version.');
-  console.log('    nodist - <version>             ');
+  console.log('    nodist bin <version>           Get the path to the specified node version (downloads the executable, if necessary).');
   console.log('');
   console.log('    nodist --help                  Display this help');
   console.log('');
@@ -79,16 +81,16 @@ console.log('A node version manager for windows');
   console.log('    nodist v0.5.10                 Use node v0.5.10 globally');
   console.log('    nodist r v0.8.1 -- foo.js -s   Run `foo.js -s` with node v0.8.1, regardless of the global version');
   console.log('    nodist - 0.5.10                Uninstall node v0.5.10');
-  console.log('    nodist latest                  Use the latest available node version globally (downloads the executable, if necessary).');
+  console.log('    nodist latest                  Use the latest available node version globally (downloads the executable).');
 }
 
 var n = new nodist(
   (process.env['NODIST_PREFIX']
     ? process.env['NODIST_PREFIX']
-    : nodistPath+'/../../' )
+    : nodistPath+'\\..\\..\\' )
   +'node.exe',
   'http://nodejs.org/dist',
-  nodistPath+'/v'
+  nodistPath+'\\v'
 );
 
 argv = program.argv;
@@ -144,7 +146,7 @@ if ((command == 'remove' || command == 'rm' || command == '-') && argv._[1]) {
 // Run a specific build
 if ((command == 'run' || command == 'r') && argv._[1]) {
   var version = argv._[1];
-  version = sanitizeVersion(version)
+  version = sanitizeVersion(version);
   
   n.emulate(version, argv._.splice(2), function(err, code) {
     if(err) abort(err.message+'. Sorry.');
@@ -155,13 +157,33 @@ if ((command == 'run' || command == 'r') && argv._[1]) {
 // Fetch a specific build
 if ((command == 'add' || command == '+') && argv._[1]) {
   var version = argv._[1];
-  version = sanitizeVersion(version)
+  version = sanitizeVersion(version);
   
-  n.fetch(version, n.sourceDir+'/'+version+'.exe', function(err, real_version) {
+  n.fetch(version, n.sourceDir+'\\'+version+'.exe', function(err, real_version) {
     if(err) abort(err.message+'. Sorry.');
     if(version == 'latest') console.log(real_version);
     exit();
   });
+}else
+
+// Get the path to a specific version
+if ((command == 'bin') && argv._[1]) {
+  var version = argv._[1];
+  version = sanitizeVersion(version);
+  var path = n.sourceDir+'\\'+version+'.exe';
+  
+  if(fs.existsSync(path)) {
+    console.log(path);
+    exit();
+  }
+  
+  n.fetch(version, path, function(err) {
+    if(err) abort(err.message+'. Sorry.');
+    console.log(path);
+    exit();
+  });
+  
+  
 }else
 
 // Globally use the specified node version

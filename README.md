@@ -24,11 +24,13 @@ Usage:
     nodist add <version>           Download the specified node version.
     nodist + <version>
 
+    nodist rm <version>            Uninstall the specified node version.
+    nodist - <version>
+
     nodist run <version> -- <file> Run <file> with the specified node version (downloads the executable, if necessary).
     nodist r <version> -- <file>
 
-    nodist rm <version>            Uninstall the specified node version.
-    nodist - <version>
+    nodist bin <version>           Get the path to the specified node version (downloads the executable, if necessary).
 
     nodist --help                  Display this help
 
@@ -38,9 +40,9 @@ Examples:
 
     nodist 0.8.1                   Use node v0.8.1 globally
     nodist v0.5.10                 Use node v0.5.10 globally
-    nodist r 0.8.1 -- foo.js -s    Run `foo.js -s` with node v0.8.1, regardless of the global version
+    nodist r v0.8.1 -- foo.js -s   Run `foo.js -s` with node v0.8.1, regardless of the global version
     nodist - 0.5.10                Uninstall node v0.5.10
-    nodist latest                  Use the latest available node version globally (downloads the executable, if necessary).
+    nodist latest                  Use the latest available node version globally
 ```
 
 ## Details
