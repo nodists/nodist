@@ -147,9 +147,9 @@ if ((command == 'run' || command == 'r') && argv._[1]) {
     abort('Please provide a valid version number.');
   }
   
-  n.run(version, argv._.splice(2), function(err) {
-    if(err) abort(err.message);
-    exit();
+  n.run(version, argv._.splice(2), function(err, code) {
+    if(err) abort(err.message+' Sorry.');
+    exit(code);
   });
 }else
 

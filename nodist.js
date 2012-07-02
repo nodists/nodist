@@ -27,6 +27,7 @@ var exec = require('child_process').spawn
   , mkdirp     = require('mkdirp').sync
   , request    = require('request')
   , fs         = require('fs')
+  , path       = require('path')
 ;
 
 module.exports = nodist = function nodist(target, sourceUrl, sourceDir) {
@@ -157,12 +158,11 @@ nodist.prototype.run = function run(version, args, cb) {
   var source = this.sourceDir+'/'+version+'.exe';
   var run = function(err) {
     if(err) return cb(err);
-    var node = exec(source, args);
-    node.stdout.pipe(process.stdout);
-    node.stderr.pipe(process.stderr);
-    process.stdin.pipe(node.stdin);
-    node.on('exit', cb);
-    node.on('error', cb);
+    var node = exec(source, args, {
+      stdio: 'inherit',
+      cwd: path.resolve('.')
+    });
+    node.on('exit', cb.bind(n, null));
   }
   
   // fetch source if it doesn't exist
