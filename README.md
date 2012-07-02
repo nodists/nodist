@@ -12,6 +12,7 @@ npm install -g nodist
 ## Usage
 ```
 A node version manager for windows
+
 Usage:
 
     nodist                         List all installed node versions.
@@ -19,6 +20,7 @@ Usage:
     nodist ls
 
     nodist <version>               Use the specified node version globally (downloads the executable, if necessary).
+    nodist latest                  Use the latest available node version globally (downloads the executable, if necessary).
 
     nodist add <version>           Download the specified node version.
     nodist + <version>

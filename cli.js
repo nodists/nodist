@@ -52,6 +52,7 @@ console.log('A node version manager for windows');
   console.log('    nodist ls                      ');
   console.log('');
   console.log('    nodist <version>               Use the specified node version globally (downloads the executable, if necessary).');
+  console.log('    nodist latest                  Use the latest available node version globally (downloads the executable, if necessary).');
   console.log('');
   console.log('    nodist add <version>           Download the specified node version.');
   console.log('    nodist + <version>             ');
