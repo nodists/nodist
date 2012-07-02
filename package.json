@@ -1,5 +1,5 @@
 { "name" : "nodist",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Natural node version manager for windows",
   "keywords": ["node", "version", "manager", "build", "windows"],
   "author": "Marcel Klehr <mklehr@gmx.net>",
@@ -8,7 +8,7 @@
   "repository" :
     { "type" : "git"
     , "url" : "http://github.com/marcelklehr/nodist.git"
-    }
+    },
   "dependencies": {
     "request": "~2.9",
     "mkdirp": "~0.3",
