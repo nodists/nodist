@@ -72,7 +72,7 @@ nodist.determineVersion = function determineVersion(file, cb) {
 
 nodist.prototype.fetch = function fetch(version, fetch_target, _cb) {
   var n = this;
-  var url = this.sourceUrl+'\\'+(version=='latest'?'':'v')+version+'\\node.exe';
+  var url = this.sourceUrl+'/'+(version=='latest'?'':'v')+version+'/node.exe';
   
   // Check online availability
   if(nodist.compareable(version) < nodist.compareable('0.5.1')) {
