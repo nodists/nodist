@@ -19,7 +19,7 @@
   "preferGlobal": true,
   "main" : "./nodist.js",
   "scripts": {
-    "install": "copy bin\\bin.cmd %npm_config_prefix%\\nodist.cmd",
-    "preuninstall": "del %npm_config_prefix%\\nodist.cmd"
+    "install": "bin\\install.cmd",
+    "preuninstall": "bin\\uninstall.cmd"
   }
 }
