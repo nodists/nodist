@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-var exec = require('child_process').spawn
+var child_process = require('child_process')
   , mkdirp     = require('mkdirp').sync
   , request    = require('request')
   , fs         = require('fs')
@@ -51,10 +51,19 @@ nodist.compareable = function compareable(ver) {
   return parseInt(parts.map(function(d){ while(d.length < 3) d = '0'+d; return d; }).join(''), 10);
 }
 
+nodist.latest = function latest(list) {
+  return list[list.length-1];
+};
+
+nodist.latestStable = function latestStable(list) {
+  do { var v = av.pop() }while(v && parseInt(v.split('.')[1]) % 2 != 0);// search for an even number: 0.2.0
+  return v;
+};
+
 nodist.determineVersion = function determineVersion(file, cb) {
   var returned = false;
   
-  var node = exec(file, ['-v']);
+  var node = child_process.spawn(file, ['-v']);
   node.stdout.on('data', function (data) {
     var version = data.toString().trim().replace(nodist.semver, '$1');
     if(!returned) cb(null, version);
@@ -70,69 +79,30 @@ nodist.determineVersion = function determineVersion(file, cb) {
   });
 }
 
-nodist.prototype.fetch = function fetch(version, fetch_target, _cb) {
-  var n = this;
-  var url = this.sourceUrl+'/'+(version=='latest'?'':'v')+version+'/node.exe';
-  
-  // Check online availability
-  if(nodist.compareable(version) < nodist.compareable('0.5.1')) {
-    return _cb(new Error('There are no builds available for versions older than 0.5.1'));
-  }
-  
-  // Clean up things on error and rename 'latest' to real version
-  var cb = function(err) {
-    if(err) {
-      fs.unlink(fetch_target, function(e) {// clean up
-        if(e) return _cb(new Error(err.message+'. Couldn\'t clean after error: '+e.message));
-        _cb(err);// pass on error
-      });
-      return;
-    }
-    
-    if(version == 'latest') {
-      // clean up "latest.exe"
-      nodist.determineVersion(fetch_target, function (err, real_version) {
-        if(err) return _cb(new Error('Couldn\'t determine version number of latest: '+err.message+'. Please run `nodist - latest` before you try again'));
-        
-        fs.rename(fetch_target, n.sourceDir+'\\'+real_version+'.exe', function(err) {
-          if(err) return _cb(new Error('Couldn\'t rename fetched executable: '+err.message+'. Please run `nodist - latest` before you try again'));
-          _cb(null, real_version);
-        });
-        
-      });
-    }else
-      return _cb(null, version);
-  };
-  
-  // fetch from url
-  var stream = request(url, function(err, resp){
-    if(err || resp.statusCode != 200) {
-      return cb(new Error('Couldn\'t fetch '+version+': '+(err? err.message : 'HTTP '+resp.statusCode)));
-    }
-    cb();
-  });
-  stream.pipe(fs.createWriteStream(fetch_target));
-  stream.on('error', function(err) {
-    cb(new Error('Couldn\'t fetch '+version+': '+err.message));
-  });
-};
+nodist.prototype.resolveToExe = function resolveToExe(version) {
+  return this.sourceDir+'\\'+version+'.exe';
+}
 
-nodist.prototype.checkout = function checkout(source, cb) {
+nodist.prototype.listAvailable = function listAvailable(cb) {
   var n = this;
-  
-  var onerror = function(err) {
-    var str = 'Couldn\'t activate version: '+err.message;
-    fs.unlink(n.target, function(e) {
-      if(e) return cb(new Error(str+'. Couldn\'t clean up after error: '+e.message));
-      cb(new Error(str+'. Removed globally used version'));
+  request(n.sourceUrl, function(err, resp, body) {
+    if(err) return cb(new Error('Couldn\'t list available versions: '+err.message));
+    if(resp.statusCode != 200) return cb(new Error('Couldn\'t list available versions: HTTP '+resp.statusCode));
+
+    var map = {},
+      versions = [];
+    body.match(/\d+\.\d+\.\d+\//g)// search for "0.0.0/" (only dirs contain node.exe)
+    .sort(function(v1, v2) {
+      return nodist.compareable(v1) > nodist.compareable(v2) ? 1 : -1;
+    })
+    .forEach(function(v) {
+      v = v.substr(0, v.length-1);
+      if(map[v]) return;
+      map[v] = v;
+      versions.push(v);
     });
-  };
-  
-  source = fs.createReadStream(source);
-  source.pipe(fs.createWriteStream(this.target))
-  .on('close', cb)
-  .on('error', onerror);
-  source.on('error', onerror);
+    cb(null, versions);
+  });
 };
 
 nodist.prototype.listInstalled = function listInstalled(cb) {
@@ -150,35 +120,48 @@ nodist.prototype.listInstalled = function listInstalled(cb) {
   })
 };
 
-nodist.prototype.deploy = function deploy(version, cb) {
+nodist.prototype.install = function install(version, cb) {
   var n = this;
-  var source = this.sourceDir+'\\'+version+'.exe';
-  
-  fs.exists(source, function(exists) {
-    if(exists) {
-      n.checkout(source, function(err) {
-        if(err) return cb(err);
-        cb(null, version);
-      });
-      return;
-    }
-  
-    n.fetch(version, source, function(err, real_version) {
-      if(err) {
-        return cb(err);
+  this.listInstalled(function(err, installed){
+    if(err) return cb(err);
+    
+    n.listAvailable(function(err, availabe) {
+      if(err) return cb(err);
+      
+      switch(version) {
+      
+      case 'latest':
+        if(nodist.latest(available) == nodist.latest(installed)) return cb(null);// already installed.
+        n.fetch(nodist.latest(available), function(err) {
+          if(err) return cb(err);
+          return cb(null, nodist.latest(available));
+        })
+        return;
+        
+      case 'stable':
+        if(nodist.latestStable(available) == nodist.latestStable(installed)) return cb(null);// already installed.
+        n.fetch(nodist.latestStable(available), function(err) {
+          if(err) return cb(err);
+          return cb(null, nodist.latestStable(available));
+        })
+        return;
+        
+      default:
+        if(installed.indexOf(version) != -1) return cb(null);// already installed.
+        n.fetch(version, function(err) {
+          if(err) return cb(err);
+          return cb(null, version);
+        })
+        return;
       }
       
-      n.checkout(n.sourceDir+'\\'+real_version+'.exe', function(err) {
-        if(err) return cb(err);
-        cb(null, real_version);
-      });
     });
   });
 };
 
 nodist.prototype.remove = function remove(version, cb) {
   var n = this;
-  var source  = this.sourceDir+'\\'+version+'.exe';
+  var source = this.resolveToExe(version);
   
   fs.exists(source, function(exists) {
     if(exists) return fs.unlink(source, cb);
@@ -186,23 +169,87 @@ nodist.prototype.remove = function remove(version, cb) {
   });
 };
 
+nodist.prototype.fetch = function fetch(version, _cb) {
+  var n = this;
+  var url = this.sourceUrl+'/v'+version+'/node.exe';
+  var fetch_target = this.resolveToExe(version);
+  
+  // Check online availability
+  if(nodist.compareable(version) < nodist.compareable('0.5.1')) {
+    return _cb(new Error('There are no builds available for versions older than 0.5.1'));
+  }
+  
+  // Proxy callback (clean up things on error)
+  var cb = function(err) {
+    if(err) {
+      fs.unlink(fetch_target, function(e) {// clean up
+        if(e) return _cb(new Error(err.message+'. Couldn\'t clean after error: '+e.message));
+        _cb(err);// pass on the error
+      });
+      return;
+    }
+
+    return _cb(null, version);
+  };
+  
+  // fetch from url
+  var stream = request(url, function(err, resp){
+    if(err || resp.statusCode != 200) {
+      return cb(new Error('Couldn\'t fetch '+version+': '+(err? err.message : 'HTTP '+resp.statusCode)));
+    }
+    cb();
+  });
+  stream.pipe(fs.createWriteStream(fetch_target));
+  stream.on('error', function(err) {
+    cb(new Error('Couldn\'t fetch '+version+': '+err.message));
+  });
+};
+
+nodist.prototype.deploy = function deploy(version, cb) {
+  var n = this;
+  var source = this.resolveToExe(version);
+  
+  this.install(version, function(err, real_version){
+    if(err) cb(err);
+  
+    n.checkout(real_version, function(err) {
+      if(err) return cb(err);
+      cb(null, real_version);
+    });
+    
+    return;
+  });
+};
+
+nodist.prototype.checkout = function checkout(version, cb) {
+  var n = this;
+  var source = this.resolveToExe(version);
+  
+  var onerror = function(err) {
+    var str = 'Couldn\'t activate version: '+err.message;
+    fs.unlink(n.target, function(e) {
+      if(e) return cb(new Error(str+'. Couldn\'t clean up after error: '+e.message));
+      cb(new Error(str+'. Removed globally used version'));
+    });
+  };
+  
+  source = fs.createReadStream(source);
+  source.pipe(fs.createWriteStream(this.target))
+  .on('close', cb)
+  .on('error', onerror);
+  source.on('error', onerror);
+};
+
 nodist.prototype.emulate = function emulate(version, args, cb) {
   var n = this;
-  var source = this.sourceDir+'\\'+version+'.exe';
-  
-  var run = function(err, real_version) {
+
+  this.install(version, function(err, real_version) {
     if(err) return cb(err);
     
-    var node = exec(n.sourceDir+'\\'+real_version+'.exe', args, {
+    var node = child_process.spawn(n.resolveToExe(real_version), args, {
       stdio: 'inherit',
       cwd: path.resolve('.')
     });
-    // onexit: cb(err=null, code)
-    node.on('exit', cb.bind(n, null));
-  }
-  
-  fs.exists(source, function(exists) {
-    if(!exists) return n.fetch(version, source, run);
-    run(null, version);
+    node.on('exit', cb.bind(n, null));// onexit: cb(err=null, code)
   });
 };

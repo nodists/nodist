@@ -159,9 +159,9 @@ if ((command == 'add' || command == '+') && argv._[1]) {
   var version = argv._[1];
   version = sanitizeVersion(version);
   
-  n.fetch(version, n.sourceDir+'\\'+version+'.exe', function(err, real_version) {
+  n.install(version, function(err, real_version) {
     if(err) abort(err.message+'. Sorry.');
-    if(version == 'latest') console.log(real_version);
+    if(version == 'latest' || version == 'stable') console.log(real_version);
     exit();
   });
 }else
@@ -170,16 +170,10 @@ if ((command == 'add' || command == '+') && argv._[1]) {
 if ((command == 'bin') && argv._[1]) {
   var version = argv._[1];
   version = sanitizeVersion(version);
-  var path = n.sourceDir+'\\'+version+'.exe';
   
-  if(fs.existsSync(path)) {
-    console.log(path);
-    exit();
-  }
-  
-  n.fetch(version, path, function(err) {
+  n.install(version, function(err) {
     if(err) abort(err.message+'. Sorry.');
-    console.log(path);
+    console.log(n.resolveToExe(version));
     exit();
   });
   
