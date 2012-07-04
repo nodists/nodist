@@ -124,11 +124,11 @@ nodist.prototype.install = function install(version, cb) {
     if(err) return cb(err);
     
     n.listAvailable(function(err, available) {
-      if(err) return cb(err);
       
       switch(version) {
       
       case 'all':
+        if(err) return cb(err);
         available.forEach(function(v) {
           if(installed.indexOf(v) != -1)
             return cb(null, v);// already installed.
@@ -141,6 +141,8 @@ nodist.prototype.install = function install(version, cb) {
         return;
       
       case 'latest':
+        if(err) available = [];
+        
         if(nodist.latest(available) === nodist.latest(installed))
           return cb(null, nodist.latest(installed));// already installed.
         
@@ -151,6 +153,8 @@ nodist.prototype.install = function install(version, cb) {
         return;
         
       case 'stable':
+        if(err) available = [];
+        
         if(nodist.latestStable(available) === nodist.latestStable(installed))
           return cb(null, nodist.latestStable(installed));// already installed.
         
