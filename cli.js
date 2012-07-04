@@ -26,7 +26,6 @@
 var version = process.argv[2]
   , nodist   = require('./nodist')
   , program  = require('optimist')
-  , fs       = require('fs')
   , path     = require('path')
 ;
 
@@ -45,9 +44,6 @@ var sanitizeVersion = function sanitizeVersion(v) {
   }
   return v.replace(nodist.semver,'$1');
 };
-
-// get path to the nodist folder
-var nodistPath = fs.realpathSync(path.dirname(process.argv[1]+'.'));
 
 process.title = 'nodist';
 function help() {
@@ -87,11 +83,14 @@ console.log('A node version manager for windows');
   console.log('    nodist latest                  Use the latest available node version globally (downloads the executable).');
 }
 
-var n = new nodist(
-  (process.env['NODIST_PREFIX']
+// build paths
+var nodePath = process.env['NODIST_PREFIX']
     ? process.env['NODIST_PREFIX']
-    : nodistPath+'\\..\\..\\' )
-  +'node.exe',
+    : path.resolve(__dirname+'\\..\\..\\');
+var nodistPath = nodePath+'\\.nodist\\';
+
+var n = new nodist(
+  nodePath+'node.exe',
   'http://nodejs.org/dist',
   nodistPath+'\\v'
 );
