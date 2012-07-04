@@ -62,7 +62,7 @@ var nodePath = process.env['NODIST_PREFIX']
 var nodistPath = nodePath+'\\.nodist\\';
 
 var n = new nodist(
-  nodePath+'node.exe',
+  nodePath+'\\node.exe',
   'http://nodejs.org/dist',
   nodistPath+'\\v'
 );
