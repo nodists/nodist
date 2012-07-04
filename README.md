@@ -46,11 +46,12 @@ Examples:
     nodist r v0.8.1 -- foo.js -s   Run `foo.js -s` with node v0.8.1, regardless of the global version
     nodist - 0.5.10                Uninstall node v0.5.10
     nodist latest                  Use the latest available node version globally (downloads the executable).
+    nodist + all                   Installs all available node versions.
 ```
 
 ## Details
-`nodist` stores your node executables in `<NPM_PREFIX>\node_modules\nodist\v\`, from there it can see what's installed and activate previously installed versions when `nodist <version>` is invoked again.  
-When a version is activated, `nodist` copies it to `<NPM_PREFIX>\node.exe`. This path may be altered using the **NODIST_PREFIX** env variable.
+`nodist` stores your node executables in `<global_npm>\.nodist\v\`, from there it can see what's installed and activate previously installed versions when `nodist <version>` is invoked again.  
+When a version is activated, `nodist` copies it to `<global_npm>\node.exe`. This path may be altered using the **NODIST_PREFIX** env variable.
 
 As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
 
