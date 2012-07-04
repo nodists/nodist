@@ -54,6 +54,9 @@ When a version is activated, `nodist` copies it to `<NPM_PREFIX>\node.exe`. This
 
 As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
 
+## Got ideas?  Doesn't work for you?
+[File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
+
 ## What's with the name?
 The name nodist was chosen to emphasise the puristic approach of implementing a node version manager and is not to be confused with the term 'nudist'. It was never my intention to make a connection between these two subjects by giving this program a similar name. What did you think?!
 
