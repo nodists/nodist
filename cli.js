@@ -46,7 +46,6 @@ var sanitizeVersion = function sanitizeVersion(v) {
   return v.replace(nodist.semver,'$1');
 };
 
-process.title = 'nodist';
 function help() {
   fs.readFile(__dirname+'\\usage.txt', function(err, usage) {
     if(err) abort('Couldn\'t fetch help info. You\'ll have to look at the README. Sorry.');
@@ -55,38 +54,45 @@ function help() {
   });
 }
 
-// build paths
+
+process.title = 'nodist';
+
+// set up the necessary paths
 var nodePath = process.env['NODIST_PREFIX']
     ? process.env['NODIST_PREFIX']
     : path.resolve(__dirname+'\\..\\..\\');
 var nodistPath = nodePath+'\\.nodist\\';
 
+// Create a nodist instance
 var n = new nodist(
   nodePath+'\\node.exe',
   'http://nodejs.org/dist',
   nodistPath+'\\v'
 );
 
+// get cli args
 argv = program.argv;
 command = argv._[0];
 
-// Display nodist version
+
+
+// V Display nodist version
 if(argv.v) {
   console.log(require('./package.json').version);
   exit();
 }
 
-// Display help
+// HELP Display help
 if(argv.help) {
   help();
 }
 
-// bare call -> list
+// LIST bare call -> list
 if (!argv._[0] && !process.argv[2]) {
   command = 'list';
 }
 
-// List all installed buids
+// LIST all installed buids
 if (command == 'list' || command == 'ls') {
 
   nodist.determineVersion(n.target, function (err, current) {
@@ -106,7 +112,7 @@ if (command == 'list' || command == 'ls') {
   });
 }else
 
-// List all available buids
+// DIST list all available buids
 if (command == 'dist' || command == 'ds') {
   
   n.listAvailable(function(err, ls) {
@@ -122,7 +128,7 @@ if (command == 'dist' || command == 'ds') {
   
 }else
 
-// Fetch a specific build
+// ADD fetch a specific build
 if ((command == 'add' || command == '+') && argv._[1]) {
   var version = argv._[1];
   
@@ -143,7 +149,7 @@ if ((command == 'add' || command == '+') && argv._[1]) {
   }
 }else
 
-// Remove an installed build
+// REMOVE an installed build
 if ((command == 'remove' || command == 'rm' || command == '-') && argv._[1]) {
   var version = argv._[1];
   version = sanitizeVersion(version);
@@ -153,7 +159,7 @@ if ((command == 'remove' || command == 'rm' || command == '-') && argv._[1]) {
   });
 }else
 
-// Run a specific build
+// RUN a specific build
 if ((command == 'run' || command == 'r') && argv._[1]) {
   var version = argv._[1];
   version = sanitizeVersion(version);
@@ -164,7 +170,7 @@ if ((command == 'run' || command == 'r') && argv._[1]) {
   });
 }else
 
-// Get the path to a specific version
+// BIN get the path to a specific version
 if ((command == 'bin') && argv._[1]) {
   var version = argv._[1];
   version = sanitizeVersion(version);
@@ -178,7 +184,7 @@ if ((command == 'bin') && argv._[1]) {
   
 }else
 
-// Globally use the specified node version
+// DEPLOY globally use the specified node version
 if (argv._[0]) {
   var version = argv._[0];
   version = sanitizeVersion(version);
@@ -190,7 +196,7 @@ if (argv._[0]) {
   });
 }else
 
-// unknown parameters -> display help
+// HELP display help for unknown cli parameters
 {
   help();
 }

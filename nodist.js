@@ -30,6 +30,12 @@ var child_process = require('child_process')
   , path       = require('path')
 ;
 
+/**
+Nodist instance
+@param target is the path to the globally node.exe to modify
+@param sourceUrl is the url to fetch node versions from
+@param sourceDir is the path to the directory in which to store installed node versions
+*/
 module.exports = nodist = function nodist(target, sourceUrl, sourceDir) {
   this.target    = target;
   this.sourceUrl = sourceUrl;
@@ -39,28 +45,50 @@ module.exports = nodist = function nodist(target, sourceUrl, sourceDir) {
   mkdirp.sync(sourceDir);
 }
 
+/**
+This is the regex against which version numbers are tested
+*/
 nodist.semver = /^v?(\d+\.\d+\.\d+|latest|stable)$/ //| @TODO: Allow `0.6` -> node-v0.6.15
 
+/**
+Validate a version number
+*/
 nodist.validateVersion = function validateVersion(ver) {
   if(!ver.match(nodist.semver)) return false;
   return true;
 }
 
+/**
+Returns a number representation of the version number that can be compared with other such representations
+e.g. compareable('0.6.12') > compareable('0.6.10')
+*/
 nodist.compareable = function compareable(ver) {
   var parts = ver.split('.');
   return parseInt(parts.map(function(d){ while(d.length < 3) d = '0'+d; return d; }).join(''), 10);
 }
 
+/**
+Returns the latest version number in a list of sorted version numbers
+*/
 nodist.latest = function latest(list) {
   return list[list.length-1];
 };
 
+/**
+Returns the latest stable version number in a list of sorted version numbers
+Even versions are stable uneven ones are unstable.
+*/
 nodist.latestStable = function latestStable(list) {
   var v, i = list.length-1;
-  if(i >= 0) do { v = list[i--] }while(v && parseInt(v.split('.')[1]) % 2 != 0 && i >= 0);// search for an even number: 0.2.0
+  if(i >= 0) do { v = list[i--] }while(v && parseInt(v.split('.')[1]) % 2 != 0 && i >= 0);// search for an even number: e.g. 0.2.0
   return v;
 };
 
+/**
+Determine the version of the passed node exe
+@param file the path to the node.exe to test
+@param cb A callback with (error, node_version)
+*/
 nodist.determineVersion = function determineVersion(file, cb) {
   var returned = false;
   
@@ -80,10 +108,18 @@ nodist.determineVersion = function determineVersion(file, cb) {
   });
 }
 
+/**
+Returns the path to the executable of the passed node version
+(Relies on n.sourceDir)
+*/
 nodist.prototype.resolveToExe = function resolveToExe(version) {
   return this.sourceDir+'\\'+version+'\\node.exe';
 }
 
+/**
+List all available node versions distributed by n.sourceUrl
+@param cb A callback with (error, array_of_versions)
+*/
 nodist.prototype.listAvailable = function listAvailable(cb) {
   var n = this;
   request(n.sourceUrl, function(err, resp, body) {
@@ -106,6 +142,10 @@ nodist.prototype.listAvailable = function listAvailable(cb) {
   });
 };
 
+/**
+List all node versions installed in n.sourceDir
+@param cb A callback with (error, array_of_versions)
+*/
 nodist.prototype.listInstalled = function listInstalled(cb) {
   var n = this;
   fs.readdir(this.sourceDir, function(err, ls){
@@ -118,6 +158,13 @@ nodist.prototype.listInstalled = function listInstalled(cb) {
   })
 };
 
+/**
+Install the passed version
+This will first check, if the version is already installed.
+
+@param version The version to install (this can also be 'all', 'latest' or 'stable')
+@param cb A callback with (error, installed_version_number)
+*/
 nodist.prototype.install = function install(version, cb) {
   var n = this;
   this.listInstalled(function(err, installed){
@@ -179,6 +226,11 @@ nodist.prototype.install = function install(version, cb) {
   });
 };
 
+/**
+Remove an installed version
+@param version the version to remove
+@param cb A callback with (error)
+*/
 nodist.prototype.remove = function remove(version, cb) {
   var n = this;
   var exe = this.resolveToExe(version);
@@ -193,6 +245,11 @@ nodist.prototype.remove = function remove(version, cb) {
   });
 };
 
+/**
+Downloads the passed version from n.sourceUrl
+@param version The version to download
+@param cb A callback with (error, array_of_versions)
+*/
 nodist.prototype.fetch = function fetch(version, _cb) {
   var n = this;
   var url = this.sourceUrl+'/v'+version+'/node.exe';
@@ -232,6 +289,9 @@ nodist.prototype.fetch = function fetch(version, _cb) {
   });
 };
 
+/**
+Deploys a node version. This will implicitly install the version, if it isn't already
+*/
 nodist.prototype.deploy = function deploy(version, cb) {
   var n = this;
   var source = this.resolveToExe(version);
@@ -246,6 +306,9 @@ nodist.prototype.deploy = function deploy(version, cb) {
   });
 };
 
+/**
+Use this node version globally.
+*/
 nodist.prototype.checkout = function checkout(version, cb) {
   var n = this;
   var source = this.resolveToExe(version);
@@ -265,6 +328,10 @@ nodist.prototype.checkout = function checkout(version, cb) {
   source.on('error', onerror);
 };
 
+/**
+Emulates the passed node version with args
+@param cb A callback with (error) Will be called on error or exit.
+*/
 nodist.prototype.emulate = function emulate(version, args, cb) {
   var n = this;
 
