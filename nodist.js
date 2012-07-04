@@ -24,7 +24,7 @@
  */
 
 var child_process = require('child_process')
-  , mkdirp     = require('mkdirp').sync
+  , mkdirp     = require('mkdirp')
   , request    = require('request')
   , fs         = require('fs')
   , path       = require('path')
@@ -36,7 +36,7 @@ module.exports = nodist = function nodist(target, sourceUrl, sourceDir) {
   this.sourceDir = sourceDir;
   
   // Create source dir if unexistant
-  mkdirp(sourceDir);
+  mkdirp.sync(sourceDir);
 }
 
 nodist.semver = /^v?(\d+\.\d+\.\d+|latest|stable)$/ //| @TODO: Allow `0.6` -> node-v0.6.15
@@ -81,7 +81,7 @@ nodist.determineVersion = function determineVersion(file, cb) {
 }
 
 nodist.prototype.resolveToExe = function resolveToExe(version) {
-  return this.sourceDir+'\\'+version+'.exe';
+  return this.sourceDir+'\\'+version+'\\node.exe';
 }
 
 nodist.prototype.listAvailable = function listAvailable(cb) {
@@ -111,9 +111,6 @@ nodist.prototype.listInstalled = function listInstalled(cb) {
   fs.readdir(this.sourceDir, function(err, ls){
     if(err) return cb('Reading the version directory '+n.sourceDir+' failed: '+err.message);
     
-    ls = ls.map(function(v) {
-      return v.replace(/^(.+)\.exe$/, '$1');
-    });
     ls.sort(function(val1, val2){
       return nodist.compareable(val1) > nodist.compareable(val2) ? 1 : -1;
     });
@@ -180,10 +177,14 @@ nodist.prototype.install = function install(version, cb) {
 
 nodist.prototype.remove = function remove(version, cb) {
   var n = this;
-  var source = this.resolveToExe(version);
+  var exe = this.resolveToExe(version);
+  var versionDir = path.dirname(exe);
   
-  fs.exists(source, function(exists) {
-    if(exists) return fs.unlink(source, cb);
+  fs.exists(versionDir, function(exists) {
+    if(exists) return fs.unlink(exe, function(err) {
+      if(err) return cb(err);
+      fs.rmdir(versionDir);
+    });
     cb();// don't cry if it doesn't exist
   });
 };
@@ -198,10 +199,10 @@ nodist.prototype.fetch = function fetch(version, _cb) {
     return _cb(new Error('There are no builds available for versions older than 0.5.1'));
   }
   
-  // Proxy callback (clean up things on error)
+  // callback proxy (clean up things on error)
   var cb = function(err) {
     if(err) {
-      fs.unlink(fetch_target, function(e) {// clean up
+      n.remove(version, function(e) {// clean up
         if(e) return _cb(new Error(err.message+'. Couldn\'t clean after error: '+e.message));
         _cb(err);// pass on the error
       });
@@ -210,6 +211,9 @@ nodist.prototype.fetch = function fetch(version, _cb) {
 
     return _cb(null, version);
   };
+  
+  // create path if necessary
+  mkdirp.sync(path.dirname(fetch_target));
   
   // fetch from url
   var stream = request({ url: url, pool: false/*{maxSockets: 40}*/}, function(err, resp){
@@ -235,8 +239,6 @@ nodist.prototype.deploy = function deploy(version, cb) {
       if(err) return cb(err);
       cb(null, real_version);
     });
-    
-    return;
   });
 };
 
