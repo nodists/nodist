@@ -46,7 +46,7 @@ Examples:
     nodist r v0.8.1 -- foo.js -s   Run `foo.js -s` with node v0.8.1, regardless of the global version
     nodist - 0.5.10                Uninstall node v0.5.10
     nodist latest                  Use the latest available node version globally (downloads the executable).
-    nodist + all                   Installs all available node versions.
+    nodist + all                   Installs *all* available node versions. // Get yourself a cuppa in the meantime...
 ```
 
 ## Details

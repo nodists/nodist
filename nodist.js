@@ -212,7 +212,7 @@ nodist.prototype.fetch = function fetch(version, _cb) {
   };
   
   // fetch from url
-  var stream = request(url, function(err, resp){
+  var stream = request({ url: url, pool: false/*{maxSockets: 40}*/}, function(err, resp){
     if(err || resp.statusCode != 200) {
       return cb(new Error('Couldn\'t fetch '+version+': '+(err? err.message : 'HTTP '+resp.statusCode)));
     }

@@ -81,7 +81,7 @@ console.log('A node version manager for windows');
   console.log('    nodist r v0.8.1 -- foo.js -s   Run `foo.js -s` with node v0.8.1, regardless of the global version');
   console.log('    nodist - 0.5.10                Uninstall node v0.5.10');
   console.log('    nodist latest                  Use the latest available node version globally (downloads the executable).');
-  console.log('    nodist + all                   Installs all available node versions.');
+  console.log('    nodist + all                   Installs *all* available node versions. // Get yourself a cuppa in the meantime...');
 }
 
 // build paths
@@ -158,7 +158,8 @@ if ((command == 'add' || command == '+') && argv._[1]) {
   
   if(version == 'all') {
     n.install('all', function(err, real_version) {
-      if(err) console.log(err.message+'.');
+      if(err) return console.log(err.message+'.');
+      console.log('Installed '+real_version);
     });
   }else
   {
