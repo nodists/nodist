@@ -39,7 +39,7 @@ module.exports = nodist = function nodist(target, sourceUrl, sourceDir) {
   mkdirp(sourceDir);
 }
 
-nodist.semver = /^v?(\d+\.\d+\.\d+|latest)$/ //| @TODO: Allow `0.6` -> node-v0.6.15
+nodist.semver = /^v?(\d+\.\d+\.\d+|latest|stable)$/ //| @TODO: Allow `0.6` -> node-v0.6.15
 
 nodist.validateVersion = function validateVersion(ver) {
   if(!ver.match(nodist.semver)) return false;
@@ -56,7 +56,8 @@ nodist.latest = function latest(list) {
 };
 
 nodist.latestStable = function latestStable(list) {
-  do { var v = av.pop() }while(v && parseInt(v.split('.')[1]) % 2 != 0);// search for an even number: 0.2.0
+  var v, i = list.length-1;
+  if(i >= 0) do { v = list[i--] }while(v && parseInt(v.split('.')[1]) % 2 != 0 && i >= 0);// search for an even number: 0.2.0
   return v;
 };
 
@@ -125,13 +126,15 @@ nodist.prototype.install = function install(version, cb) {
   this.listInstalled(function(err, installed){
     if(err) return cb(err);
     
-    n.listAvailable(function(err, availabe) {
+    n.listAvailable(function(err, available) {
       if(err) return cb(err);
       
       switch(version) {
       
       case 'latest':
-        if(nodist.latest(available) == nodist.latest(installed)) return cb(null);// already installed.
+        if(nodist.latest(available) === nodist.latest(installed))
+          return cb(null, nodist.latest(installed));// already installed.
+        
         n.fetch(nodist.latest(available), function(err) {
           if(err) return cb(err);
           return cb(null, nodist.latest(available));
@@ -139,7 +142,9 @@ nodist.prototype.install = function install(version, cb) {
         return;
         
       case 'stable':
-        if(nodist.latestStable(available) == nodist.latestStable(installed)) return cb(null);// already installed.
+        if(nodist.latestStable(available) === nodist.latestStable(installed))
+          return cb(null, nodist.latestStable(installed));// already installed.
+        
         n.fetch(nodist.latestStable(available), function(err) {
           if(err) return cb(err);
           return cb(null, nodist.latestStable(available));
@@ -147,7 +152,9 @@ nodist.prototype.install = function install(version, cb) {
         return;
         
       default:
-        if(installed.indexOf(version) != -1) return cb(null);// already installed.
+        if(installed.indexOf(version) != -1)
+          return cb(null, version);// already installed.
+        
         n.fetch(version, function(err) {
           if(err) return cb(err);
           return cb(null, version);
@@ -210,8 +217,8 @@ nodist.prototype.deploy = function deploy(version, cb) {
   var source = this.resolveToExe(version);
   
   this.install(version, function(err, real_version){
-    if(err) cb(err);
-  
+    if(err) return cb(err);
+    
     n.checkout(real_version, function(err) {
       if(err) return cb(err);
       cb(null, real_version);

@@ -187,7 +187,7 @@ if (argv._[0]) {
   
   n.deploy(version, function(err, real_version) {
     if(err) abort(err.message+'. Sorry.');
-    if(version == 'latest') console.log(real_version);
+    if(version == 'latest' || version == 'stable') console.log(real_version);
     exit();
   });
 }else
