@@ -105,7 +105,7 @@ Usage:
 ```
 
 
-## Got ideas?  Doesn't work for you? Wnat to give feedback?
+## Got ideas?  Doesn't work for you? Want to give feedback?
 [File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
 
 ## Details
