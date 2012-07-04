@@ -58,6 +58,9 @@ console.log('A node version manager for windows');
   console.log('    nodist list                    ');
   console.log('    nodist ls                      ');
   console.log('');
+  console.log('    nodist dist                    List all available node versions.');
+  console.log('    nodist ds                      ');
+  console.log('');
   console.log('    nodist <version>               Use the specified node version globally (downloads the executable, if necessary).');
   console.log('');
   console.log('    nodist add <version>           Download the specified node version.');
@@ -131,6 +134,22 @@ if (command == 'list' || command == 'ls') {
       exit();
     });
   });
+}else
+
+// List all available buids
+if (command == 'dist' || command == 'ds') {
+  
+  n.listAvailable(function(err, ls) {
+    if(err) abort(err.message+'. Sorry.');
+    if(ls.length == 0) abort('No builds available. Strange...');
+    
+    // display all versions
+    ls.forEach(function(version) {
+      console.log('  '+version);
+    });
+    exit();
+  });
+  
 }else
 
 // Remove an installed build

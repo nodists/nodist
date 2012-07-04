@@ -10,14 +10,17 @@ npm install -g nodist
 ```
 
 ## Usage
+Output of `nodist --help`:
 ```
 A node version manager for windows
-
 Usage:
 
     nodist                         List all installed node versions.
     nodist list
     nodist ls
+
+    nodist dist                    List all available node versions.
+    nodist ds
 
     nodist <version>               Use the specified node version globally (downloads the executable, if necessary).
 
@@ -42,7 +45,7 @@ Examples:
     nodist v0.5.10                 Use node v0.5.10 globally
     nodist r v0.8.1 -- foo.js -s   Run `foo.js -s` with node v0.8.1, regardless of the global version
     nodist - 0.5.10                Uninstall node v0.5.10
-    nodist latest                  Use the latest available node version globally
+    nodist latest                  Use the latest available node version globally (downloads the executable).
 ```
 
 ## Details
