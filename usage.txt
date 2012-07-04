@@ -1,4 +1,5 @@
 A node version manager for windows
+
 Usage:
 
     nodist                          List all installed node versions.
