@@ -12,6 +12,8 @@ npm install -g nodist
 ## Usage
 The `v` in front of a version number is optional.
 
+All commands implicitly install the specified version before using it, if it isn't already installed.
+
 ### Install a version
 Checks, if the version is installed and downloads it if not.
 ```
@@ -52,7 +54,7 @@ All subsequent calls of `node` in any environment will use this version.
 nodist 0.8.1
 ```
 
-You can also use `latest` and `stable` here. This will implicitly install the latest version, before activating it.
+You can also use `latest` and `stable` here.
 ```
 nodist latest
 ```
