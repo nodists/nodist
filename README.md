@@ -60,7 +60,7 @@ nodist latest
 ```
 
 ### Activate version in current env
-Temporyrily adds the specified version to the current *Path*, so all subsequent calls to `node` in the current terminal environment use that version.  
+Temporarily adds the specified version to the current *Path*, so all subsequent calls to `node` in the current terminal environment use that version.  
 This doesn't have any effects on the globally activated version -- closing the current terminal window will cause nodist to forget the set version.
 ```
 nodist use v0.7.12
