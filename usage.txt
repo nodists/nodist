@@ -9,19 +9,25 @@ Usage:
     nodist dist                     List all available node versions.
     nodist ds
 
-    nodist <version>                Use the specified node version globally
-                                    (downloads the executable, if necessary).
-
     nodist add <version>            Download the specified node version.
     nodist + <version>
 
     nodist rm <version>             Uninstall the specified node version.
     nodist - <version>
+    
+    nodist <version>                Use the specified node version globally
+                                    (downloads the executable, if necessary).
+    
+    nodist use <version>            Use <version> in the current environment only
+                                    (usually the current terminal window).
 
     nodist run <version> -- <file>  Run <file> with the specified node version
     nodist r <version> -- <file>    (downloads the executable, if necessary).
 
-    nodist bin <version>            Get the path to the specified node version
+    nodist bin <version>            Get the path to the specified node executable
+                                    (downloads the executable, if necessary).
+    
+    nodist path <version>           Get the path to the specified node version directory
                                     (downloads the executable, if necessary).
 
     nodist --help                   Display this help

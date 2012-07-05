@@ -184,6 +184,19 @@ if ((command == 'bin') && argv._[1]) {
   
 }else
 
+// PATH get the directory of a specific version to be added to the path
+if ((command == 'path') && argv._[1]) {
+  var version = argv._[1];
+  version = sanitizeVersion(version);
+  
+  n.install(version, function(err, version) {
+    if(err) abort(err.message+'. Sorry.');
+    console.log(path.dirname(n.resolveToExe(version)));
+  });
+  
+  
+}else
+
 // DEPLOY globally use the specified node version
 if (argv._[0]) {
   var version = argv._[0];

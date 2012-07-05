@@ -39,9 +39,15 @@ This lists all available node versions.
 nodist dist
 ```
 
+### Remove a version
+If you want to remove a version for some reason, use this:
+```
+nodist - 0.5.10
+```
+
 ### Activate a version
 Activate the specified version globally.  
-All subsequent calls of `node` will use this version.
+All subsequent calls of `node` in any environment will use this version.
 ```
 nodist 0.8.1
 ```
@@ -51,13 +57,14 @@ You can also use `latest` and `stable` here. This will implicitly install the la
 nodist latest
 ```
 
-### Removing a version
-If you want to remove a version for some reason, use this:
+### Activate version in current env
+Adds the specified version to the *PATH*, so all subsequent calls to `node` in the current terminal environment use that version.  
+This doesn't modify the globally activated version.
 ```
-nodist - 0.5.10
+nodist use v0.7.12
 ```
 
-### Running a specific version
+### Run a specific version
 Use this to run a specific node version, regardless of the globally activated one.
 Everything after `--` will be passed to node.
 ```
@@ -92,16 +99,42 @@ Usage:
 
     nodist rm <version>             Uninstall the specified node version.
     nodist - <version>
+    
+    nodist use <version>            Use <version> in the current environment only
+                                    (usually the current terminal window).
 
     nodist run <version> -- <file>  Run <file> with the specified node version
     nodist r <version> -- <file>    (downloads the executable, if necessary).
 
-    nodist bin <version>            Get the path to the specified node version
+    nodist bin <version>            Get the path to the specified node executable
+                                    (downloads the executable, if necessary).
+    
+    nodist path <version>           Get the path to the specified node version directory
                                     (downloads the executable, if necessary).
 
     nodist --help                   Display this help
 
     nodist -v                       Display nodist version
+
+Examples:
+
+    nodist 0.8.1                    Use node v0.8.1 globally
+    
+    nodist v0.5.10                  Use node v0.5.10 globally
+    
+    nodist - 0.5.10                 Uninstall node v0.5.10
+    
+    nodist r v0.8.1 -- foo.js -s    Run `foo.js -s` with node v0.8.1, regardless
+                                    of the global version
+                                    
+    nodist latest                   Use the latest available node version globally
+                                    (downloads the executable, if necessary).
+                                   
+    nodist stable                   Use the latest stable available node version
+                                    globally (downloads the executable, if necessary).
+                                   
+    nodist + all                    Installs *all* available node versions.
+                                    (Get yourself a cuppa in the meantime...)
 ```
 
 
