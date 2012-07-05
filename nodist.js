@@ -240,6 +240,7 @@ nodist.prototype.remove = function remove(version, cb) {
     if(exists) return fs.unlink(exe, function(err) {
       if(err) return cb(err);
       fs.rmdir(versionDir);
+      cb();
     });
     cb();// don't cry if it doesn't exist
   });
