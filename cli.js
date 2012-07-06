@@ -24,7 +24,7 @@
  */
 
 var version = process.argv[2]
-  , nodist   = require('./nodist')
+  , nodist   = require('./lib/nodist')
   , program  = require('optimist')
   , path     = require('path')
   , fs       = require('fs')
