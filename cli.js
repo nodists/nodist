@@ -58,13 +58,11 @@ function help() {
 process.title = 'nodist';
 
 // set up the necessary paths
-//if(!process.env['NODIST_PREFIX']) abort('NODIST_PREFIX env variable is not set!')
-//var nodePath = process.env['NODIST_PREFIX'];
+var nodePath = process.env['NODIST_PREFIX'];
 var nodistPath = __dirname;
 
 // Create a nodist instance
 var n = new nodist(
-  nodistPath+'\\bin\\node.cmd',
   'http://nodejs.org/dist',
   nodistPath+'\\v'
 );
@@ -94,7 +92,7 @@ if (!argv._[0] && !process.argv[2]) {
 // LIST all installed buids
 if (command == 'list' || command == 'ls') {
 
-  nodist.determineVersion(n.target, function (err, current) {
+  nodist.determineVersion(__dirname+'\\bin\\node.cmd', function (err, current) {
     if(err) void(0); //don't bother, if we don't know current version
     
     n.listInstalled(function(err, ls) {
