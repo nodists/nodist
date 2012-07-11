@@ -58,14 +58,13 @@ function help() {
 process.title = 'nodist';
 
 // set up the necessary paths
-var nodePath = process.env['NODIST_PREFIX']
-    ? process.env['NODIST_PREFIX']
-    : path.resolve(__dirname+'\\..\\..\\');
-var nodistPath = nodePath+'\\.nodist\\';
+//if(!process.env['NODIST_PREFIX']) abort('NODIST_PREFIX env variable is not set!')
+//var nodePath = process.env['NODIST_PREFIX'];
+var nodistPath = __dirname;
 
 // Create a nodist instance
 var n = new nodist(
-  nodePath+'\\node.exe',
+  nodistPath+'\\bin\\node.cmd',
   'http://nodejs.org/dist',
   nodistPath+'\\v'
 );
@@ -76,13 +75,13 @@ command = argv._[0];
 
 
 
-// V Display nodist version
+// -V Display nodist version
 if(argv.v) {
   console.log(require('./package.json').version);
   exit();
 }
 
-// HELP Display help
+// --HELP Display help
 if(argv.help) {
   help();
 }
