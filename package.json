@@ -13,18 +13,8 @@
     "request": "~2.9",
     "mkdirp": "~0.3",
     "optimist": "~0.3",
-    "rimraf": "~2.0"
+    "rimraf": "~2",
+    "npm": "~1"
   },
-  "devDependencies": {
-    "vows": "latest"
-  },
-  "os" : [ "win32" ],
-  "engines": { "node": "0.8.x" },
-  "preferGlobal": true,
-  "main" : "./lib/nodist.js",
-  "scripts": {
-    "install": "bin\\install.cmd",
-    "preuninstall": "bin\\uninstall.cmd",
-    "test": "vows"
-  }
+  "os" : [ "win32" ]
 }
