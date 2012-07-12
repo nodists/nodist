@@ -2,12 +2,8 @@
 A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n).
 
 ## Install
-Install node and npm at once, using the [msi installer](http://nodejs.org/#download).
-
-Install nodist globally. That's all!
-```sh
-npm install -g nodist
-```
+You no longer need to install node beforehand. Just grab the [zip](https://github.com/marcelklehr/nodist/zipball/master), unpack it, and add `path\to\nodist\bin` to your path ([how?](http://www.computerhope.com/issues/ch000549.htm)).
+That's all!
 
 ## Usage
 The `v` in front of a version number is optional.
