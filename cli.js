@@ -64,7 +64,7 @@ var nodistPath = __dirname;
 // Create a nodist instance
 var n = new nodist(
   'http://nodejs.org/dist',
-  nodistPath+'\\v'
+  (nodePath? nodePath : nodistPath)+'\\v'
 );
 
 // get cli args
