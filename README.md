@@ -140,8 +140,10 @@ Examples:
 [File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
 
 ## Details
-`nodist` stores your node executables in `<global_npm>\.nodist\v\`, so it can see what's installed and activate previously installed versions.  
-When a version is activated, `nodist` copies it to `<global_npm>\node.exe`. You can alter the path where `nodist` operates, using the **NODIST_PREFIX** env variable.
+`nodist` stores your node executables in `path\to\nodist\v\`, so it can see what's installed and activate previously installed versions.  
+When a version is activated, `nodist` links to it from `nodist\bin\node.cmd`. You can alter the path where versions are stored, using the `NODIST_PREFIX` env variable.
+
+`nodist` comes with the latest npm version and will use this all the time.
 
 As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
 
