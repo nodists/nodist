@@ -64,7 +64,6 @@ var npm = require("./npm.js")
   , cache = require("./cache.js")
   , asyncMap = require("slide").asyncMap
   , chain = require("slide").chain
-  , output
   , url = require("url")
   , mkdir = require("mkdirp")
   , lifecycle = require("./utils/lifecycle.js")
@@ -75,18 +74,12 @@ function install (args, cb_) {
   function cb (er, installed) {
     if (er) return cb_(er)
 
-    output = output || require("./utils/output.js")
-
     var tree = treeify(installed)
       , pretty = prettify(tree, installed).trim()
 
-    if (pretty) output.write(pretty, afterWrite)
-    else afterWrite()
-
-    function afterWrite (er) {
-      if (er) return cb_(er)
-      save(where, installed, tree, pretty, cb_)
-    }
+    if (pretty) console.log(pretty)
+    if (er) return cb_(er)
+    save(where, installed, tree, pretty, cb_)
   }
 
   // the /path/to/node_modules/..
@@ -388,7 +381,7 @@ function treeify (installed) {
     return l
   }, {})
 
-  //log.warn("install", whatWhere, "whatWhere")
+  // log.warn("install", whatWhere, "whatWhere")
   return Object.keys(whatWhere).reduce(function (l, r) {
     var ww = whatWhere[r]
     //log.warn("r, ww", [r, ww])
@@ -668,7 +661,11 @@ function localLink (target, where, context, cb) {
 function resultList (target, where, parentId) {
   var nm = path.resolve(where, "node_modules")
     , targetFolder = path.resolve(nm, target.name)
-    , prettyWhere = path.relative(process.cwd(), where)
+    , prettyWhere = where
+
+  if (!npm.config.get("global")) {
+    prettyWhere = path.relative(process.cwd(), where)
+  }
 
   if (prettyWhere === ".") prettyWhere = null
 
