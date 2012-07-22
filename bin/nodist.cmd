@@ -10,6 +10,14 @@ if "%1"=="use" (
   goto end
 )
 
+:: hook `nodist update`
+if "%1"=="update" (
+  pushd .
+  cd "%~dp0\.."
+  npm update
+  popd
+)
+
 :main
 "%~dp0\..\node.exe" "%~dp0\..\cli" %*
 goto end

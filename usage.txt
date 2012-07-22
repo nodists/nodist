@@ -30,6 +30,8 @@ Usage:
     nodist path <version>           Get the path to the specified node version directory
                                     (downloads the executable, if necessary).
 
+    nodist update                   Update nodist's dependencies.
+    
     nodist --help                   Display this help
 
     nodist -v                       Display nodist version

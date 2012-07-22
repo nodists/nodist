@@ -89,14 +89,14 @@ Usage:
     nodist dist                     List all available node versions.
     nodist ds
 
-    nodist <version>                Use the specified node version globally
-                                    (downloads the executable, if necessary).
-
     nodist add <version>            Download the specified node version.
     nodist + <version>
 
     nodist rm <version>             Uninstall the specified node version.
     nodist - <version>
+    
+    nodist <version>                Use the specified node version globally
+                                    (downloads the executable, if necessary).
     
     nodist use <version>            Use <version> in the current environment only
                                     (usually the current terminal window).
@@ -110,6 +110,8 @@ Usage:
     nodist path <version>           Get the path to the specified node version directory
                                     (downloads the executable, if necessary).
 
+    nodist update                   Update nodist's dependencies.
+    
     nodist --help                   Display this help
 
     nodist -v                       Display nodist version
