@@ -1,6 +1,6 @@
 var vows = require('vows')
   , assert = require('assert')
-  , nodist = require('../')
+  , nodist = require('../lib/nodist.js')
   , fs = require('fs')
   , path = require('path')
   , exec = require('child_process').exec
@@ -8,11 +8,10 @@ var vows = require('vows')
 var testPath = 'C:\\tmp\\'
 
 var n = new nodist(
-  testPath+'\\node.exe',
   'http://nodejs.org/dist',
-  testPath+'\\.nodist\\v'
+  testPath+'\\v'
 )
-var nodistCmd = '"'+path.resolve(__dirname+'/../../../')+'\\nodist.cmd"';
+var nodistCmd = '"'+__dirname+'\\..\\bin\\nodist.cmd"';
 
 vows.describe('nodist cli')
 .addBatch({'nodist add': {
