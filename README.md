@@ -2,8 +2,7 @@
 A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n).
 
 ## Install
-You no longer need to install node beforehand. Just grab the [zip](https://github.com/marcelklehr/nodist/zipball/master), unpack it, and add `path\to\nodist\bin` to your path ([how?](http://www.computerhope.com/issues/ch000549.htm)).
-That's all!
+Don't install node beforehand. Just grab the code by unpacking the [zip](https://github.com/marcelklehr/nodist/zipball/master) or using `git clone git://github.com/marcelklehr/nodist.git`. When you've got the code, add `path\to\nodist\bin` to your path ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
 ## Usage
 The `v` in front of a version number is optional.
