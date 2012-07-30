@@ -1,0 +1,3 @@
+#!/bin/sh
+DIR="`dirname \"$0\"`"
+"$DIR/../node.exe" "$DIR/../node_modules/npm/cli.js" $*
