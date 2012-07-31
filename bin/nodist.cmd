@@ -13,7 +13,7 @@ if "%1"=="use" (
 :: hook `nodist update`
 if "%1"=="update" (
   pushd .
-  cd "%~dp0\.."
+  cd /D "%~dp0\.."
   npm update
   popd
 )
