@@ -1,5 +1,5 @@
 { "name" : "nodist",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Natural node version manager for windows",
   "keywords": ["node", "version", "manager", "build", "windows"],
   "author": "Marcel Klehr <mklehr@gmx.net>",
@@ -14,7 +14,6 @@
     "mkdirp": "~0.3",
     "optimist": "~0.3",
     "rimraf": "~2",
-    "npm": "~1"
   },
   "os" : [ "win32" ]
 }

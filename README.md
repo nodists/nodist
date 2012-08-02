@@ -29,6 +29,13 @@ And this installs the latest available stable version:
 nodist + stable
 ```
 
+### Install everything
+If you want to install all available versions at once, use this.
+But be warned, as this may take a while.
+```
+nodist + all
+```
+
 ### List versions
 This lists all installed versions and highlights the current active one.
 ```
@@ -71,14 +78,6 @@ Everything after `--` will be passed to node.
 ```
 nodist r v0.8.1 -- foo.js -s
 ```
-
-### Install everything
-If you want to install all available versions at once, use this.
-But be warned, as this may take a while.
-```
-nodist + all
-```
-
 
 ### All comands
 Output of `nodist --help`:
@@ -158,3 +157,19 @@ The name nodist was chosen to emphasise the puristic approach of implementing a 
 ## Legal
 Copyright (c) 2012 by Marcel Klehr  
 MIT License
+
+## Changelog
+
+v0.2.4
+
+* Fix `nodist update` command to work from all drives
+* Add basic support for MinGW shell (thanks to jdiamond) (update and use commands are still missing)
+* Fix tests
+* Allow npm updates with `npm u npm -g`
+* updated npm
+
+v0.2.3
+
+* Install latest stable as default version
+* Add update command
+* Updated npm
