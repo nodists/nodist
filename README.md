@@ -160,6 +160,10 @@ MIT License
 
 ## Changelog
 
+v0.2.5
+
+* Updated npm to v1.1.48
+
 v0.2.4
 
 * Fix `nodist update` command to work from all drives
