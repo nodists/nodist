@@ -5,7 +5,7 @@ if "%1"=="use" (
   %0 + %2
   if ERRORLEVEL 0 (
     :: get path to version and add it to PATH
-    FOR /F "tokens=1 delims=" %%A in ('"%0" path %2') do @set Path=%%A;%Path%
+    FOR /F "tokens=1 delims=" %%A in ('"%0" path %2') do @set "Path=%%A;%Path%"
   )
   goto end
 )
