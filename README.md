@@ -160,6 +160,10 @@ MIT License
 
 ## Changelog
 
+v0.2.6
+
+* Fix a bug, that used to break everything on Win7 x64
+
 v0.2.5
 
 * Updated npm to v1.1.48
