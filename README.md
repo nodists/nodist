@@ -145,7 +145,7 @@ Examples:
 
 ## Details
 `nodist` stores your node executables in `path\to\nodist\v\`, so it can see what's installed and activate previously installed versions.  
-When a version is activated, `nodist` links to it from `nodist\bin\node.cmd`. You can alter the path where versions are stored, using the `NODIST_PREFIX` env variable.
+When a version is activated, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. You can alter the path where versions are stored, using the `NODIST_PREFIX` env variable.
 
 `nodist` comes with the latest npm version and will use this all the time.
 
@@ -159,6 +159,10 @@ Copyright (c) 2012 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.2.7
+
+* Deploy by copying node.exe, again, this should allow people to use nodist together with nodemon
 
 v0.2.6
 
