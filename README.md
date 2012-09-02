@@ -72,6 +72,11 @@ This doesn't have any effects on the globally activated version -- closing the c
 nodist use v0.7.12
 ```
 
+In a batch script, use
+```
+call nodist use 0.7.12
+```
+
 ### Run a specific version
 Use this to run a specific node version, regardless of the globally activated one.
 Everything after `--` will be passed to node.
@@ -159,6 +164,10 @@ Copyright (c) 2012 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.2.8
+
+* Fix use command
 
 v0.2.7
 
