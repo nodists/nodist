@@ -163,6 +163,13 @@ MIT License
 
 ## Changelog
 
+v0.3.0
+
+* Dropped `optimist` (caused more problems than it solved)
+* Using `node-semver`, now, for better usability... (fixes #10)
+* Allow use of version patterns for every command (fixes #9)
+* Fix issue #8: Version patterns should *require* internet access
+
 v0.2.8
 
 * Fix use command
