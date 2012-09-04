@@ -9,9 +9,15 @@ Just grab the code by unpacking the [zip](https://github.com/marcelklehr/nodist/
 When you've got the code, add `path\to\nodist\bin` to your path ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
 ## Usage
-The `v` in front of a version number is optional.
+Nodist understands basic version patterns. You can use all ofthe following:
 
-All commands implicitly install the specified version before using it, if it isn't already installed.
+* `stable`
+* `latest`
+* `0.8` or `0.8.x` or `~0.8`
+* `1` or `~1` (this isn't out, though...)
+* `0.6.12`
+
+The `v` in front of a version number is optional.
 
 ### Install a version
 Checks, if the version is installed and downloads it if not.
@@ -19,15 +25,7 @@ Checks, if the version is installed and downloads it if not.
 nodist + v0.8.1
 ```
 
-This installs the latest available version:
-```
-nodist + latest
-```
-
-And this installs the latest available stable version:
-```
-nodist + stable
-```
+All commands implicitly install the specified version before using it, if it isn't already installed.
 
 ### Install everything
 If you want to install all available versions at once, use this.

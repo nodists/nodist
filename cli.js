@@ -25,7 +25,6 @@
 
 var version = process.argv[2]
   , nodist   = require('./lib/nodist')
-  , program  = require('optimist')
   , path     = require('path')
   , fs       = require('fs')
 ;
@@ -37,13 +36,6 @@ var exit = function abort(code, msg) {
 
 var abort = function abort(msg) {
   exit(1, !msg? null : msg.split('. ').join('.\r\n'));
-};
-
-var sanitizeVersion = function sanitizeVersion(v) {
-  if (!nodist.validateVersion(v)) {
-    abort('Please provide a valid version number.');
-  }
-  return v.replace(nodist.semver,'$1');
 };
 
 function help() {
@@ -67,32 +59,37 @@ var n = new nodist(
   (nodePath? nodePath : nodistPath)+'\\v'
 );
 
-// get cli args
-argv = program.argv;
-command = argv._[0];
+// Parse args
+argv = process.argv.splice(2);
+argv.remainder = [];
+if(argv.indexOf('--') !== -1) {
+  argv.remainder = argv.splice(argv.indexOf('--')).slice(1);
+}
+args = argv.join(' ');
+command = argv[0];
 
 
 
 // -V Display nodist version
-if(argv.v) {
+if (args.match(/-v/i) !== null) {
   console.log(require('./package.json').version);
   exit();
 }
 
 // --HELP Display help
-if(argv.help) {
+if (args.match(/--help/i)) {
   help();
 }
 
 // LIST bare call -> list
-if (!argv._[0] && !process.argv[2]) {
+if (!argv[0]) {
   command = 'list';
 }
 
 // LIST all installed buids
-if (command == 'list' || command == 'ls') {
+if (command.match(/^list|ls$/i)) {
 
-  nodist.determineVersion(__dirname+'\\bin\\node.cmd', function (err, current) {
+  nodist.determineVersion(__dirname+'\\bin\\node.exe', function (err, current) {
     if(err) void(0); //don't bother, if we don't know current version
     
     n.listInstalled(function(err, ls) {
@@ -110,7 +107,7 @@ if (command == 'list' || command == 'ls') {
 }else
 
 // DIST list all available buids
-if (command == 'dist' || command == 'ds') {
+if (command.match(/^dist|ds$/i)) {
   
   n.listAvailable(function(err, ls) {
     if(err) abort(err.message+'. Sorry.');
@@ -126,83 +123,90 @@ if (command == 'dist' || command == 'ds') {
 }else
 
 // ADD fetch a specific build
-if ((command == 'add' || command == '+') && argv._[1]) {
-  var version = argv._[1];
+if ((command.match(/^add|\+$/i)) && argv[1]) {
+  var version = argv[1];
   
-  if(version == 'all') {
+  if(version.match(/^all$/i)) {
     n.install('all', function(err, real_version) {
       if(err) return console.log(err.message+'.');
       console.log('Installed '+real_version);
     });
   }else
   {
-    version = sanitizeVersion(version);
-    
-    n.install(version, function(err, real_version) {
-      if(err) abort(err.message+'. Sorry.');
-      if(version == 'latest' || version == 'stable') console.log(real_version);
-      exit();
-    });
+    n.resolveVersion(version, function(er, v) {
+      if(er) abort(er.message+'. Sorry.');
+      n.install(v, function(err) {
+        if(err) abort(err.message+'. Sorry.');
+        console.log(v);
+        exit();
+      });
+    })
   }
 }else
 
 // REMOVE an installed build
-if ((command == 'remove' || command == 'rm' || command == '-') && argv._[1]) {
-  var version = argv._[1];
-  version = sanitizeVersion(version);
-  
-  n.remove(version, function() {
-    exit();
+if (command.match(/^remove|rm|-$/i) && argv[1]) {
+  var version = argv[1];
+
+  n.resolveVersion(version, function(er, v) {
+    if(er) abort(er.message+'. Sorry.');
+    n.remove(v, function() {
+      exit();
+    });
   });
 }else
 
 // RUN a specific build
-if ((command == 'run' || command == 'r') && argv._[1]) {
-  var version = argv._[1];
-  version = sanitizeVersion(version);
+if (command.match(/^run|r$/i) && argv[1]) {
+  var version = argv[1];
   
-  n.emulate(version, argv._.splice(2), function(err, code) {
-    if(err) abort(err.message+'. Sorry.');
-    exit(code);
+  n.resolveVersion(version, function(er, v) {
+    if(er) abort(er.message+'. Sorry.');
+    n.emulate(version, argv.remainder, function(err, code) {
+      if(err) abort(err.message+'. Sorry.');
+      exit(code);
+    });
   });
 }else
 
 // BIN get the path to a specific version
-if ((command == 'bin') && argv._[1]) {
-  var version = argv._[1];
-  version = sanitizeVersion(version);
+if (command.match(/^bin$/i) && argv[1]) {
+  var version = argv[1];
   
-  n.install(version, function(err) {
-    if(err) abort(err.message+'. Sorry.');
-    console.log(n.resolveToExe(version));
-    exit();
+  n.resolveVersion(version, function(er, v) {
+    if(er) abort(er.message+'. Sorry.');
+    n.install(version, function(err) {
+      if(err) abort(err.message+'. Sorry.');
+      console.log(n.resolveToExe(v));
+      exit();
+    });
   });
-  
-  
 }else
 
 // PATH get the directory of a specific version to be added to the path
-if ((command == 'path') && argv._[1]) {
-  var version = argv._[1];
-  version = sanitizeVersion(version);
+if (command.match(/^path$/i) && argv[1]) {
+  var version = argv[1];
   
-  n.install(version, function(err, version) {
-    if(err) abort(err.message+'. Sorry.');
-    console.log(path.dirname(n.resolveToExe(version)));
+  n.resolveVersion(version, function(er, v) {
+    if(er) abort(er.message+'. Sorry.');
+    n.install(version, function(err, v) {
+      if(err) abort(err.message+'. Sorry.');
+      console.log(path.dirname(n.resolveToExe(v)));
+    });
   });
-  
-  
 }else
 
 // DEPLOY globally use the specified node version
-if (argv._[0]) {
-  var version = argv._[0];
-  version = sanitizeVersion(version);
+if (argv[0]) {
+  var version = argv[0];
   
-  n.deploy(version, function(err, real_version) {
-    if(err) abort(err.message+'. Sorry.');
-    if(version == 'latest' || version == 'stable') console.log(real_version);
-    exit();
+  n.resolveVersion(version, function(er, v) {
+    if(er) abort(er.message+'. Sorry.');
+    n.deploy(v, function(err) {
+      if(err) abort(err.message+'. Sorry.');
+      console.log(v);
+      exit();
+    });
   });
 }else
 

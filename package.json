@@ -12,11 +12,11 @@
   "dependencies": {
     "request": "~2.9",
     "mkdirp": "~0.3",
-    "optimist": "~0.3",
-    "rimraf": "~2",
+    "semver": "*",
+    "rimraf": "~2"
   },
   "devDependencies": {
     "vows": "*"
-  }
+  },
   "os" : [ "win32" ]
 }
