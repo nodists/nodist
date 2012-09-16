@@ -127,7 +127,7 @@ if ((command.match(/^add|\+$/i)) && argv[1]) {
   var version = argv[1];
   
   if(version.match(/^all$/i)) {
-    n.install('all', function(err, real_version) {
+    n.installAll(function(err, real_version) {
       if(err) return console.log(err.message+'.');
       console.log('Installed '+real_version);
     });
