@@ -166,6 +166,12 @@ MIT License
 
 ## Changelog
 
+v0.3.1
+
+* Optimized `nodist + all`
+* Use a clean npm
+* Don't bundle dependencies, anymore -- `nodist update` must be run at install
+
 v0.3.0
 
 * Dropped `optimist` (caused more problems than it solved)
