@@ -166,6 +166,10 @@ MIT License
 
 ## Changelog
 
+v0.3.2
+
+* Update npm on install/update
+
 v0.3.1
 
 * Optimized `nodist + all`
