@@ -92,7 +92,7 @@ doc/cli/index.md: $(markdowns) scripts/index-build.js scripts/doc-build.sh packa
 	node scripts/index-build.js > $@
 
 node_modules/.bin/ronn:
-	node cli.js install
+	node cli.js install ronn
 
 doc: man
 
@@ -120,10 +120,10 @@ doc-publish: doc
 		html/api/ \
 		node@npmjs.org:/home/node/npm-www/api
 	rsync -vazu --stats --no-implied-dirs --delete \
-		html/webfonts/ \
+		html/static/webfonts/ \
 		node@npmjs.org:/home/node/npm-www/static/webfonts
 	rsync -vazu --stats --no-implied-dirs --delete \
-		html/style.css \
+		html/static/style.css \
 		node@npmjs.org:/home/node/npm-www/static/
 
 zip-publish: release
