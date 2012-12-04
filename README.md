@@ -118,7 +118,7 @@ Usage:
     nodist path <version>           Get the path to the specified node version directory
                                     (downloads the executable, if necessary).
 
-    nodist update                   Update nodist's dependencies.
+    nodist update                   Update nodist's dependencies along with the globally installed npm.
     
     nodist --help                   Display this help
 
@@ -153,7 +153,7 @@ Examples:
 `nodist` stores your node executables in `path\to\nodist\v\`, so it can see what's installed and activate previously installed versions.  
 When a version is activated, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. You can alter the path where versions are stored, using the `NODIST_PREFIX` env variable.
 
-`nodist` comes with the latest npm version and will use this all the time.
+`nodist` comes with the latest npm version and will use this all the time, regardless of the node version you have installed.
 
 As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
 
@@ -165,6 +165,11 @@ Copyright (c) 2012 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.3.3
+
+* Fix installer (thanks to @Ciantic for reporting)
+* Fix a bug introduced by npm update
 
 v0.3.2
 
