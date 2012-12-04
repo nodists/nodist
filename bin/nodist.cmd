@@ -12,9 +12,15 @@ if "%1"=="use" (
 
 :: hook `nodist update`
 if "%1"=="update" (
+  :: rescue our hacked npm.cmd from `npm update`'s fangs
+  copy /Y "%~dp0\npm.cmd" "%~dp0\npm.copy.cmd"
   npm update npm -g
+  del /F "%~dp0\npm.cmd"
+  move /Y "%~dp0\npm.copy.cmd" "%~dp0\npm.cmd"
+
   pushd .
-  cd /D "%~dp0\.."
+  cd /D "%~dp0"
+  cd ..
   npm update
   popd
 )
