@@ -166,6 +166,10 @@ MIT License
 
 ## Changelog
 
+v0.3.4
+
+* Fix error message if n.checkout fails
+
 v0.3.3
 
 * Fix installer (thanks to @Ciantic for reporting)
