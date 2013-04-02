@@ -12,7 +12,7 @@ Don't install node beforehand!
 
 
 ## Usage
-Nodist understands basic version patterns. You can use all ofthe following:
+Nodist understands basic version patterns. You can use all of the following:
 
 * `stable`
 * `latest`
@@ -165,6 +165,10 @@ Copyright (c) 2012 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.3.5
+
+* Fix install script. How did that go astray?
 
 v0.3.4
 
