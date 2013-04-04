@@ -52,11 +52,14 @@ process.title = 'nodist';
 // set up the necessary paths
 var nodePath = process.env['NODIST_PREFIX'];
 var nodistPath = __dirname;
+// set up proxy
+var proxy = (process.env['HTTP_PROXY'] || "").replace("https://", "http://"); //replace https for http, nodejs.org/dist doesnt support https 
 
 // Create a nodist instance
 var n = new nodist(
   'http://nodejs.org/dist',
-  (nodePath? nodePath : nodistPath)+'\\v'
+  (nodePath? nodePath : nodistPath)+'\\v',
+  proxy
 );
 
 // Parse args
