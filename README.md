@@ -9,6 +9,7 @@ Don't install node beforehand!
 2. When you've got the code, add `...path...\nodist\bin` to your path ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
 3. Now, run `nodist update`, which will install the dependencies.
+    * From powershell, use cmd /c "nodist update"
 
 
 ## Usage
