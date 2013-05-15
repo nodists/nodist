@@ -5,6 +5,7 @@ A Node version manager for the windows folks out there. Inspired by [n](https://
 Don't install node beforehand!
 
 1. Grab the code by unpacking the [zip](https://github.com/marcelklehr/nodist/zipball/master) or using `git clone git://github.com/marcelklehr/nodist.git`.
+  * Don't put the code in a directory that has a space in it.
 
 2. When you've got the code, add `...path...\nodist\bin` to your path ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
