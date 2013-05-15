@@ -9,11 +9,7 @@ try {
 
   "Installing nodist at $binPath" | write-host -fore green
 
-  $currentPathVar = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine);
-  $newPathVar = "$binPath;$currentPathVar"
-
-  "Setting machine path to $newPathVar" | write-host -fore green
-  [Environment]::SetEnvironmentVariable( "Path", $newPathVar, [System.EnvironmentVariableTarget]::Machine )
+  Install-ChocolateyPath $binPath 'Machine'
 
   "Running nodist update"
   $validExitCodes = @(0)
