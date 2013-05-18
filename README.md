@@ -85,6 +85,11 @@ Everything after `--` will be passed to node.
 nodist r v0.8.1 -- foo.js -s
 ```
 
+### Set a proxy to use for fetching the executables
+Exceedingly simple: Just set an env var containing the proxy information (can be one of `HTTP_PROXY`/`http_proxy`/`HTTPS_PROXY`/`https_proxy`).
+
+e.g. `set HTTP_PROXY=http://myproxy.com:8213`
+
 ### All comands
 Output of `nodist --help`:
 ```
@@ -165,6 +170,11 @@ Copyright (c) 2012 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.3.7
+
+* Fix `nodist run` and `list` commands
+* Allow people to use an http proxy (thanks to @gratex)
 
 v0.3.5
 
