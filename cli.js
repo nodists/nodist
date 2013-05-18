@@ -162,7 +162,7 @@ if (command.match(/^run|r$/i) && argv[1]) {
   
   n.resolveVersion(version, function(er, v) {
     if(er) abort(er.message+'. Sorry.');
-    n.emulate(version, argv.remainder, function(err, code) {
+    n.emulate(v, argv.remainder, function(err, code) {
       if(err) abort(err.message+'. Sorry.');
       exit(code);
     });
