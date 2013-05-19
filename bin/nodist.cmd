@@ -26,7 +26,7 @@ if "%1"=="update" (
 )
 
 :main
-"%~dp0\..\node.exe" "%~dp0\..\cli" %*
+"%~dp0..\node.exe" "%~dp0..\cli" %*
 goto end
 
 :end

@@ -52,11 +52,14 @@ process.title = 'nodist';
 // set up the necessary paths
 var nodePath = process.env['NODIST_PREFIX'];
 var nodistPath = __dirname;
+// set up proxy
+var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");
 
 // Create a nodist instance
 var n = new nodist(
   'http://nodejs.org/dist',
-  (nodePath? nodePath : nodistPath)+'\\v'
+  (nodePath? nodePath : nodistPath)+'\\v',
+  proxy.replace("https://", "http://") //replace https for http, nodejs.org/dist doesnt support https 
 );
 
 // Parse args
@@ -162,7 +165,7 @@ if (command.match(/^run|r$/i) && argv[1]) {
   
   n.resolveVersion(version, function(er, v) {
     if(er) abort(er.message+'. Sorry.');
-    n.emulate(version, argv.remainder, function(err, code) {
+    n.emulate(v, argv.remainder, function(err, code) {
       if(err) abort(err.message+'. Sorry.');
       exit(code);
     });
