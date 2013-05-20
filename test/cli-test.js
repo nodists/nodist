@@ -10,10 +10,11 @@ var vows = require('vows')
 var rootOfTestFiles = "c:\\tmp";
 var nodistInstallDir = 'C:\\tmp\\nodistInstallDir';
 var emptyWorkingDirectory = 'C:\\tmp\\emptyCwd';
+var dotversionedWorkingDirectory = 'C:\\tmp\\dotversionedWorkingDirectory';
 
 rimraf.sync(rootOfTestFiles);
 mkdirp.sync(emptyWorkingDirectory);
-
+mkdirp.sync(dotversionedWorkingDirectory);
 
 var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");
 
@@ -73,6 +74,12 @@ vows.describe('nodist cli')
       })
       assert.ok(!versions.some(function(v) { return v == '0.8.0'; }))
     }
+  }
+}})
+.addBatch({'should honor .node-version files': {
+  topic: function() {
+    var versionFile = dotversionedWorkingDirectory + "\\.node-version";
+    fs.writeFileSync("0.8.0");
   }
 }})
 .export(module);
