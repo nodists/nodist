@@ -4,20 +4,23 @@ var vows = require('vows')
   , fs = require('fs')
   , path = require('path')
   , exec = require('child_process').exec
+  , rimraf     = require('rimraf')
 
-var testPath = 'C:\\tmp\\'
+rimraf.sync("c:\\tmp\\");
+
+var nodistInstallDir = 'C:\\tmp\\nodistInstallDir'
 var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");
 
 var n = new nodist(
   'http://nodejs.org/dist',
-  testPath+'\\v'
+  nodistInstallDir+'\\v'
 )
 var nodistCmd = '"'+__dirname+'\\..\\bin\\nodist.cmd"';
 
 vows.describe('nodist cli')
 .addBatch({'nodist add': {
   topic: function() {
-    exec(nodistCmd+' add 0.8.0', {env:{ NODIST_PREFIX: testPath, HTTP_PROXY: proxy }}, this.callback)
+    exec(nodistCmd+' add 0.8.0', {env:{ NODIST_PREFIX: nodistInstallDir, HTTP_PROXY: proxy }}, this.callback)
   },
   'should install the specified version': function(err, stdout) {
     assert.ifError(err)
@@ -26,7 +29,7 @@ vows.describe('nodist cli')
 }})
 .addBatch({'nodist list': {
   topic: function() {
-    exec(nodistCmd+' list', {env:{ NODIST_PREFIX: testPath, HTTP_PROXY: proxy }}, this.callback)
+    exec(nodistCmd+' list', {env:{ NODIST_PREFIX: nodistInstallDir, HTTP_PROXY: proxy }}, this.callback)
   },
   'should list the installed version': function(err, stdout) {
     assert.ifError(err)
@@ -38,7 +41,7 @@ vows.describe('nodist cli')
 }})
 .addBatch({'nodist run': {
   topic: function() {
-    exec(nodistCmd+' run 0.8.0 -- -v', {env:{ NODIST_PREFIX: testPath, HTTP_PROXY: proxy }}, this.callback)
+    exec(nodistCmd+' run 0.8.0 -- -v', {env:{ NODIST_PREFIX: nodistInstallDir, HTTP_PROXY: proxy }}, this.callback)
   },
   'should run the specified version': function(err, stdout) {
     assert.ifError(err)
@@ -47,7 +50,7 @@ vows.describe('nodist cli')
 }})
 .addBatch({'nodist rm': {
   topic: function() {
-    exec(nodistCmd+' rm 0.8.0', {env:{ NODIST_PREFIX: testPath, HTTP_PROXY: proxy }}, this.callback)
+    exec(nodistCmd+' rm 0.8.0', {env:{ NODIST_PREFIX: nodistInstallDir, HTTP_PROXY: proxy }}, this.callback)
   },
   'should remove the specified version': function(err, stdout) {
     assert.ifError(err)
@@ -55,7 +58,7 @@ vows.describe('nodist cli')
   },
   'nodist list': {
     topic: function() {
-      exec(nodistCmd+' list', {env:{ NODIST_PREFIX: testPath, HTTP_PROXY: proxy }}, this.callback)
+      exec(nodistCmd+' list', {env:{ NODIST_PREFIX: nodistInstallDir, HTTP_PROXY: proxy }}, this.callback)
     },
     'shouldn\'t list the installed version': function(err, stdout) {
       assert.ifError(err)
