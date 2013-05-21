@@ -23,8 +23,27 @@ var n = new nodist(
   nodistInstallDir+'\\v'
 )
 var nodistCmd = '"'+__dirname+'\\..\\bin\\nodist.cmd"';
+var nodeCmd = '"'+__dirname+'\\..\\bin\\node.exe"';
 
 vows.describe('nodist cli')
+  .addBatch({'should honor .node-version files': {
+    topic: function() {
+      var callback = this.callback;
+      var versionFile = dotversionedWorkingDirectory + "\\.node-version";
+
+      fs.writeFile(versionFile, "0.10.5", function(err) {
+        assert.ifError(err)
+        exec(nodeCmd+' --version', {cwd: emptyWorkingDirectory, env:{ NODIST_PREFIX: nodistInstallDir, HTTP_PROXY: proxy }}, callback)
+      });
+    },
+    'should install the specified version': function(err, stdout) {
+      assert.ifError(err)
+      assert.ok(fs.existsSync(n.resolveToExe('0.10.5')))
+    },
+    'should run the specified version': function(err, stdout)  {
+      assert.equal(stdout.toString().trim(), 'v0.10.5')
+    }
+}})
 .addBatch({'nodist add': {
   topic: function() {
     exec(nodistCmd+' add 0.8.0', {cwd: emptyWorkingDirectory, env:{ NODIST_PREFIX: nodistInstallDir, HTTP_PROXY: proxy }}, this.callback)
@@ -74,12 +93,6 @@ vows.describe('nodist cli')
       })
       assert.ok(!versions.some(function(v) { return v == '0.8.0'; }))
     }
-  }
-}})
-.addBatch({'should honor .node-version files': {
-  topic: function() {
-    var versionFile = dotversionedWorkingDirectory + "\\.node-version";
-    fs.writeFileSync("0.8.0");
   }
 }})
 .export(module);
