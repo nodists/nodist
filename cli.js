@@ -51,6 +51,7 @@ process.title = 'nodist';
 
 // set up the necessary paths
 var nodePath = process.env['NODIST_PREFIX'];
+var wantX64 = process.env['NODIST_X64'];
 var nodistPath = __dirname;
 // set up proxy
 var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");
@@ -60,6 +61,7 @@ var n = new nodist(
   'http://nodejs.org/dist',
   (nodePath? nodePath : nodistPath)+'\\v',
   proxy.replace("https://", "http://") //replace https for http, nodejs.org/dist doesnt support https 
+  ,wantX64
 );
 
 // Parse args
@@ -129,6 +131,11 @@ if (command.match(/^dist|ds$/i)) {
 if ((command.match(/^add|\+$/i)) && argv[1]) {
   var version = argv[1];
   
+  if (argv[2] && argv[2].match(/^x64$/i)) {
+    n.setWantX64(1);
+	console.log("Getting 64bit version!");
+  }  
+  
   if(version.match(/^all$/i)) {
     n.installAll(function(err, real_version) {
       if(err) return console.log(err.message+'.');
@@ -159,7 +166,7 @@ if (command.match(/^remove|rm|-$/i) && argv[1]) {
   });
 }else
 
-// RUN a specific build
+// UN a specific build
 if (command.match(/^run|r$/i) && argv[1]) {
   var version = argv[1];
   
