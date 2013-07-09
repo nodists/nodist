@@ -9,8 +9,8 @@ Usage:
     nodist dist                     List all available node versions.
     nodist ds
 
-    nodist add <version>            Download the specified node version.
-    nodist + <version>
+    nodist add <version> [x64]      Download the specified node version.
+    nodist + <version> [x64]
 
     nodist rm <version>             Uninstall the specified node version.
     nodist - <version>
@@ -55,3 +55,7 @@ Examples:
                                    
     nodist + all                    Installs *all* available node versions.
                                     (Get yourself a cuppa in the meantime...)
+
+Note: If you want to install a 64bit version of the node.exe then define the
+environment variable NODIST_X64.
+set NODIST_X64=1 (or put it into your system global environment)
