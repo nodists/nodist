@@ -175,6 +175,11 @@ MIT License
 
 ## Changelog
 
+v0.3.8
+
+* Add support for x64 versions (thanks to @CycoPH)
+* Improve performance by cachign version lists
+
 v0.3.7
 
 * Fix `nodist run` and `list` commands
