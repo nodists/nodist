@@ -29,15 +29,18 @@ var version = process.argv[2]
   , fs       = require('fs')
 ;
 
-var exit = function abort(code, msg) {
+// Exit with a code and (optionally) with a message
+var exit = function exit(code, msg) {
   if(msg) console.log(msg);
   process.exit(code);
 };
 
+// Abort with an optional message being displayed
 var abort = function abort(msg) {
   exit(1, !msg? null : msg.split('. ').join('.\r\n'));
 };
 
+// Display the command line help and exit
 function help() {
   fs.readFile(__dirname+'\\usage.txt', function(err, usage) {
     if(err) abort('Couldn\'t fetch help info. You\'ll have to look at the README. Sorry.');
@@ -45,6 +48,7 @@ function help() {
     exit();
   });
 }
+
 
 
 process.title = 'nodist';
@@ -86,7 +90,7 @@ if (args.match(/--help/i)) {
   help();
 }
 
-// LIST bare call -> list
+// (bare call of 'nodist') -> list
 if (!argv[0]) {
   command = 'list';
 }
@@ -129,12 +133,7 @@ if (command.match(/^dist|ds$/i)) {
 
 // ADD fetch a specific build
 if ((command.match(/^add|\+$/i)) && argv[1]) {
-  var version = argv[1];
-  
-  if (argv[2] && argv[2].match(/^x64$/i)) {
-    n.setWantX64(1);
-	console.log("Getting 64bit version!");
-  }  
+  var version = argv[1]; 
   
   if(version.match(/^all$/i)) {
     n.installAll(function(err, real_version) {
@@ -166,7 +165,7 @@ if (command.match(/^remove|rm|-$/i) && argv[1]) {
   });
 }else
 
-// UN a specific build
+// RUN a specific build
 if (command.match(/^run|r$/i) && argv[1]) {
   var version = argv[1];
   

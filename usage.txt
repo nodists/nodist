@@ -56,6 +56,9 @@ Examples:
     nodist + all                    Installs *all* available node versions.
                                     (Get yourself a cuppa in the meantime...)
 
-Note: If you want to install a 64bit version of the node.exe then define the
-environment variable NODIST_X64.
-set NODIST_X64=1 (or put it into your system global environment)
+Env vars:
+
+    NODIST_X64                      Will always use the 64bit versions if set to '1'
+
+    HTTP_PROXY                      Will use the Url and port specified as a proxy
+                                    (e.g. http://myproxy.com:8213 )
