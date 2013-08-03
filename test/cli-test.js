@@ -5,7 +5,7 @@ var vows = require('vows')
   , path = require('path')
   , exec = require('child_process').exec
 
-var testPath = 'C:\\tmp\\'
+var testPath = 'C:\\tmp'
 var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");
 
 var n = new nodist(
@@ -21,7 +21,7 @@ vows.describe('nodist cli')
   },
   'should install the specified version': function(err, stdout) {
     assert.ifError(err)
-    assert.ok(fs.existsSync(n.resolveToExe('0.8.0')))
+    assert.ok(fs.existsSync(n.getPathToExe('0.8.0')))
   }
 }})
 .addBatch({'nodist list': {
@@ -51,7 +51,7 @@ vows.describe('nodist cli')
   },
   'should remove the specified version': function(err, stdout) {
     assert.ifError(err)
-    assert.ok(!fs.existsSync(n.resolveToExe('0.8.0')))
+    assert.ok(!fs.existsSync(n.getPathToExe('0.8.0')))
   },
   'nodist list': {
     topic: function() {
