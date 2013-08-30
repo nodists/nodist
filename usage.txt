@@ -9,8 +9,8 @@ Usage:
     nodist dist                     List all available node versions.
     nodist ds
 
-    nodist add <version>            Download the specified node version.
-    nodist + <version>
+    nodist add <version> [x64]      Download the specified node version.
+    nodist + <version> [x64]
 
     nodist rm <version>             Uninstall the specified node version.
     nodist - <version>
@@ -55,3 +55,10 @@ Examples:
                                    
     nodist + all                    Installs *all* available node versions.
                                     (Get yourself a cuppa in the meantime...)
+
+Env vars:
+
+    NODIST_X64                      Will always use the 64bit versions if set to '1'
+
+    HTTP_PROXY                      Will use the Url and port specified as a proxy
+                                    (e.g. http://myproxy.com:8213 )

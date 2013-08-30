@@ -29,15 +29,18 @@ var version = process.argv[2]
   , fs       = require('fs')
 ;
 
-var exit = function abort(code, msg) {
+// Exit with a code and (optionally) with a message
+var exit = function exit(code, msg) {
   if(msg) console.log(msg);
   process.exit(code);
 };
 
+// Abort with an optional message being displayed
 var abort = function abort(msg) {
   exit(1, !msg? null : msg.split('. ').join('.\r\n'));
 };
 
+// Display the command line help and exit
 function help() {
   fs.readFile(__dirname+'\\usage.txt', function(err, usage) {
     if(err) abort('Couldn\'t fetch help info. You\'ll have to look at the README. Sorry.');
@@ -47,10 +50,12 @@ function help() {
 }
 
 
+
 process.title = 'nodist';
 
 // set up the necessary paths
 var nodePath = process.env['NODIST_PREFIX'];
+var wantX64 = process.env['NODIST_X64'];
 var nodistPath = __dirname;
 // set up proxy
 var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");
@@ -60,6 +65,7 @@ var n = new nodist(
   'http://nodejs.org/dist',
   (nodePath? nodePath : nodistPath)+'\\v',
   proxy.replace("https://", "http://") //replace https for http, nodejs.org/dist doesnt support https 
+  ,wantX64
 );
 
 // Parse args
@@ -84,7 +90,7 @@ if (args.match(/--help/i)) {
   help();
 }
 
-// LIST bare call -> list
+// (bare call of 'nodist') -> list
 if (!argv[0]) {
   command = 'list';
 }
@@ -127,7 +133,7 @@ if (command.match(/^dist|ds$/i)) {
 
 // ADD fetch a specific build
 if ((command.match(/^add|\+$/i)) && argv[1]) {
-  var version = argv[1];
+  var version = argv[1]; 
   
   if(version.match(/^all$/i)) {
     n.installAll(function(err, real_version) {

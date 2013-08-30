@@ -95,7 +95,11 @@ nodist r v0.8.1 -- foo.js -s
 ### Set a proxy to use for fetching the executables
 Exceedingly simple: Just set an env var containing the proxy information (can be one of `HTTP_PROXY`/`http_proxy`/`HTTPS_PROXY`/`https_proxy`).
 
-e.g. `set HTTP_PROXY=http://myproxy.com:8213`
+e.g. `set HTTP_PROXY=http://myproxy.com:8213` (better put it into your system global environment)
+
+### Installing the x64 versions
+To always deal with the 64bit versions of the node you need to define the `NODIST_X64` environment variable.
+e.g. `set NODIST_X64=1` (better put it into your system global environment)
 
 ### All comands
 Output of `nodist --help`:
@@ -163,7 +167,7 @@ Examples:
 
 ## Details
 `nodist` stores your node executables in `path\to\nodist\v\`, so it can see what's installed and activate previously installed versions.  
-When a version is activated, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. You can alter the path where versions are stored, using the `NODIST_PREFIX` env variable.
+When a version is activated, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. You can alter the path where versions are stored, using the `NODIST_PREFIX` env variable. (The 64bit versions are stored as `x64.exe` in the appropriate version directory).
 
 `nodist` comes with the latest npm version and will use this all the time, regardless of the node version you have installed.
 
@@ -177,6 +181,11 @@ Copyright (c) 2012 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.3.8
+
+* Add support for x64 versions (thanks to @CycoPH)
+* Improve performance by cachign version lists
 
 v0.3.7
 
