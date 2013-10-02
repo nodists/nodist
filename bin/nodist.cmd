@@ -21,7 +21,7 @@ if "%1"=="update" (
   pushd .
   cd /D "%~dp0"
   cd ..
-  npm update
+  cmd /C npm update
   popd
 )
 
