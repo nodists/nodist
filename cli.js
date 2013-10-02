@@ -186,7 +186,7 @@ if (command.match(/^bin$/i) && argv[1]) {
     if(er) abort(er.message+'. Sorry.');
     n.install(version, function(err) {
       if(err) abort(err.message+'. Sorry.');
-      console.log(n.resolveToExe(v));
+      console.log(n.getPathToExe(v));
       exit();
     });
   });
@@ -200,7 +200,7 @@ if (command.match(/^path$/i) && argv[1]) {
     if(er) abort(er.message+'. Sorry.');
     n.install(version, function(err, v) {
       if(err) abort(err.message+'. Sorry.');
-      console.log(path.dirname(n.resolveToExe(v)));
+      console.log(path.dirname(n.getPathToExe(v)));
     });
   });
 }else
