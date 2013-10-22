@@ -179,10 +179,14 @@ As the global node version will be subject to change, `nodist` comes with its ow
 The name nodist was chosen to emphasise the puristic approach of implementing a node version manager and is not to be confused with the term 'nudist'. It was never my intention to make a connection between these two subjects by giving this program a similar name. What did you think?!
 
 ## Legal
-Copyright (c) 2012 by Marcel Klehr  
+Copyright (c) 2012-2013 by Marcel Klehr  
 MIT License
 
 ## Changelog
+
+v0.3.10
+
+ * Fix 'use' by fixing 'path' and 'bin' commands
 
 v0.3.9
 
