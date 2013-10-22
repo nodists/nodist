@@ -31,13 +31,13 @@ Nodist understands basic version patterns. You can use all of the following:
 
 The `v` in front of a version number is optional.
 
+All commands implicitly install the specified version before using it, if it isn't already installed.
+
 ### Install a version
 Checks, if the version is installed and downloads it if not.
 ```
 nodist + v0.8.1
 ```
-
-All commands implicitly install the specified version before using it, if it isn't already installed.
 
 ### Install everything
 If you want to install all available versions at once, use this.
