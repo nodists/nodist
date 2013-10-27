@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>nodist</id>
+    <title>nodist</title>
+    <version>0.0.4-beta</version>
+    <authors>Marcel Klehr</authors>
+    <owners>Marcel Klehr,Frank Schwieterman</owners>
+    <summary>A Node.js version manager for Windows.</summary>
+    <description>See github page https://github.com/marcelklehr/nodist for documentation.</description>
+    <projectUrl>https://github.com/marcelklehr/nodist</projectUrl>
+    <tags>node nodejs javascript admin</tags>
+    <copyright>2013</copyright>
+    <licenseUrl>https://github.com/marcelklehr/nodist</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+    <!--<file src="content\**" target="content" />-->
+  </files>
+</package>
