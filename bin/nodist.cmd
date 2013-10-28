@@ -23,6 +23,7 @@ if "%1"=="update" (
   cd ..
   cmd /C npm update
   popd
+  goto end
 )
 
 :main
