@@ -33,6 +33,8 @@ The `v` in front of a version number is optional.
 
 All commands implicitly install the specified version before using it, if it isn't already installed.
 
+Btw, nodist also works in your PowerShell.
+
 ### Install a version
 Checks, if the version is installed and downloads it if not.
 ```
@@ -183,6 +185,10 @@ Copyright (c) 2012-2013 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.3.11
+
+ * Fix 'use' command in powershell (thanks to @paulbatum for reporting)
 
 v0.3.10
 
