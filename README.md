@@ -10,7 +10,7 @@ Don't install node beforehand! If node is already installed, uninstall it first.
 
 3. Add `...path...\nodist\bin` to system's path. ([setx not available?](http://www.computerhope.com/issues/ch000549.htm)).
 ```batchfile
-setx /M PATH "%HOMEDRIVE%%HOMEPATH%\.nodist\bin;%PATH%"
+setx /M PATH "...path...\nodist\bin;%PATH%"
 ```
 
 4. Now, run `nodist update`, which will install the dependencies.
