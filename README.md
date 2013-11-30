@@ -2,20 +2,23 @@
 A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n).
 
 ## Install
-Don't install node beforehand!
+Don't install node beforehand! If node is already installed, uninstall it first. Nodist was designed to __replace existing node.js installation__ instead of equipping it with version management functionality.
 
 1. Grab the code by unpacking the [zip](https://github.com/marcelklehr/nodist/zipball/master) or using `git clone git://github.com/marcelklehr/nodist.git`.
 
-2. Place the code in a directory for use.  It is not recommended to use `Program Files` since you will need to run all your commands in administrator mode.  Instead use `c:/nodist` or similar.
+2. Place the code in a directory for use.  It is not recommended to use `Program Files` since you will need to run all your commands in administrator mode (unless you are using an Administrator account).  As a suggestion, use `c:\nodist` or `c:\users\username\.nodist`.
 
-3. When you've got the code, add `...path...\nodist\bin` to your path ([how?](http://www.computerhope.com/issues/ch000549.htm)).
+3. Add `...path...\nodist\bin` to system's path. ([setx not available?](http://www.computerhope.com/issues/ch000549.htm)).
+```batchfile
+setx /M PATH "%HOMEDRIVE%%HOMEPATH%\.nodist\bin;%PATH%"
+```
 
 4. Now, run `nodist update`, which will install the dependencies.
 
 
 ## Uninstall
 
-1. Remove the nodist bin path from your path.
+1. Remove the nodist bin path from your path. ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
 2. Delete the nodist directory
 
