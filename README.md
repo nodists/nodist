@@ -1,22 +1,28 @@
 # nodist
 A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n).
 
-## Install
-Don't install node beforehand! If node is already installed, uninstall it first. Nodist was designed to __replace existing node.js installation__ instead of equipping it with version management functionality.
+## Installation
+Don't install node beforehand! If node is already installed, uninstall it first. Nodist was designed to __replace any existing node.js installation__.
 
+### The hard way
 1. Grab the code by unpacking the [zip](https://github.com/marcelklehr/nodist/zipball/master) or using `git clone git://github.com/marcelklehr/nodist.git`.
 
-2. Place the code in a directory for use.  It is not recommended to use `Program Files` since you will need to run all your commands in administrator mode (unless you are using an Administrator account).  As a suggestion, use `c:\nodist` or `c:\users\username\.nodist`.
+2. Place the code in a directory for use.  (Note: It is not recommended to use `Program Files` since it requires admin rights if you want to manipulate it, which is exactly what nodist does.)
 
-3. Add `...path...\nodist\bin` to system's path. ([setx not available?](http://www.computerhope.com/issues/ch000549.htm)).
+3. Add `...path...\nodist\bin` to system's path. -- *([setx not available?](http://www.computerhope.com/issues/ch000549.htm))*
 ```batchfile
 setx /M PATH "...path...\nodist\bin;%PATH%"
 ```
 
 4. Now, run `nodist update`, which will install the dependencies.
 
+### Fancy installation
 
-## Uninstall
+1.  Install chocolatey: http://chocolatey.org/
+
+2.  Run `cinst nodist`
+
+### Uninstall
 
 1. Remove the nodist bin path from your path. ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
@@ -102,11 +108,11 @@ nodist r v0.8.1 -- foo.js -s
 ### Set a proxy to use for fetching the executables
 Exceedingly simple: Just set an env var containing the proxy information (can be one of `HTTP_PROXY`/`http_proxy`/`HTTPS_PROXY`/`https_proxy`).
 
-e.g. `set HTTP_PROXY=http://myproxy.com:8213` (better put it into your system global environment)
+e.g. `set HTTP_PROXY=http://myproxy.com:8213` (better put it into your system's global environment)
 
 ### Installing the x64 versions
 To always deal with the 64bit versions of the node you need to define the `NODIST_X64` environment variable.
-e.g. `set NODIST_X64=1` (better put it into your system global environment)
+e.g. `set NODIST_X64=1` (better put it into your system's global environment)
 
 ### All comands
 Output of `nodist --help`:
@@ -120,7 +126,7 @@ Usage:
     nodist dist                     List all available node versions.
     nodist ds
 
-    nodist add <version>            Download the specified node version.
+    nodist add <version>           Download the specified node version.
     nodist + <version>
 
     nodist rm <version>             Uninstall the specified node version.
@@ -174,7 +180,7 @@ Examples:
 
 ## Details
 `nodist` stores your node executables in `path\to\nodist\v\`, so it can see what's installed and activate previously installed versions.  
-When a version is activated, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. You can alter the path where versions are stored, using the `NODIST_PREFIX` env variable. (The 64bit versions are stored as `x64.exe` in the appropriate version directory).
+When a version is activated globally, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. You can alter the path where versions are stored (e.g. `path/to/nodist/v`), using the `NODIST_PREFIX` env variable. (The 64bit versions are stored as `x64.exe` in the appropriate version directory).
 
 `nodist` comes with the latest npm version and will use this all the time, regardless of the node version you have installed.
 
