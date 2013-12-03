@@ -16,11 +16,13 @@ setx /M PATH "...path...\nodist\bin;%PATH%"
 
 4. Now, run `nodist update`, which will install the dependencies.
 
-### Fancy installation
+### Fancy installation (beta)
 
 1.  Install chocolatey: http://chocolatey.org/
 
-2.  Run `cinst nodist`
+2.  Run `cinst nodist -Pre`
+
+Note: Our chocolatey package has a limitation such that a reboot is required aftewards for nodist to be accessible.  We'll try to fix this soon.
 
 ### Uninstall
 
