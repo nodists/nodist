@@ -9,8 +9,8 @@ Usage:
     nodist dist                     List all available node versions.
     nodist ds
 
-    nodist add <version> [x64]      Download the specified node version.
-    nodist + <version> [x64]
+    nodist add <version>            Download the specified node version.
+    nodist + <version>
 
     nodist rm <version>             Uninstall the specified node version.
     nodist - <version>
