@@ -2,17 +2,17 @@
 A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n).
 
 ## Installation
-Don't install node beforehand! If node is already installed, uninstall it first. Nodist was designed to __replace any existing node.js installation__.
+Don't install node beforehand! Nodist was designed to replace any existing node.js installation, so if node is already installed on your machine, uninstall it first.
 
-### The hard way
-1. Grab the code by unpacking the [zip](https://github.com/marcelklehr/nodist/zipball/master) or using `git clone git://github.com/marcelklehr/nodist.git`.
+### DIY installation
+1. Grab the code by unpacking the [zip](https://github.com/marcelklehr/nodist/zipball/master) in a directory for use or run `git clone git://github.com/marcelklehr/nodist.git`.
+   (Note: Certain paths, such as `Program Files`, requires admin rights for nodist to work.)
 
-2. Place the code in a directory for use.  (Note: It is not recommended to use `Program Files` since it requires admin rights if you want to manipulate it, which is exactly what nodist does.)
-
-3. Add `...path...\nodist\bin` to system's path. -- *([setx not available?](http://www.computerhope.com/issues/ch000549.htm))*
+3. Add `<..path..>\nodist\bin` to your system's path.
 ```batchfile
-setx /M PATH "...path...\nodist\bin;%PATH%"
+setx /M PATH "<..path..>\nodist\bin;%PATH%"
 ```
+([setx not available?](http://www.computerhope.com/issues/ch000549.htm))
 
 4. Now, run `nodist update`, which will install the dependencies.
 
@@ -26,7 +26,7 @@ Note: Our chocolatey package has a limitation such that a reboot is required aft
 
 ### Uninstall
 
-1. Remove the nodist bin path from your path. ([how?](http://www.computerhope.com/issues/ch000549.htm)).
+1. Remove `<..path..>\nodist\bin` from your path. ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
 2. Delete the nodist directory
 
@@ -42,22 +42,7 @@ Nodist understands basic version patterns. You can use all of the following:
 
 The `v` in front of a version number is optional.
 
-All commands implicitly install the specified version before using it, if it isn't already installed.
-
-Btw, nodist also works in your PowerShell.
-
-### Install a version
-Checks, if the version is installed and downloads it if not.
-```
-nodist + v0.8.1
-```
-
-### Install everything
-If you want to install all available versions at once, use this.
-But be warned, as this may take a while.
-```
-nodist + all
-```
+*All commands implicitly install the specified version before using it, if it's not installed already.*
 
 ### List versions
 This lists all installed versions and highlights the current active one.
@@ -68,12 +53,6 @@ nodist ls
 This lists all available node versions.
 ```
 nodist dist
-```
-
-### Remove a version
-If you want to remove a version for some reason, use this:
-```
-nodist - 0.5.10
 ```
 
 ### Activate a version
@@ -107,14 +86,19 @@ Everything after `--` will be passed to node.
 nodist r v0.8.1 -- foo.js -s
 ```
 
-### Set a proxy to use for fetching the executables
-Exceedingly simple: Just set an env var containing the proxy information (can be one of `HTTP_PROXY`/`http_proxy`/`HTTPS_PROXY`/`https_proxy`).
+### Install a version
+Just checks, if the version is installed and downloads it if not.
+```
+nodist + v0.8.1
+```
 
-e.g. `set HTTP_PROXY=http://myproxy.com:8213` (better put it into your system's global environment)
+Use `nodist + all` to install everything. Get yourself a cuppa in the meantime.
 
-### Installing the x64 versions
-To always deal with the 64bit versions of the node you need to define the `NODIST_X64` environment variable.
-e.g. `set NODIST_X64=1` (better put it into your system's global environment)
+### Remove a version
+If you want to remove a version for some reason, use this:
+```
+nodist - 0.5.10
+```
 
 ### All comands
 Output of `nodist --help`:
@@ -176,17 +160,31 @@ Examples:
                                     (Get yourself a cuppa in the meantime...)
 ```
 
+## Settings
+
+### Set a proxy to use for fetching the executables
+Exceedingly simple: Just set an env var containing the proxy information (can be one of `HTTP_PROXY`/`http_proxy`/`HTTPS_PROXY`/`https_proxy`).
+
+e.g. `set HTTP_PROXY=http://myproxy.com:8213` (better put it into your system's global environment)
+
+### Installing the x64 versions
+To always deal with the 64bit versions of node you need to sete the `NODIST_X64` environment variable.
+
+e.g. `set NODIST_X64=1` (better put it into your system's global environment)
+
 
 ## Got ideas?  Doesn't work for you? Want to give feedback?
 [File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
 
 ## Details
 `nodist` stores your node executables in `path\to\nodist\v\`, so it can see what's installed and activate previously installed versions.  
-When a version is activated globally, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. You can alter the path where versions are stored (e.g. `path/to/nodist/v`), using the `NODIST_PREFIX` env variable. (The 64bit versions are stored as `x64.exe` in the appropriate version directory).
+When a version is activated globally, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. 64bit versions are stored in a separate directory called `\v-x64`. You can alter the path where versions are stored (`path/to/nodist`), using the `NODIST_PREFIX` env variable.
 
 `nodist` comes with the latest npm version and will use this all the time, regardless of the node version you have installed.
 
 As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
+
+Btw, nodist also works in your PowerShell!
 
 ## What's with the name?
 The name nodist was chosen to emphasise the puristic approach of implementing a node version manager and is not to be confused with the term 'nudist'. It was never my intention to make a connection between these two subjects by giving this program a similar name. What did you think?!
