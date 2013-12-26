@@ -195,6 +195,9 @@ MIT License
 
 ## Changelog
 
+v0.4.2
+ * Use the right URI for fetching the x64 executables
+
 v0.4.1
  * x64 auto-detection
 
