@@ -103,6 +103,8 @@ if (command.match(/^list|ls$/i)) {
     
     n.listInstalled(function(err, ls) {
       if(err) abort(err.message+'. Sorry.');
+
+      if(n.wantX64) console.log('  (x64)')
       if(ls.length == 0) abort('No builds installed, yet.');
       
       // display all versions
@@ -126,6 +128,7 @@ if (command.match(/^dist|ds$/i)) {
     ls.forEach(function(version) {
       console.log('  '+version);
     });
+    if(n.proxy) console.log('\n  (Proxy: '+n.proxy+')')
     exit();
   });
   
