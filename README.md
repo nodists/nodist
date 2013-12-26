@@ -195,6 +195,13 @@ MIT License
 
 ## Changelog
 
+v0.4.0
+ * Refactor 64bit support (All commands now work with x64 versions)
+ * Make npm use the user-chosen node version (thanks to @k-j-kleist for reporting)
+ * Fix some minor bugs in error handling
+ * Don't try installing 'vUpdate' after running nodist update
+ * Install latest stable version after running nodist update
+
 v0.3.11
 
  * Fix 'use' command in powershell (thanks to @paulbatum for reporting)
