@@ -55,10 +55,13 @@ process.title = 'nodist';
 
 // set up the necessary paths
 var nodePath = process.env['NODIST_PREFIX'];
-var wantX64 = process.env['NODIST_X64'];
 var nodistPath = __dirname;
+
 // set up proxy
 var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");
+
+// want x64?
+var wantX64 = process.env['NODIST_X64']!=null? process.env['NODIST_X64'] : (process.arch=='x64'); // if the env var is set, use its value, other wise use process.arch
 
 // Create a nodist instance
 var n = new nodist(
