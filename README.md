@@ -2,7 +2,7 @@
 A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n).
 
 ## Installation
-Don't install node beforehand! Nodist was designed to replace any existing node.js installation, so if node is already installed on your machine, uninstall it first.
+Don't install node beforehand! Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
 
 ### DIY installation
 1. Grab the code by unpacking the [zip](https://github.com/marcelklehr/nodist/zipball/master) in a directory for use or run `git clone git://github.com/marcelklehr/nodist.git`.
@@ -167,8 +167,8 @@ Exceedingly simple: Just set an env var containing the proxy information (can be
 
 e.g. `set HTTP_PROXY=http://myproxy.com:8213` (better put it into your system's global environment)
 
-### Installing the x64 versions
-To always deal with the 64bit versions of node you need to sete the `NODIST_X64` environment variable.
+### Overriding x64 auto-detection
+If you want to override our x64 auto-detection, the `NODIST_X64` environment variable is for you. Set it to `1` to deal with the 64bit versions of node, or to `0` to deal with the 32bit versions, regardless of what system you're on.
 
 e.g. `set NODIST_X64=1` (better put it into your system's global environment)
 
@@ -178,7 +178,7 @@ e.g. `set NODIST_X64=1` (better put it into your system's global environment)
 
 ## Details
 `nodist` stores your node executables in `path\to\nodist\v\`, so it can see what's installed and activate previously installed versions.  
-When a version is activated globally, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. 64bit versions are stored in a separate directory called `\v-x64`. You can alter the path where versions are stored (`path/to/nodist`), using the `NODIST_PREFIX` env variable.
+When a version is activated globally, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. 64bit versions are stored in a separate directory called `\v-x64`. You can alter the path where versions are stored (default: `path/to/nodist`) using the `NODIST_PREFIX` env variable.
 
 `nodist` comes with the latest npm version and will use this all the time, regardless of the node version you have installed.
 
@@ -194,6 +194,9 @@ Copyright (c) 2012-2013 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.4.1
+ * x64 auto-detection
 
 v0.4.0
  * Refactor 64bit support (All commands now work with x64 versions)
