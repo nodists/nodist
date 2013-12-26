@@ -18,11 +18,15 @@ if "%1"=="update" (
   del /F "%~dp0\npm.cmd"
   move /Y "%~dp0\npm.copy.cmd" "%~dp0\npm.cmd"
 
+  echo Install dependencies...
   pushd .
   cd /D "%~dp0"
   cd ..
   cmd /C npm update
   popd
+
+  echo Installing latest stable version...
+  nodist stable
   goto end
 )
 
