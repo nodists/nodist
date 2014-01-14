@@ -196,7 +196,7 @@ MIT License
 ## Changelog
 
 v0.4.3
- * Fix a type coercion catch in x64 detection (NODIST_X64=0 had the same effect as NODIST_X64=0; thanks to @springmeyer for reporting)
+ * Fix a type coercion catch in x64 detection (NODIST_X64=0 had the same effect as NODIST_X64=1; thanks to @springmeyer for reporting)
 
 v0.4.2
  * Use the right URI for fetching the x64 executables
