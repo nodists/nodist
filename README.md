@@ -44,7 +44,7 @@ The `v` in front of a version number is optional.
 
 All commands implicitly install the specified version before using it, if it isn't already installed.
 
-Btw, nodist also works in your PowerShell.
+Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `\bin\nodist.ps1`.
 
 ### Install a version
 Checks, if the version is installed and downloads it if not.
