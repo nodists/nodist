@@ -42,7 +42,10 @@ Nodist understands basic version patterns. You can use all of the following:
 
 The `v` in front of a version number is optional.
 
-*All commands implicitly install the specified version before using it, if it's not installed already.*
+
+**All commands implicitly install the specified version before using it, if it isn't installed already.**
+
+Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `\bin\nodist.ps1`.
 
 ### List versions
 This lists all installed versions and highlights the current active one.
