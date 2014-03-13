@@ -1,5 +1,5 @@
 @echo off
-
+set gotoend=0
 :: hook `nodist use <version>`
 if "%1"=="use" (
   call %0 + %2
@@ -7,8 +7,10 @@ if "%1"=="use" (
     :: get path to version and add it to PATH
     FOR /F "tokens=1 delims=" %%A in ('"%0" path %2') do @set "Path=%%A;%Path%"
   )
-  goto end
+  :: goto end
+  set gotoend=1
 )
+if "%gotoend%"==1 GOTO end
 
 :: hook `nodist update`
 if "%1"=="update" (
@@ -27,8 +29,10 @@ if "%1"=="update" (
 
   echo Installing latest stable version...
   nodist stable
-  goto end
+  ::goto end
+  set gotoend=1
 )
+if "%gotoend%"==1 GOTO end
 
 :main
 "%~dp0..\node.exe" "%~dp0..\cli" %*
