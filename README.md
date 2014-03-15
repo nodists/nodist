@@ -198,6 +198,9 @@ MIT License
 
 ## Changelog
 
+v0.4.6
+ * Update pre-packaged npm to v1.4.3
+
 v0.4.5
  * Fix `nodist -v` in powershell (thanks to @devert for reporting)
 
