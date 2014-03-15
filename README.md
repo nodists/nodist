@@ -198,6 +198,9 @@ MIT License
 
 ## Changelog
 
+v0.4.5
+ * Fix `nodist -v` in powershell (thanks to @devert for reporting)
+
 v0.4.4
  * Fix GOTO in batch file (thanks to @BergWerkGIS)
 
