@@ -198,6 +198,9 @@ MIT License
 
 ## Changelog
 
+v0.4.4
+ * Fix GOTO in batch file (thanks to @BergWerkGIS)
+
 v0.4.3
  * Fix a type coercion catch in x64 detection (NODIST_X64=0 had the same effect as NODIST_X64=1; thanks to @springmeyer for reporting)
 
