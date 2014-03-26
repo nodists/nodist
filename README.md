@@ -198,6 +198,9 @@ MIT License
 
 ## Changelog
 
+v0.4.7
+ * Update bundled npm to v1.4.6 and check-in all files
+
 v0.4.6
  * Update pre-packaged npm to v1.4.3
 
