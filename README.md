@@ -1,18 +1,30 @@
 # nodist
 A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n).
 
+```
+> nodist 0.10
+0.10.26
+
+> node -v
+v0.10.26
+
+> nodist ls
+  0.10.24
+  0.10.25
+> 0.10.26
+  0.11.11
+  0.11.12
+```
+
+
 ## Installation
 Don't install node beforehand! Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
 
 ### DIY installation
-1. Grab the code by unpacking the [zip](https://github.com/marcelklehr/nodist/zipball/master) in a directory for use or run `git clone git://github.com/marcelklehr/nodist.git`.
+1. Put the contents of [zip](https://github.com/marcelklehr/nodist/zipball/master) in a directory for use or run `git clone git://github.com/marcelklehr/nodist.git`.
    (Note: Certain paths, such as `Program Files`, requires admin rights for nodist to work.)
 
-3. Add `<..path..>\nodist\bin` to your system's path.
-```batchfile
-setx /M PATH "<..path..>\nodist\bin;%PATH%"
-```
-([setx not available?](http://www.computerhope.com/issues/ch000549.htm))
+3. Add nodist to your system's path: `setx /M PATH "path\to\nodist\bin;%PATH%"` ([setx not available?](http://www.computerhope.com/issues/ch000549.htm))
 
 4. Now, run `nodist update`, which will install the dependencies.
 
@@ -32,149 +44,89 @@ Note: Our chocolatey package has a limitation such that a reboot is required aft
 
 
 ## Usage
-Nodist understands basic version patterns. You can use all of the following:
-
-* `stable`
-* `latest`
-* `0.8` or `0.8.x` or `~0.8`
-* `1` or `~1` (this isn't out, though...)
-* `0.6.12`
-
-The `v` in front of a version number is optional.
-
-
-**All commands implicitly install the specified version before using it, if it isn't installed already.**
+Nodist understands version patterns, like `0.8` or `0.8.x` or `~0.8` as well as `0.8.12` or `v0.8.12`.
+As an added bonus, you may also use `latest` and `stable`.
 
 Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `\bin\nodist.ps1`.
 
-### List versions
-This lists all installed versions and highlights the current active one.
-```
-nodist ls
-```
+### Commands
+*All commands implicitly install the specified version before using it, if it isn't installed already.*
 
-This lists all available node versions.
-```
-nodist dist
-```
-
-### Activate a version
-Activate the specified version globally.  
-All subsequent calls of `node` in any environment will use this version.
 ```
 nodist 0.8.1
 ```
+Activate the specified version globally.  
+All subsequent calls of `node` in any environment will use this version.
 
-You can also use `latest` and `stable` here.
-```
-nodist latest
-```
 
-### Activate version in current env
-Temporarily adds the specified version to the current *Path*, so all subsequent calls to `node` in the current terminal environment use that version.  
-This doesn't have any effects on the globally activated version -- closing the current terminal window will cause nodist to forget the set version.
+```
+nodist ls
+```
+This lists all installed versions and highlights the current active one.
+
+
+```
+nodist dist
+```
+This lists all available node versions.
+
+
+
 ```
 nodist use v0.7.12
 ```
+Temporarily adds the specified version to the current *Path*, so all subsequent calls to `node` in the current terminal environment use that version.  
+This doesn't have any effects on the globally activated version -- closing the current terminal window will cause nodist to forget the set version.
 
-In a batch script, use
+
 ```
 call nodist use 0.7.12
 ```
+Use this in a batch script.
 
-### Run a specific version
-Use this to run a specific node version, regardless of the globally activated one.
-Everything after `--` will be passed to node.
+
 ```
 nodist r v0.8.1 -- foo.js -s
 ```
+Use this to run a specific node version, regardless of the globally activated one.
+Everything after `--` will be passed to node.
 
-### Install a version
-Just checks, if the version is installed and downloads it if not.
+
 ```
 nodist + v0.8.1
 ```
+Just checks, if the version is installed and downloads it if not. You usually won't need this.
 
-Use `nodist + all` to install everything. Get yourself a cuppa in the meantime.
 
-### Remove a version
-If you want to remove a version for some reason, use this:
+```
+nodist + all
+```
+Install *everything*. Get yourself a cuppa in the meantime.
+
+
 ```
 nodist - 0.5.10
 ```
+Removes a version.
 
-### All comands
-Output of `nodist --help`:
+
 ```
-Usage:
-
-    nodist                          List all installed node versions.
-    nodist list
-    nodist ls
-
-    nodist dist                     List all available node versions.
-    nodist ds
-
-    nodist add <version>           Download the specified node version.
-    nodist + <version>
-
-    nodist rm <version>             Uninstall the specified node version.
-    nodist - <version>
-    
-    nodist <version>                Use the specified node version globally
-                                    (downloads the executable, if necessary).
-    
-    nodist use <version>            Use <version> in the current environment only
-                                    (usually the current terminal window).
-
-    nodist run <version> -- <file>  Run <file> with the specified node version
-    nodist r <version> -- <file>    (downloads the executable, if necessary).
-
-    nodist bin <version>            Get the path to the specified node executable
-                                    (downloads the executable, if necessary).
-    
-    nodist path <version>           Get the path to the specified node version directory
-                                    (downloads the executable, if necessary).
-
-    nodist update                   Update nodist's dependencies along with the globally installed npm.
-    
-    nodist --help                   Display this help
-
-    nodist -v                       Display nodist version
-
-Examples:
-
-    nodist 0.8.1                    Use node v0.8.1 globally
-    
-    nodist v0.5.10                  Use node v0.5.10 globally
-    
-    nodist - 0.5.10                 Uninstall node v0.5.10
-    
-    nodist r v0.8.1 -- foo.js -s    Run `foo.js -s` with node v0.8.1, regardless
-                                    of the global version
-                                    
-    nodist latest                   Use the latest available node version globally
-                                    (downloads the executable, if necessary).
-                                   
-    nodist stable                   Use the latest stable available node version
-                                    globally (downloads the executable, if necessary).
-                                   
-    nodist + all                    Installs *all* available node versions.
-                                    (Get yourself a cuppa in the meantime...)
+nodist --help
 ```
+Displays a complete list of commands with examples.
 
 ## Settings
 
-### Set a proxy to use for fetching the executables
-Exceedingly simple: Just set an env var containing the proxy information (can be one of `HTTP_PROXY`/`http_proxy`/`HTTPS_PROXY`/`https_proxy`).
+```
+set HTTP_PROXY=http://myproxy.com:8213
+```
+Set a proxy to use for fetching the executables (you can also use `HTTP_PROXY`/`http_proxy`/`HTTPS_PROXY`/`https_proxy`).
 
-e.g. `set HTTP_PROXY=http://myproxy.com:8213` (better put it into your system's global environment)
 
-### Overriding x64 auto-detection
-If you want to override our x64 auto-detection, the `NODIST_X64` environment variable is for you. Set it to `1` to deal with the 64bit versions of node, or to `0` to deal with the 32bit versions, regardless of what system you're on.
-
-e.g. `set NODIST_X64=1` (better put it into your system's global environment)
-
+```
+set NODIST_X64=0
+```
+Override x64 auto-detection. Set to `1` to deal with the 64bit versions of node, or to `0` to deal with the 32bit versions.
 
 ## Got ideas?  Doesn't work for you? Want to give feedback?
 [File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
@@ -188,9 +140,6 @@ When a version is activated globally, `nodist` copies it from `nodist\v\<version
 As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
 
 Btw, nodist also works in your PowerShell!
-
-## What's with the name?
-The name nodist was chosen to emphasise the puristic approach of implementing a node version manager and is not to be confused with the term 'nudist'. It was never my intention to make a connection between these two subjects by giving this program a similar name. What did you think?!
 
 ## Legal
 Copyright (c) 2012-2013 by Marcel Klehr  
