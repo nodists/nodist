@@ -53,22 +53,21 @@ function help() {
 
 process.title = 'nodist';
 
-// set up the necessary paths
-var nodePath = process.env['NODIST_PREFIX'];
-var nodistPath = __dirname;
+if(!process.env['NODIST_PREFIX']) abort('Please set the path to the nodist directory in the NODIST_PREFIX environment variable.')
 
-// set up proxy
+var distUrl = 'http://nodejs.org/dist'
+var nodistPrefix = process.env['NODIST_PREFIX'].replace('"', '')
 var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");
-
-// want x64?
 var wantX64 = process.env['NODIST_X64']!=null? process.env['NODIST_X64']==1 : (process.arch=='x64'); // if the env var is set, use its value, other wise use process.arch
+var envVersion = process.env['NODIST_VERSION']? process.env['NODIST_VERSION'].replace('"', '') : process.env['NODIST_VERSION']
 
 // Create a nodist instance
 var n = new nodist(
-  'http://nodejs.org/dist',
-  (nodePath? nodePath : nodistPath)+'\\v',
-  proxy.replace("https://", "http://") //replace https for http, nodejs.org/dist doesnt support https 
-  ,wantX64
+  distUrl
+, nodistPrefix
+, proxy.replace("https://", "http://") //replace https for http, nodejs.org/dist doesnt support https 
+, wantX64
+, envVersion
 );
 
 // Parse args
@@ -101,21 +100,44 @@ if (!argv[0]) {
 // LIST all installed buids
 if (command.match(/^list|ls$/i)) {
 
-  nodist.determineVersion(__dirname+'\\bin\\node.exe', function (err, current) {
-    if(err) void(0); //don't bother, if we don't know current version
+  n.getGlobal(function (err, global) {
+    if(err) void(0);
     
-    n.listInstalled(function(err, ls) {
-      if(err) abort(err.message+'. Sorry.');
-
-      if(n.wantX64) console.log('  (x64)')
-      if(ls.length == 0) abort('No builds installed, yet.');
+    n.getLocal(function (err, local, localFile) {
+      if(err) void(0);
+    
+      n.getEnv(function (err, env) {
+        if(err) void(0);
       
-      // display all versions
-      ls.forEach(function(version) {
-        var del = (version == current) ? '> ' : '  ';// highlight current
-        console.log(del+version);
+        n.listInstalled(function(err, ls) {
+          if(err) abort(err.message+'. Sorry.');
+
+          if(n.wantX64) console.log('  (x64)')
+          if(ls.length == 0) abort('No builds installed, yet.');
+          
+          current = env || local || global;
+          
+          // display all versions
+          ls.forEach(function(version) {
+            var del = '  '
+              , note = ' '
+            
+            if (version == env) {
+              note += ' (env)'
+            }
+            if (version == local) {
+              note += ' ('+localFile+')'
+            }
+            if (version == global) {
+              note += ' (global)'
+            }
+            if (version == current) del ='> ';// highlight current
+
+            console.log(del+version+note);
+          });
+          exit();
+        });
       });
-      exit();
     });
   });
 }else
@@ -211,13 +233,27 @@ if (command.match(/^path$/i) && argv[1]) {
   });
 }else
 
-// DEPLOY globally use the specified node version
-if (argv[0]) {
-  var version = argv[0];
+// Local globally use the specified node version
+if (command.match(/^local$/i) && argv[1]) {
+  var version = argv[1];
   
   n.resolveVersion(version, function(er, v) {
     if(er) abort(er.message+'. Sorry.');
-    n.deploy(v, function(err) {
+    n.setLocal(v, function(err) {
+      if(err) abort(err.message+'. Sorry.');
+      console.log(v);
+      exit();
+    });
+  });
+}else
+
+// GLOBAL globally use the specified node version
+if (command.match(/^global$/i) && argv[1] || argv[0] && !argv[1]) {
+  var version = argv[1] || argv[0];
+  
+  n.resolveVersion(version, function(er, v) {
+    if(er) abort(er.message+'. Sorry.');
+    n.setGlobal(v, function(err) {
       if(err) abort(err.message+'. Sorry.');
       console.log(v);
       exit();

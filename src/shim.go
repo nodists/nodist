@@ -46,6 +46,11 @@ func main() {
   
   // Set up binary path
   
+  if "" == os.Getenv("NODIST_PREFIX") {
+    fmt.Println("Please set the path to the nodist directory in the NODIST_PREFIX environment variable.")
+    os.Exit(40)
+  }
+  
   if x64 {
     path = os.Getenv("NODIST_PREFIX")+"/v-x64"
   } else {
@@ -57,7 +62,8 @@ func main() {
   if version != "" {
     nodebin = path+"/"+version+"/node.exe"
   }else {
-    nodebin = "node.exe"
+    fmt.Println("Sorry, there's a problem with nodist. Couldn't decide which node version to use. Please set a version.")
+    os.Exit(41)
   }
   
   cmd := exec.Command(nodebin, os.Args[1:]...)
