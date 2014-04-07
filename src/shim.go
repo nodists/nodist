@@ -26,15 +26,19 @@ func main() {
   
   if v := os.Getenv("NODE_VERSION"); v != "" {
     version = v
+    //fmt.Println("NODE_VERSION found:'", version, "'")
   } else
   if v = os.Getenv("NODIST_VERSION"); v != "" {
     version = v
-  } else 
-  if v, err := getLocalVersion(); err == nil {
-    version = string(v)
+    //fmt.Println("NODIST_VERSION found:'", version, "'")
   } else
-  if v, err := ioutil.ReadFile(os.Getenv("NODIST_PREFIX")+"/.node-version"); err == nil {
+  if v, _, err := getLocalVersion(); err == nil && strings.Trim(string(v), " \r\n") != "" {
     version = string(v)
+    //fmt.Println("Local file found:'", version, "' @ ", localFile)
+  } else
+  if v, err := ioutil.ReadFile(os.Getenv("NODIST_PREFIX")+"\\.node-version"); err == nil {
+    version = string(v)
+    //fmt.Println("Global file found:'", version, "'")
   }
 
   version = strings.Trim(version, "v \r\n")
@@ -101,7 +105,7 @@ func main() {
   }
 }
 
-func getLocalVersion() (version string, error error) {
+func getLocalVersion() (version string, file string, error error) {
   dir, err := os.Getwd()
   
   if err != nil {
@@ -111,9 +115,10 @@ func getLocalVersion() (version string, error error) {
   
   dirSlice := strings.Split(dir, pathSep) // D:\Programme\nodist => [D:, Programme, nodist]
   
-  for len(dirSlice) != 0 {
+  for len(dirSlice) != 1 {
     dir = strings.Join(dirSlice, pathSep)
-    v, err := ioutil.ReadFile(dir+"/.node-version");
+    file = dir+"\\.node-version"
+    v, err := ioutil.ReadFile(file);
     
     if err == nil {
       version = string(v)
