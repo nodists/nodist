@@ -233,15 +233,30 @@ if (command.match(/^path$/i) && argv[1]) {
   });
 }else
 
-// Local globally use the specified node version
+// ARGS globally use the specified node version
+if (command.match(/^args$/i) && argv[1]) {
+  var version = argv[1]
+    , args = argv.slice(2).join(' ')
+  
+  n.resolveVersion(version, function(er, v) {
+    if(er) abort(er.message+'. Sorry.');
+    n.setArgsForVersion(v, args, function(err) {
+      if(err) abort(err.message+'. Sorry.');
+      console.log(v, args);
+      exit();
+    });
+  });
+}else
+
+// LOCAL use the specified version locally
 if (command.match(/^local$/i) && argv[1]) {
   var version = argv[1];
   
   n.resolveVersion(version, function(er, v) {
     if(er) abort(er.message+'. Sorry.');
-    n.setLocal(v, function(err) {
+    n.setLocal(v, function(err, file) {
       if(err) abort(err.message+'. Sorry.');
-      console.log(v);
+      console.log(v, "("+file+")");
       exit();
     });
   });
