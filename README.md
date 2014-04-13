@@ -24,7 +24,7 @@ Don't install node beforehand! Nodist was designed to replace any existing node.
 1. Put the contents of [zip](https://github.com/marcelklehr/nodist/zipball/master) in a directory for use or run `git clone git://github.com/marcelklehr/nodist.git`.
    (Note: Certain paths, such as `Program Files`, require admin rights for nodist to work.)
 
-3. Add nodist to your system's path ([how?](http://www.computerhope.com/issues/ch000549.htm))
+3. Add `nodist\bin` to your system's path ([how?](http://www.computerhope.com/issues/ch000549.htm))
 
 4. Now, run `nodist update`, which will update npm and nodist's dependencies.
 
