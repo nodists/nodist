@@ -142,10 +142,13 @@ As the global node version will be subject to change, `nodist` comes with its ow
 Btw, nodist also works in your PowerShell!
 
 ## Legal
-Copyright (c) 2012-2013 by Marcel Klehr  
+Copyright (c) 2012-2014 by Marcel Klehr  
 MIT License
 
 ## Changelog
+
+v0.4.8
+ * Check in dependencies to avoid relying on npm on install
 
 v0.4.7
  * Update bundled npm to v1.4.6 and check-in all files
