@@ -32,7 +32,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 5. Run `nodist selfupdate` to install the dependencies
 
-### Fancy installation (beta)
+### Fancy installation (beta; discouraged)
 
 1.  Install chocolatey: http://chocolatey.org/
 
@@ -40,9 +40,16 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 Note: Our chocolatey package has a limitation such that a reboot is required aftewards for nodist to be accessible.  We'll try to fix this soon.
 
+### Migrating from <=0.4 to 0.5
+Instead of copying around the executables, there's now a binary shim (written in go). Prior to 0.4 the global executable was switched everytime you changed the version,
+now nodist uses a binary shim that makes sure every call to node gets the correct versoin, so when migrating to 0.5, please make sure that `/nodist/bin/node.exe` is that shim.
+You can build the shim yourself from source (`nodist/src/shim.go`) with `nodist/build.bat`, but it should come ready with the zip and git packages.
+
 ### Uninstall
 
 1. Remove `<..path..>\nodist\bin` from your path. ([how?](http://www.computerhope.com/issues/ch000549.htm)).
+
+3. Remove the `NODIST_PREFIC` env var.
 
 2. Delete the nodist directory
 
@@ -143,6 +150,10 @@ Copyright (c) 2012-2014 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.5.0
+ * Use a binary shim
+ * Support for localized version switching
 
 v0.4.8
  * Check in dependencies to avoid relying on npm on install
