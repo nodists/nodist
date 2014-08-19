@@ -16,13 +16,20 @@ Usage:
     nodist - <version>
     
     nodist <version>                Use the specified node version globally
-                                    (downloads the executable, if necessary).
+    nodist global <version>         (downloads the executable, if necessary).
     
     nodist use <version>            Use <version> in the current environment only
-                                    (usually the current terminal window).
+    nodist env <version>            (usually the current terminal window).
 
-    nodist run <version> -- <file>  Run <file> with the specified node version
-    nodist r <version> -- <file>    (downloads the executable, if necessary).
+    nodist local <version>          Use <version> in this directory and its subdirectories.
+                                    (will add a ./node-version file)
+
+    nodist args <version> <args..>  Set command line args that will always be passed
+                                    to this version (e.g. --harmony-generators or v8 tweaks).
+                                    Omit <args..> to reset.
+
+    nodist run <version> -- <args..>    Run <args> with the specified node version
+    nodist r <version> -- <args..>      (downloads the executable, if necessary).
 
     nodist bin <version>            Get the path to the specified node executable
                                     (downloads the executable, if necessary).
@@ -30,7 +37,7 @@ Usage:
     nodist path <version>           Get the path to the specified node version directory
                                     (downloads the executable, if necessary).
 
-    nodist update                   Update nodist's dependencies.
+    nodist selfupdate               Update nodist's dependencies.
     
     nodist --help                   Display this help
 

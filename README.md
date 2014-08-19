@@ -1,5 +1,5 @@
 # nodist
-A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n).
+A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
 ```
 > nodist 0.10
@@ -8,25 +8,29 @@ A Node version manager for the windows folks out there. Inspired by [n](https://
 > node -v
 v0.10.26
 
-> nodist ls
+> nodist
   0.10.24
   0.10.25
-> 0.10.26
+> 0.10.26 (global)
   0.11.11
   0.11.12
 ```
 
+(see [Usage](#usage))
+
 
 ## Installation
-Don't install node beforehand! Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
+Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
 
 ### DIY installation
-1. Put the contents of [zip](https://github.com/marcelklehr/nodist/zipball/master) in a directory for use or run `git clone git://github.com/marcelklehr/nodist.git`.
-   (Note: Certain paths, such as `Program Files`, require admin rights for nodist to work.)
+1. `git clone git://github.com/marcelklehr/nodist.git` (or grab the [zip](https://github.com/marcelklehr/nodist/zipball/master))  
+   (Note that certain paths, e.g. `Program Files`, require admin rights!)
 
-3. Add `nodist\bin` to your system's path ([how?](http://www.computerhope.com/issues/ch000549.htm))
+3. `setx /M PATH "path\to\nodist\bin;%PATH%"` ([setx not available?](http://www.computerhope.com/issues/ch000549.htm))
 
-4. Now, run `nodist update`, which will update npm and nodist's dependencies.
+4. `setx /M NODIST_PREFIX "path\to\nodist"`
+
+5. Run `nodist selfupdate` to install the dependencies
 
 ### Fancy installation (beta)
 
@@ -50,96 +54,89 @@ As an added bonus, you may also use `latest` and `stable`.
 Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `\bin\nodist.ps1`.
 
 ### Commands
-*All commands implicitly install the specified version before using it, if it isn't installed already.*
+*All commands implicitly install the specified version before using it, if it's not installed already.*
 
 ```
-nodist 0.8.1
+> nodist
+# Lists installed versions highlighting the active one.
 ```
-Activate the specified version globally.  
-All subsequent calls of `node` in any environment will use this version.
-
 
 ```
-nodist ls
+> nodist 0.8.1
+# Sets the global node version.
 ```
-This lists all installed versions and highlights the current active one.
-
-
-```
-nodist dist
-```
-This lists all available node versions.
-
-
 
 ```
-nodist use v0.7.12
+> nodist local 0.8.1
+# Sets the node version per directory (including subdirectories).
 ```
-Temporarily adds the specified version to the current *Path*, so all subsequent calls to `node` in the current terminal environment use that version.  
-This doesn't have any effects on the globally activated version -- closing the current terminal window will cause nodist to forget the set version.
-
 
 ```
-call nodist use 0.7.12
+> nodist env v0.7.12
+# Sets the node version per terminal.
 ```
-Use this in a batch script.
-
-
-```
-nodist r v0.8.1 -- foo.js -s
-```
-Use this to run a specific node version, regardless of the globally activated one.
-Everything after `--` will be passed to node.
-
 
 ```
-nodist + v0.8.1
+call nodist env 0.7.12
+# In a batch script use `call`.
 ```
-Just checks, if the version is installed and downloads it if not. You usually won't need this.
 
+```
+> nodist dist
+# Lists all available node versions.
+```
 
 ```
-nodist + all
+> nodist r v0.8.1 -- foo.js -s
+# Runs a specific version without modifying any state.
 ```
-Install *everything*. Get yourself a cuppa in the meantime.
+
+```
+> nodist + v0.8.1
+# Just checks, if the version is installed and downloads it if not.
+
+> nodist + all
+# will install *everything*.
+```
+
+```
+> nodist - 0.5.10
+# Removes a version.
+```
 
 
 ```
-nodist - 0.5.10
+> nodist --help
+# Displays a complete list of commands with examples.
 ```
-Removes a version.
 
-
-```
-nodist --help
-```
-Displays a complete list of commands with examples.
-
-## Settings
+### Settings
 
 ```
-set HTTP_PROXY=http://myproxy.com:8213
+> set HTTP_PROXY=http://myproxy.com:8213
+# Set a proxy to use for fetching the executables
+# (you may also use `HTTP_PROXY`/`http_proxy`/`HTTPS_PROXY`/`https_proxy`).
 ```
-Set a proxy to use for fetching the executables (you can also use `HTTP_PROXY`/`http_proxy`/`HTTPS_PROXY`/`https_proxy`).
 
+```
+> set NODIST_X64=0
+# Override x64 auto-detection.
+# (Set to `1` to enforce 64bit, `0` to enforce 32bit.)
+```
 
-```
-set NODIST_X64=0
-```
-Override x64 auto-detection. Set to `1` to deal with the 64bit versions of node, or to `0` to deal with the 32bit versions.
+## Details
+Node executables are stored in `NODIST_PREFIX\v` and `NODIST_PREFIX\v-x64`.
+The global `node.exe` is a shim and chooses the right node version to run based on the various version settings:
+ * global -- `NODIST_PREFIX\.node-version` contains the global node version 
+ * local -- `./.node-version` in the current working directory contains the local node verison
+ * env -- `NODIST_VERSION` containst the environmental node version
+
+The latest npm version is available out of the box.
+
+As the global node version will be subject to change, `nodist` comes with its own dedicated node binary.
 
 ## Got ideas?  Doesn't work for you? Want to give feedback?
 [File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
-
-## Details
-`nodist` stores your node executables in `path\to\nodist\v\`, so it can see what's installed and activate previously installed versions.  
-When a version is activated globally, `nodist` copies it from `nodist\v\<version>\node.exe` to `nodist\bin\node.exe`. 64bit versions are stored in a separate directory called `\v-x64`. You can alter the path where versions are stored (default: `path/to/nodist`) using the `NODIST_PREFIX` env variable.
-
-`nodist` comes with the latest npm version and will use this all the time, regardless of the node version you have installed.
-
-As the global node version will be subject to change, `nodist` comes with its own node version and command line files.
-
-Btw, nodist also works in your PowerShell!
 
 ## Legal
 Copyright (c) 2012-2014 by Marcel Klehr  
