@@ -30,7 +30,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 4. `setx /M NODIST_PREFIX "path\to\nodist"`
 
-5. Run `nodist selfupdate` to install the dependencies
+5. Run `nodist selfupdate` (updates the dependencies and sets npm's global prefix)
 
 ### Fancy installation (beta; discouraged)
 
@@ -150,6 +150,9 @@ Copyright (c) 2012-2014 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.5.1
+ * Fix npm prefix in `nodist selfupdate`
 
 v0.5.0
  * Use a binary shim
