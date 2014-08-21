@@ -21,21 +21,19 @@ if "%1"=="selfupdate" goto selfupdate
 goto next2
 
 :selfupdate
-  :: rescue our hacked npm.cmd from `npm update`'s fangs
-  copy /Y "%~dp0\npm.cmd" "%~dp0\npm.copy.cmd"
-  cmd /C npm update npm -g
-  del /F "%~dp0\npm.cmd"
-  move /Y "%~dp0\npm.copy.cmd" "%~dp0\npm.cmd"
+  echo Installing latest stable version...
+  cmd /C nodist stable
 
-  echo Install dependencies...
+  cmd /C npm config set prefix "%NODIST_PREFIX%\bin"
+
+  echo Update dependencies...
   pushd .
   cd /D "%~dp0"
   cd ..
   cmd /C npm update
   popd
 
-  echo Installing latest stable version...
-  nodist stable
+  
   ::goto end
    GOTO end
 

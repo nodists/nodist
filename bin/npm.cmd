@@ -1,4 +1,5 @@
-@echo off
-:: Created by nodist
-set npm_config_prefix=%~dp0
-"node.exe" "%~dp0\node_modules\npm\cli.js" %*
+@IF EXIST "%~dp0\node.exe" (
+  "%~dp0\node.exe"  "%~dp0\node_modules\npm\bin\npm-cli.js" %*
+) ELSE (
+  node  "%~dp0\node_modules\npm\bin\npm-cli.js" %*
+)
