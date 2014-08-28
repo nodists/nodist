@@ -151,6 +151,9 @@ MIT License
 
 ## Changelog
 
+v0.5.2
+ * Fix nodist version
+
 v0.5.1
  * Fix npm prefix in `nodist selfupdate`
 
