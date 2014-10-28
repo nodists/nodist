@@ -30,6 +30,8 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 4. `setx /M NODIST_PREFIX "path\to\nodist"`
 
+4. `setx /M NODE_PATH "path\to\nodist\bin\node_modules;%NODE_PATH%"` if you want your globally-installed modules to be visible in `node` REPL
+
 5. Run `nodist selfupdate` (updates the dependencies and sets npm's global prefix)
 
 ### Fancy installation (beta; discouraged)
