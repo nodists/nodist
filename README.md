@@ -51,7 +51,7 @@ You can build the shim yourself from source (`nodist/src/shim.go`) with `nodist/
 
 1. Remove `<..path..>\nodist\bin` from your path. ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
-3. Remove the `NODIST_PREFIC` env var.
+3. Remove the `NODIST_PREFIX` env var.
 
 2. Delete the nodist directory
 
