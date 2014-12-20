@@ -1,3 +1,2 @@
 #!/bin/sh
-DIR="`dirname \"$0\"`"
-"$DIR/../node.exe" "$DIR/../cli" $*
+`echo -n $COMSPEC | sed -e 's#\\\\#/#g'` '\/C' "$(which "${0}").cmd" $@
