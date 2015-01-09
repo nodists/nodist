@@ -34,7 +34,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 5. Run `nodist selfupdate` (updates the dependencies and sets npm's global prefix)
 
-6. `npm prefix set prefix %NODIST_PREFIX%\bin`
+6. `npm config set prefix %NODIST_PREFIX%\bin`
 
 ### Fancy installation (beta; discouraged)
 
