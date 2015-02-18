@@ -18,6 +18,8 @@ v0.10.26
 
 (see [Usage](#usage))
 
+You might also be interested in [iodist](https://github.com/marcelklehr/iodist), a version manager for io.js.
+
 
 ## Installation
 Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
