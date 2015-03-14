@@ -28,11 +28,11 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 1. `git clone git://github.com/marcelklehr/nodist.git` (or grab the [zip](https://github.com/marcelklehr/nodist/zipball/master))  
    (Note that certain paths, e.g. `Program Files`, require admin rights!)
 
-2. `setx /M PATH "path\to\nodist\bin;%PATH%"` ([setx not available?](http://www.computerhope.com/issues/ch000549.htm))
+2. `set PATH="path\to\nodist\bin;%PATH%"` ([how?](http://www.computerhope.com/issues/ch000549.htm))
 
-3. `setx /M NODIST_PREFIX "path\to\nodist"`
+3. `set NODIST_PREFIX="path\to\nodist"`
 
-4. `setx /M NODE_PATH "path\to\nodist\bin\node_modules;%NODE_PATH%"` if you want your globally-installed modules to be visible in `node` REPL
+4. `set NODE_PATH="path\to\nodist\bin\node_modules;%NODE_PATH%"` if you want your globally-installed modules to be visible in `node` REPL
 
 5. Run `nodist selfupdate` (updates the dependencies and sets npm's global prefix)
 
