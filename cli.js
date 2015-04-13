@@ -56,10 +56,10 @@ process.title = 'nodist';
 if(!process.env['NODIST_PREFIX']) abort('Please set the path to the nodist directory in the NODIST_PREFIX environment variable.')
 
 var distUrl = 'http://nodejs.org/dist'
-var nodistPrefix = process.env['NODIST_PREFIX'].replace('"', '')
+var nodistPrefix = process.env['NODIST_PREFIX'].replace(/"/g, '')
 var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");
 var wantX64 = process.env['NODIST_X64']!=null? process.env['NODIST_X64']==1 : (process.arch=='x64'); // if the env var is set, use its value, other wise use process.arch
-var envVersion = process.env['NODIST_VERSION']? process.env['NODIST_VERSION'].replace('"', '') : process.env['NODIST_VERSION']
+var envVersion = process.env['NODIST_VERSION']? process.env['NODIST_VERSION'].replace(/"/g, '') : process.env['NODIST_VERSION']
 
 // Create a nodist instance
 var n = new nodist(
