@@ -55,9 +55,11 @@ You can build the shim yourself from source (`nodist/src/shim.go`) with `nodist/
 
 1. Remove `<..path..>\nodist\bin` from your path. ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
-3. Remove the `NODIST_PREFIX` env var.
+2. Remove the `NODIST_PREFIX` env var.
 
-2. Delete the nodist directory
+3. Delete the nodist directory
+
+4. Run `npm config delete prefix` on the command prompt to restore NPM functionality if you are going back to the official node install.
 
 
 ## Usage
