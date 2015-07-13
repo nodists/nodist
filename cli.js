@@ -189,7 +189,8 @@ if (command.match(/^remove|rm|-$/i) && argv[1]) {
 
   n.resolveVersion(version, function(er, v) {
     if(er) abort(er.message+'. Sorry.');
-    n.remove(v, function() {
+    n.remove(v, function(er) {
+      if(er) abort(er.message+'. Sorry.')
       exit();
     });
   });
