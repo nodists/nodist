@@ -1,26 +1,25 @@
 # nodist
 
 [![Join the chat at https://gitter.im/marcelklehr/nodist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/marcelklehr/nodist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-A Node version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
+A node.js and io.js version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
 ```
 > nodist 0.10
-0.10.26
+nodev0.10.26
 
 > node -v
 v0.10.26
 
 > nodist
-  0.10.24
-  0.10.25
-> 0.10.26 (global)
-  0.11.11
-  0.11.12
+  nodev0.10.24
+  nodev0.10.25
+> nodev0.10.26 (global)
+  nodev0.11.11
+  nodev0.11.12
+  iojsv2.3.4
 ```
 
 (see [Usage](#usage))
-
-You might also be interested in [iodist](https://github.com/marcelklehr/iodist), a version manager for io.js.
 
 
 ## Installation
@@ -36,9 +35,11 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 4. `set NODE_PATH="path\to\nodist\bin\node_modules;%NODE_PATH%"` if you want your globally-installed modules to be visible in `node` REPL
 
-5. Run `nodist selfupdate` (updates the dependencies and sets npm's global prefix)
+5. Optionally `set NODIST_X64=1` for dealing with 64bit-versions of node.
 
-6. `npm config set prefix "%NODIST_PREFIX%\bin"`
+6. Run `nodist selfupdate` (updates the dependencies and sets npm's global prefix)
+
+7. `npm config set prefix "%NODIST_PREFIX%\bin"`
 
 ### Fancy installation (beta; discouraged)
 
@@ -52,6 +53,10 @@ Note: Our chocolatey package has a limitation such that a reboot is required aft
 Instead of copying around the executables, there's now a binary shim (written in go). Prior to 0.4 the global executable was switched everytime you changed the version,
 now nodist uses a binary shim that makes sure every call to node gets the correct version, so when migrating to 0.5, please make sure that `/nodist/bin/node.exe` is that shim.
 You can build the shim yourself from source (`nodist/src/shim.go`) with `nodist/build.bat`, but it should come ready with the zip and git packages.
+
+### Migrating from <=0.5 to 0.6
+If you're migrating from <=0.4 read the above notice, too. New in 0.6 is io.js support, which introduces new version specs. Node versions
+are now named, e.g. `nodev0.12.7` instead of just `0.12.7`, while io.js versions are named `iojsv2.3.x`. You can still use the old specs for installing node versions, but nodist will map them to the new names. This means that you need to delete your versions directory and re-install previously installed node versions. (Your versions directory is at `NODIST_PREFIX\v` or `NODIST_PREFIX\v-x64`)
 
 ### Uninstall
 
@@ -67,6 +72,7 @@ You can build the shim yourself from source (`nodist/src/shim.go`) with `nodist/
 ## Usage
 Nodist understands version patterns, like `0.8` or `0.8.x` or `~0.8` as well as `0.8.12` or `v0.8.12`.
 As an added bonus, you may also use `latest` and `stable`.
+When dealing with io.js versions you need to use the following: `iojsv2.x` and `iojs-latest`.
 
 Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `\bin\nodist.ps1`.
 
@@ -160,6 +166,12 @@ Copyright (c) 2012-2014 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.6.0
+ * Write out version spec that's being used, to make version errors more intuitive. (thanks to @blzaugg)
+ * Fix replace for nodistPrefix and envVersion (thanks to @sdovenor)
+ * Fix chocolatey package (thanks to @u9520107)
+ * Add support for io.js
 
 v0.5.2
  * Fix nodist version
