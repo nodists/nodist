@@ -23,23 +23,28 @@ v0.10.26
 
 
 ## Installation
-Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
 
-### DIY installation
-1. `git clone git://github.com/marcelklehr/nodist.git` (or grab the [zip](https://github.com/marcelklehr/nodist/zipball/master))  
-   (Note that certain paths, e.g. `Program Files`, require admin rights!)
+Note: Nodist was designed to replace any existing node.js installation, so **if node is already installed on your machine, uninstall it first**.
 
-2. `set PATH="path\to\nodist\bin;%PATH%"` ([how?](http://www.computerhope.com/issues/ch000549.htm))
+### Installation from sources
 
-3. `set NODIST_PREFIX="path\to\nodist"`
+First of all you need to get the source and clone/extract contents the source to disk.
+*Note that certain paths, e.g. `Program Files`, require admin rights!*
 
-4. `set NODE_PATH="path\to\nodist\bin\node_modules;%NODE_PATH%"` if you want your globally-installed modules to be visible in `node` REPL
+Before and after installation, you will need to modify environment variables  ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
-5. Optionally `set NODIST_X64=1` for dealing with 64bit-versions of node.
+1. Grab the [zip](https://github.com/marcelklehr/nodist/zipball/master) or `git clone git://github.com/marcelklehr/nodist.git && cd nodist`.
+2. If you want to use 64-bit versions of node, set `NODIST_X64=1` environment variable.
+3. If on Windows XP or Vista, set `NODIST_PREFIX="path\to\nodist"` environment variable.
+4. Run the installation script:
+  * Using UNIX-y shell (like Git Bash; recommended option): `./install.sh`
+  * Using Windows shell (cmd): `install.bat`
+5. Add `path\to\nodist\bin` at the beginning of `PATH`
+6. Restart the shell
 
-6. Run `nodist selfupdate` (updates the dependencies and sets npm's global prefix)
+Now you should be able to use `npm`, `node` and `nodist` commands.
 
-7. `npm config set prefix "%NODIST_PREFIX%\bin"`
+If you want your globally-installed modules to be visible in `node` REPL, `set NODE_PATH="path\to\nodist\bin\node_modules;%NODE_PATH%"` 
 
 ### Fancy installation (beta; discouraged)
 
@@ -150,7 +155,7 @@ call nodist env 0.7.12
 ## Details
 Node executables are stored in `NODIST_PREFIX\v` and `NODIST_PREFIX\v-x64`.
 The global `node.exe` is a shim and chooses the right node version to run based on the various version settings:
- * global -- `NODIST_PREFIX\.node-version` contains the global node version 
+ * global -- `NODIST_PREFIX\.node-version` contains the global node version
  * local -- `./.node-version` in the current working directory contains the local node verison
  * env -- `NODIST_VERSION` containst the environmental node version
 
@@ -162,7 +167,7 @@ As the global node version will be subject to change, `nodist` comes with its ow
 [File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
 
 ## Legal
-Copyright (c) 2012-2014 by Marcel Klehr  
+Copyright (c) 2012-2014 by Marcel Klehr
 MIT License
 
 ## Changelog
