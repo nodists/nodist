@@ -167,6 +167,9 @@ MIT License
 
 ## Changelog
 
+v0.6.1
+ * Fix for node v4 dist directory structure (thanks to @jakub-g)
+
 v0.6.0
  * Write out version spec that's being used, to make version errors more intuitive. (thanks to @blzaugg)
  * Fix replace for nodistPrefix and envVersion (thanks to @sdovenor)
