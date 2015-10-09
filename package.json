@@ -13,8 +13,7 @@
     "request": "~2.9",
     "mkdirp": "~0.3",
     "semver": "*",
-    "rimraf": "~2",
-    "sha1-stream": "~0.2.0"
+    "rimraf": "~2"
   },
   "devDependencies": {
     "vows": "*"

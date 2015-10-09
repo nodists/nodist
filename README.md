@@ -167,6 +167,9 @@ MIT License
 
 ## Changelog
 
+v0.7.0
+ * Add support for hashing downloading binaries and comparing to upstream (thanks to @nullivex)
+
 v0.6.1
  * Fix for node v4 dist directory structure (thanks to @jakub-g)
 
