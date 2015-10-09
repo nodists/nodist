@@ -14,7 +14,7 @@
     "mkdirp": "~0.3",
     "semver": "*",
     "rimraf": "~2",
-    "sha-stream": "~0.0.7"
+    "sha1-stream": "~0.2.0"
   },
   "devDependencies": {
     "vows": "*"
