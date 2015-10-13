@@ -20,7 +20,6 @@ vows.describe('nodist cli')
     exec(nodistCmd+' add 0.8.0', {env:{ NODIST_PREFIX: testPath, HTTP_PROXY: proxy }}, this.callback)
   },
   'should install the specified version': function(err, stdout) {
-    console.log(err,stdout)
     assert.ifError(err)
     assert.ok(fs.existsSync(n.getPathToExe('0.8.0')))
   }
