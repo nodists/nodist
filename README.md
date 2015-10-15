@@ -167,6 +167,9 @@ MIT License
 
 ## Changelog
 
+v0.8.0
+ * Code refactor to implement standards similar to npmjs style (thanks to @nullivex)
+
 v0.7.0
  * Add support for hashing downloading binaries and comparing to upstream (thanks to @nullivex)
 
