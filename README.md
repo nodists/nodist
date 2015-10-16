@@ -161,17 +161,53 @@ As the global node version will be subject to change, `nodist` comes with its ow
 ## Got ideas?  Doesn't work for you? Want to give feedback?
 [File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
 
+## Testing
+
+The default test suite can be ran using npm
+
+```
+$ npm test
+```
+
+For development a more interactive test method might be best
+
+```
+$ npm -g install vows
+$ vows --spec test\cli-test.js
+```
+
+To see nodist output during tests try this
+
+```
+$ set DEBUG=nodist*
+$ set TEST=test
+$ vows --spec test\cli-test.js
+```
+
+## Debugging
+
+All debug logging now uses the [https://github.com/visionmedia/debug](debug)
+package.
+
+The following can be used to see all messages (typically used in dev)
+
+```
+$ DEBUG=nodist node app
+```
+
 ## Legal
 Copyright (c) 2012-2014 by Marcel Klehr  
 MIT License
 
 ## Changelog
 
-v0.8.0
- * Code refactor to implement standards similar to npmjs style (thanks to @nullivex)
-
 v0.7.0
  * Add support for hashing downloading binaries and comparing to upstream (thanks to @nullivex)
+ * Code refactor to implement standards similar to npmjs style (thanks to @nullivex)
+ * Implement download progress bar (thanks to @nullivex)
+ * Add debugging output to aid in development and issue handling (thanks to @nullivex)
+ * Bump NPM version to 3.3.8 (thanks to @nullivex)
+ * Improve testing and offer ability to see test output (thanks to @nullivex)
 
 v0.6.1
  * Fix for node v4 dist directory structure (thanks to @jakub-g)

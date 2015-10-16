@@ -1,5 +1,5 @@
 {
-  "asi": true,
+  "asi": false,
   "laxcomma": true,
   "node": true,
   "esnext": true,
