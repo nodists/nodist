@@ -50,6 +50,25 @@ If `mode` isn't specified, it defaults to `0777 & (~process.umask())`.
 
 Returns the first directory that had to be created, if any.
 
+# usage
+
+This package also ships with a `mkdirp` command.
+
+```
+usage: mkdirp [DIR1,DIR2..] {OPTIONS}
+
+  Create each supplied directory including any necessary parent directories that
+  don't yet exist.
+  
+  If the directory already exists, do nothing.
+
+OPTIONS are:
+
+  -m, --mode   If a directory needs to be created, set the mode as an octal
+               permission string.
+
+```
+
 # install
 
 With [npm](http://npmjs.org) do:
@@ -57,6 +76,14 @@ With [npm](http://npmjs.org) do:
 ```
 npm install mkdirp
 ```
+
+to get the library, or
+
+```
+npm install -g mkdirp
+```
+
+to get the command.
 
 # license
 

@@ -1,4 +1,6 @@
 /v
 /v-x64
-/node_modules
 /.node-version
+/node_modules/vows
+/node_modules/.bin/vows*
+/.idea
