@@ -184,6 +184,13 @@ $ set TEST=test
 $ vows --spec test\cli-test.js
 ```
 
+Testing also accepts env variables for using a mirror to download from.
+
+```
+$ set NODIST_NODE_MIRROR=http://nodejs.serverpals.com/dist
+$ vows --spec test\cli-test.js
+```
+
 ## Debugging
 
 All debug logging now uses the [https://github.com/visionmedia/debug](debug)
@@ -201,13 +208,15 @@ MIT License
 
 ## Changelog
 
-v0.7.0
- * Add support for hashing downloading binaries and comparing to upstream (thanks to @nullivex)
- * Code refactor to implement standards similar to npmjs style (thanks to @nullivex)
- * Implement download progress bar (thanks to @nullivex)
- * Add debugging output to aid in development and issue handling (thanks to @nullivex)
- * Bump NPM version to 3.3.8 (thanks to @nullivex)
- * Improve testing and offer ability to see test output (thanks to @nullivex)
+v0.7.0 (thanks to @nullivex)
+ * Add support for hashing downloading binaries and comparing to upstream
+ * Code refactor to implement standards similar to npmjs style
+ * Implement download progress bar
+ * Add debugging output to aid in development and issue handling
+ * Bump NPM version to 3.3.8
+ * Improve testing and offer ability to see test output
+ * Testing now accepts mirror env variables
+ * Env variables can now be used to point nodist at a mirror
 
 v0.6.1
  * Fix for node v4 dist directory structure (thanks to @jakub-g)

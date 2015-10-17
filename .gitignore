@@ -1,6 +1,9 @@
 /v
 /v-x64
 /.node-version
-/node_modules/vows
-/node_modules/.bin/vows*
+node_modules
 /.idea
+NodistSetup.exe
+/build/staging
+/build/tmp
+/build/Nodist.nsi

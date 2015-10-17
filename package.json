@@ -11,6 +11,7 @@
   ],
   "author": "Marcel Klehr <mklehr@gmx.net>",
   "homepage": "https://github.com/marcelklehr/nodist",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/marcelklehr/nodist/issues"
   },
@@ -19,18 +20,24 @@
     "url": "http://github.com/marcelklehr/nodist.git"
   },
   "dependencies": {
+    "bluebird": "^2.10.2",
     "debug": "^2.2.0",
-    "mkdirp": "~0.4",
+    "mkdirp": "~0.5",
+    "ncp": "^2.0.0",
     "progress": "nullivex/node-progress",
-    "request": "~2.9",
+    "promisepipe": "^1.0.1",
+    "recursive-readdir": "^1.2.1",
+    "request": "~2.65",
     "rimraf": "~2",
-    "semver": "*"
+    "semver": "*",
+    "unzip": "^0.1.11"
   },
   "devDependencies": {
     "vows": "*"
   },
   "scripts": {
-    "start": "node cli.js",
+    "build": "./build/node.exe build.js",
+    "latest": "node cli.js",
     "test": "node ./node_modules/vows/bin/vows --spec ./test/*-test.js"
   },
   "os": [

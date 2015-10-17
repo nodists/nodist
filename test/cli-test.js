@@ -20,8 +20,8 @@ var proxy = (
 
 //setup new nodist
 var n = new nodist(
-  'http://nodejs.org/dist',
-  'http://iojs.org/dist',
+  process.env.NODIST_NODE_MIRROR || 'http://nodejs.org/dist',
+  process.env.NODIST_IOJS_MIRROR || 'http://iojs.org/dist',
   path.resolve(testPath)
 );
 
@@ -58,11 +58,12 @@ var execNodist = function execNodist(args, cb){
     stderr = stderr + chunk.toString();
   });
   cp.on('error', function(err){
+    console.log('execution error',err);
     cb(err);
   });
   cp.on('close', function(code){
     debug('execNodist', 'exec complete', code);
-    console.log(cb);
+    console.log('exit code',code);
     cb(null, stdout, stderr, code);
   });
 };
