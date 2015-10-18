@@ -217,6 +217,7 @@ v0.7.0 (thanks to @nullivex)
  * Improve testing and offer ability to see test output
  * Testing now accepts mirror env variables
  * Env variables can now be used to point nodist at a mirror
+ * Only downloads binaries from HTTPS now as node is phasing out HTTP support
 
 v0.6.1
  * Fix for node v4 dist directory structure (thanks to @jakub-g)
