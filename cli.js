@@ -55,7 +55,7 @@ process.title = 'nodist';
 
 if(!process.env['NODIST_PREFIX']) abort('Please set the path to the nodist directory in the NODIST_PREFIX environment variable.')
 
-var distUrl = 'http://nodejs.org/dist'
+var distUrl = 'https://nodejs.org/dist'
 var iojsDistUrl = 'https://iojs.org/dist'
 var nodistPrefix = process.env['NODIST_PREFIX'].replace(/"/g, '')
 var proxy = (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || "");

@@ -20,8 +20,8 @@ var proxy = (
 
 //setup new nodist
 var n = new nodist(
-  process.env.NODIST_NODE_MIRROR || 'http://nodejs.org/dist',
-  process.env.NODIST_IOJS_MIRROR || 'http://iojs.org/dist',
+  process.env.NODIST_NODE_MIRROR || 'https://nodejs.org/dist',
+  process.env.NODIST_IOJS_MIRROR || 'https://iojs.org/dist',
   path.resolve(testPath)
 );
 
