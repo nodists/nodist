@@ -59,7 +59,8 @@ node.exe - latest node executable downloaded from nodejs.org
 
 //we ship the 32bit version for the bootstrap and download 64bit versions later
 //var nodeLatestUrl = 'http://nodejs.org/dist/latest/win-x86/node.exe';
-var nodeLatestUrl = 'http://nodejs.serverpals.com/dist/latest/win-x86/node.exe';
+var nodeLatestUrl =
+  'https://nodejs.serverpals.com/dist/latest/win-x86/node.exe';
 var npmLatestReleaseUrl = 'https://github.com/npm/npm/releases/latest';
 //this gets updated once we know the right version
 var npmLatestUrl = 'https://codeload.github.com/npm/npm/zip/vVERSION';
