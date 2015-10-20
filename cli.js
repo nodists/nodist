@@ -88,8 +88,7 @@ var n = new nodist(
   distUrl,
   iojsDistUrl,
   nodistPrefix,
-  //replace https for http, nodejs.org/dist doesnt support https
-  proxy.replace('https://', 'http://'),
+  proxy,
   wantX64,
   envVersion
 );
