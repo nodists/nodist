@@ -24,7 +24,7 @@
 
 ; make some includes
 !include "WinMessages.nsh"
-!include "x64.nsh"
+;!include "x64.nsh"
 
 ######################################################################
 
@@ -59,6 +59,10 @@ InstallDir "$PROGRAMFILES\Nodist"
 !insertmacro MUI_PAGE_LICENSE "${LICENSE_TXT}"
 !endif
 
+!insertmacro MUI_PAGE_COMPONENTS
+
+!insertmacro MUI_PAGE_DIRECTORY
+
 !ifdef REG_START_MENU
 !define MUI_STARTMENUPAGE_NODISABLE
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "Nodist"
@@ -82,6 +86,16 @@ InstallDir "$PROGRAMFILES\Nodist"
 
 ######################################################################
 
+; this sets up the component selection for build type
+SectionGroup "Node.js Architecture"
+  Section "x86" wantx86
+    WriteRegExpandStr ${ENV_HKLM} NODIST_X64 0
+  SectionEnd
+  Section /o "x64" wantx64
+    WriteRegExpandStr ${ENV_HKLM} NODIST_X64 1
+  SectionEnd
+SectionGroupEnd
+
 Section -MainProgram
 ${INSTALL_TYPE}
 SetOverwrite ifnewer
@@ -96,11 +110,10 @@ Call AddToPath
 ; set variable
 WriteRegExpandStr ${ENV_HKLM} NODIST_PREFIX "$INSTDIR"
 WriteRegExpandStr ${ENV_HKLM} NODE_PATH "$INSTDIR\bin\node_modules;%NODE_PATH%"
-${If} ${RunningX64}
-  WriteRegExpandStr ${ENV_HKLM} NODIST_X64 1
-${EndIf}
 ; make sure windows knows about the change
 SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
+; change the permssions on the install dir, since everyone needs ot write to it
+AccessControl::GrantOnFile "$INSTDIR" "(BU)" "FullAccess"
 SectionEnd
 
 ######################################################################
@@ -157,9 +170,7 @@ Call un.RemoveFromPath
 ; delete variables
 DeleteRegValue ${ENV_HKLM} NODIST_PREFIX
 DeleteRegValue ${ENV_HKLM} NODE_PATH
-${If} ${RunningX64}
-  DeleteRegValue ${ENV_HKLM} NODIST_X64
-${EndIf}
+DeleteRegValue ${ENV_HKLM} NODIST_X64
 ; make sure windows knows about the change
 SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
  
@@ -368,3 +379,16 @@ FunctionEnd
 !macroend
 !insertmacro StrStr ""
 !insertmacro StrStr "un."
+
+; handle radio buttons for build types
+
+Function .onInit
+  StrCpy $1 ${wantx86}
+FunctionEnd
+
+Function .onSelChange
+  !insertmacro StartRadioButtons $1
+    !insertmacro RadioButton ${wantx86}
+    !insertmacro RadioButton ${wantx64}
+  !insertmacro EndRadioButtons
+FunctionEnd
