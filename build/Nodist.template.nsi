@@ -114,6 +114,8 @@ WriteRegExpandStr ${ENV_HKLM} NODE_PATH "$INSTDIR\bin\node_modules;%NODE_PATH%"
 SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
 ; change the permssions on the install dir, since everyone needs ot write to it
 AccessControl::GrantOnFile "$INSTDIR" "(BU)" "FullAccess"
+; set the NPM prefix
+Exec '"$INSTDIR\node.exe" "$INSTDIR\bin\node_modules\npm\bin\npm-cli.js" config set prefix "$INSTDIR\bin"'
 SectionEnd
 
 ######################################################################

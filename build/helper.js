@@ -50,17 +50,21 @@ exports.downloadFile = function downloadFile(url, dest, cb){
   var fileSize = 1;
   var req = request.get(url);
   req.on('response',function(res){
-    fileSize = Math.round(res.headers['content-length'] / 1024);
-    progress = new ProgressBar(
-      path.basename(dest) +
-      ' [:bar] :current/:total KiB :rate/Kbps :percent :etas',
-      {
-        complete: '=',
-        incomplete: ' ',
-        width: 15,
-        total: fileSize
-      }
-    );
+    if(res.statusCode !== 200){
+      cb(new Error('Failed to read response from ' + url));
+    } else {
+      fileSize = Math.round(res.headers['content-length'] / 1024);
+      progress = new ProgressBar(
+        path.basename(dest) +
+        ' [:bar] :current/:total KiB :rate/Kbps :percent :etas',
+        {
+          complete: '=',
+          incomplete: ' ',
+          width: 15,
+          total: fileSize
+        }
+      );
+    }
   });
   req.on('data',function(chunk){
     progress.tick(Math.round(chunk.length / 1024));
