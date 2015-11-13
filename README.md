@@ -28,7 +28,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 ### Installing with the official installer
 
-1. Download the installer [here]()
+1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.7.0/NodistSetup-v0.7.0.exe)
 2. Run the installer and follow the install wizard
 
 ### Migrating from <=0.6 to 0.7
