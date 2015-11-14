@@ -1,6 +1,6 @@
 {
   "name": "nodist",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Natural node version manager for windows",
   "keywords": [
     "node",
