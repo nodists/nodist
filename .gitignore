@@ -3,8 +3,4 @@
 /.node-version
 node_modules
 /.idea
-/build/NodistSetup**
-/build/staging
-/build/tmp
-/build/Nodist.nsi
 /build/out
