@@ -65,8 +65,9 @@ var npmLatestReleaseUrl = 'https://github.com/npm/npm/releases/latest';
 var npmLatestUrl = 'https://codeload.github.com/npm/npm/zip/vVERSION';
 
 //setup some folders
-var tmpDir = path.resolve(path.join(__dirname,'tmp'));
-var stagingDir = path.resolve(path.join(__dirname,'staging'));
+var outDir = path.resolve(path.join(__dirname, 'out'))
+var tmpDir = path.resolve(path.join(outDir, 'tmp'));
+var stagingDir = path.resolve(path.join(outDir, 'staging'));
 var stagingBin = path.join(stagingDir,'bin');
 var stagingLib = path.join(stagingDir,'lib');
 var stagingNpmDir = stagingBin + '/node_modules/npm';
@@ -91,13 +92,12 @@ console.log('  before going further we need to prep our staging folder');
 
 //start by clearing the staging and tmp folders
 P.all([
-  rimraf(stagingDir),
-  rimraf(tmpDir)
+  rimraf(outDir)
 ])
   .then(function(){
     return P.all([
-      fs.mkdirAsync(stagingDir),
-      fs.mkdirAsync(tmpDir)
+      mkdirp(stagingDir),
+      mkdirp(tmpDir)
     ]);
   })
   .then(function(){
@@ -226,14 +226,16 @@ P.all([
       uninstallFolders.join('\n')
     );
     return fs.writeFileAsync(
-      path.resolve(nodistDir + '/build/Nodist.nsi'),
+      path.resolve(nodistDir + '/build/out/Nodist.nsi'),
       nsiTemplate
     );
   })
+  .then(function() {
+    console.log('Run NSIS compiler')
+    return exec('makensis "' + nodistDir + '/build/out/Nodist.nsi"')
+  })
   .then(function(){
-    console.log('NSI template created!');
     console.log('Build complete!');
-    console.log('Just compile the Nodist.nsi file to complete the build');
     process.exit(0);
   })
   .catch(function(err){

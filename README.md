@@ -1,6 +1,7 @@
 # nodist
 
 [![Join the chat at https://gitter.im/marcelklehr/nodist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/marcelklehr/nodist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A node.js and io.js version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
 ```
@@ -25,40 +26,15 @@ v0.10.26
 ## Installation
 Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
 
-### DIY installation
-1. `git clone git://github.com/marcelklehr/nodist.git` (or grab the [zip](https://github.com/marcelklehr/nodist/zipball/master))  
-   (Note that certain paths, e.g. `Program Files`, require admin rights!)
+### Installing with the official installer
 
-2. `set PATH="path\to\nodist\bin;%PATH%"` ([how?](http://www.computerhope.com/issues/ch000549.htm))
+1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.7.1/NodistSetup-v0.7.1.exe)
+2. Run the installer and follow the install wizard
 
-3. `set NODIST_PREFIX="path\to\nodist"`
+### Migrating from <=0.6 to 0.7
+If you're looking to upgrade your Nodist installation, the easiest way is to uninstall (see below) the old installation and install the new version with the installer above.
 
-4. `set NODE_PATH="path\to\nodist\bin\node_modules;%NODE_PATH%"` if you want your globally-installed modules to be visible in `node` REPL
-
-5. Optionally `set NODIST_X64=1` for dealing with 64bit-versions of node.
-
-6. Run `nodist selfupdate` (updates the dependencies and sets npm's global prefix)
-
-7. `npm config set prefix "%NODIST_PREFIX%\bin"`
-
-### Fancy installation (beta; discouraged)
-
-1.  Install chocolatey: http://chocolatey.org/
-
-2.  Run `cinst nodist -Pre`
-
-Note: Our chocolatey package has a limitation such that a reboot is required aftewards for nodist to be accessible.  We'll try to fix this soon.
-
-### Migrating from <=0.4 to 0.5
-Instead of copying around the executables, there's now a binary shim (written in go). Prior to 0.4 the global executable was switched everytime you changed the version,
-now nodist uses a binary shim that makes sure every call to node gets the correct version, so when migrating to 0.5, please make sure that `/nodist/bin/node.exe` is that shim.
-You can build the shim yourself from source (`nodist/src/shim.go`) with `nodist/build.bat`, but it should come ready with the zip and git packages.
-
-### Migrating from <=0.5 to 0.6
-If you're migrating from <=0.4 read the above notice, too. New in 0.6 is io.js support, which introduces new version specs. Node versions
-are now named, e.g. `nodev0.12.7` instead of just `0.12.7`, while io.js versions are named `iojsv2.3.x`. You can still use the old specs for installing node versions, but nodist will map them to the new names. This means that you need to delete your versions directory and re-install previously installed node versions. (Your versions directory is at `NODIST_PREFIX\v` or `NODIST_PREFIX\v-x64`)
-
-### Uninstall
+### Uninstall (<v0.7)
 
 1. Remove `<..path..>\nodist\bin` from your path. ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
@@ -207,6 +183,9 @@ Copyright (c) 2012-2014 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.7.1
+ * Fix x64 support
 
 v0.7.0 (thanks to @nullivex)
  * Add support for hashing downloading binaries and comparing to upstream

@@ -77,9 +77,7 @@ var proxy = (
   process.env.https_proxy ||
   ''
 );
-// if the env var is set, use its value, other wise use process.arch
-var wantX64 = process.env.NODIST_X64 !== null ?
-  process.env.NODIST_X64 === 1 : (process.arch ==='x64');
+var wantX64 = process.env.NODIST_X64 == 1;
 var envVersion = process.env.NODIST_VERSION ?
   process.env.NODIST_VERSION.replace(/"/g, '') : process.env.NODIST_VERSION;
 

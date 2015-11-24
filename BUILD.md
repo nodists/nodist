@@ -1,9 +1,8 @@
-# Building Nodist
+# Building the Nodist installer
 
 Moving forward as of 0.7.0 Nodist no longer installs like it had previously.
 
-Now an installer is generated from the build process. This document is going
-to overview the build process in the hope that it can then be scripted.
+Now an installer is generated from the build process.
 
 ## Preparation
 
@@ -20,23 +19,17 @@ Before a build can be made the following software is needed.
   * Extract ZIP File
   * Copy `Plugin\AccessControl.dll` to `C:\Program Files x86\NSIS\Plugins\x86-ansi`
   * Copy `Unicode\Plugin\AccessControl.dll` to `C:\Program Files x86\NSIS\Plugins\x86-unicode`
+* Add C:\Program Files\NSIS to your PATH
 
 ## Build Process
-
-
-First run the build script to prepare the installer for compilation.
 
 ```
 $ cd <NODIST_DEV_FOLDER>
 $ node build\build.js
 ``
 
-Next compile the installer by opening NSIS and selecting the "Compile Scripts"
-option. Point the compiler to `<NODIST_DEV_FOLDER>\build\Nodist.nsi` this will
-start the compile process.
-
 Provided the process is successful the installer will be at
-`<NODIST_DEV_FOLDER>\build\NodistSetup.exe`
+`<NODIST_DEV_FOLDER>\build\out\NodistSetup.exe`
 
 Next, move the `NodistSetup.exe` to the final production name of
 `NodistSetup-v<VERSION>.exe` for example `NodistSetup-v0.7.0.exe`
