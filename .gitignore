@@ -7,3 +7,4 @@ node_modules
 /build/staging
 /build/tmp
 /build/Nodist.nsi
+/build/out
