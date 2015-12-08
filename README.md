@@ -184,6 +184,9 @@ MIT License
 
 ## Changelog
 
+v0.7.2
+* New build with the correct version of NPM
+
 v0.7.1
  * Fix x64 support
 
