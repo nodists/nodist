@@ -28,7 +28,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 ### Installing with the official installer
 
-1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.7.1/NodistSetup-v0.7.1.exe)
+1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.7.2/NodistSetup-v0.7.2.exe)
 2. Run the installer and follow the install wizard
 
 ### Migrating from <=0.6 to 0.7
@@ -232,7 +232,8 @@ v0.8.0
 * Bump Copyright year
 
 v0.7.2
-* New build with the correct version of NPM
+* correct version of NPM
+* Fixed offline support (#104)
 
 v0.7.1
  * Fix x64 support
