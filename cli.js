@@ -128,35 +128,38 @@ if (!argv[0]) {
 if (command.match(/^list|ls$/i)) {
 
   n.getGlobal(function(err, global){
-    if(err) void(0);
-    n.getLocal(function(err, local, localFile){
-      if(err) void(0);
-      n.getEnv(function(err, env){
-        if(err) void(0);
-        n.listInstalled(function(err, ls) {
-          if(err) abort(err.message+'. Sorry.');
-          if(n.wantX64) console.log('  (x64)');
-          if(ls.length === 0) abort('No builds installed, yet.');
-          var current = env || local || global;
-          // display all versions
-          ls.forEach(function(version) {
-            var del = '  ';
-            var note = ' ';
-            if (version === env) {
-              note += ' (env)';
-            }
-            if (version === local) {
-              note += ' ('+localFile+')';
-            }
-            if (version === global) {
-              note += ' (global)';
-            }
-            if (version === current) del ='> ';// highlight current
+    n.resolveVersionLocally(global, function(er, global) {
+      n.getLocal(function(err, local, localFile){
+        n.resolveVersionLocally(local, function(er, local) {
+          n.getEnv(function(err, env){
+            n.resolveVersionLocally(env, function(er, env) {
+              n.listInstalled(function(err, ls) {
+                if(err) abort(err.message+'. Sorry.');
+                if(n.wantX64) console.log('  (x64)');
+                if(ls.length === 0) abort('No builds installed, yet.');
+                var current = env || local || global;
+                // display all versions
+                ls.forEach(function(version) {
+                  var del = '  ';
+                  var note = ' ';
+                  if (version === env) {
+                    note += ' (env)';
+                  }
+                  if (version === local) {
+                    note += ' ('+localFile+')';
+                  }
+                  if (version === global) {
+                    note += ' (global)';
+                  }
+                  if (version === current) del ='> ';// highlight current
 
-            console.log(del + version+note);
-          });
-          exit();
-        });
+                  console.log(del + version+note);
+                });
+                exit();
+              });
+            })
+          })
+        })
       });
     });
   });
