@@ -107,22 +107,10 @@ func main() {
   
   path = path+"/"+version
   nodebin = path+"/node.exe"
-  
-  
-  // Get args
-  
-  var nodeargs []string
-  
-  if a, err := ioutil.ReadFile(path+"/args"); err == nil && len(a) != 0 {
-    argsFile := strings.Split(string(a), " ")
-    nodeargs = append(nodeargs, argsFile...)
-  }
-  
-  nodeargs = append(nodeargs, os.Args[1:]...)
-  
+
   // Run node!
   
-  cmd := exec.Command(nodebin, nodeargs...)
+  cmd := exec.Command(nodebin, os.Args[1:]...)
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
   cmd.Stdin = os.Stdin
