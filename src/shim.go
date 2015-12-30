@@ -45,7 +45,7 @@ func main() {
   } else
   if v, err := ioutil.ReadFile(os.Getenv("NODIST_PREFIX")+"\\.node-version"); err == nil {
     spec = string(v)
-    fmt.Println("Global file found:'", spec, "'")
+    //fmt.Println("Global file found:'", spec, "'")
   }
 
   spec = strings.Trim(spec, "v \r\n")
