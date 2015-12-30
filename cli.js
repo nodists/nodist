@@ -127,28 +127,28 @@ if (!argv[0]) {
 // LIST all installed buids
 if (command.match(/^list|ls$/i)) {
 
-  n.getGlobal(function(err, global){
-    n.resolveVersionLocally(global, function(er, global) {
-      n.getLocal(function(err, local, localFile){
-        n.resolveVersionLocally(local, function(er, local) {
-          n.getEnv(function(err, env){
-            n.resolveVersionLocally(env, function(er, env) {
+  n.getGlobal(function(err, globalSpec){
+    n.resolveVersionLocally(globalSpec, function(er, globalVersion) {
+      n.getLocal(function(err, localSpec, localFile){
+        n.resolveVersionLocally(localSpec, function(er, localVersion) {
+          n.getEnv(function(err, envSpec){
+            n.resolveVersionLocally(envSpec, function(er, envVersion) {
               n.listInstalled(function(err, ls) {
                 if(err) abort(err.message+'. Sorry.');
                 if(n.wantX64) console.log('  (x64)');
                 if(ls.length === 0) abort('No builds installed, yet.');
-                var current = env || local || global;
+                var current = envVersion || localVersion || globalVersion;
                 // display all versions
                 ls.forEach(function(version) {
                   var del = '  ';
                   var note = ' ';
-                  if (version === env) {
+                  if (version === envVersion) {
                     note += ' (env)';
                   }
-                  if (version === local) {
+                  if (version === localVersion) {
                     note += ' ('+localFile+')';
                   }
-                  if (version === global) {
+                  if (version === globalVersion) {
                     note += ' (global)';
                   }
                   if (version === current) del ='> ';// highlight current
