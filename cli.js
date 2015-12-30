@@ -254,25 +254,19 @@ else if (command.match(/^args$/i) && argv[1]) {
 // LOCAL use the specified version locally
 else if (command.match(/^local$/i) && argv[1]) {
   version = argv[1];
-  n.resolveVersion(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
-    n.setLocal(v, function(err, file) {
-      if(err) abort(err.message+'. Sorry.');
-      console.log(v, '(' + file + ')');
-      exit();
-    });
+  n.setLocal(version, function(err, file) {
+    if(err) abort(err.message+'. Sorry.');
+    console.log(version, '(' + file + ')');
+    exit();
   });
 }
 // GLOBAL globally use the specified node version
 else if (command.match(/^global$/i) && argv[1] || argv[0] && !argv[1]) {
   version = argv[1] || argv[0];
-  n.resolveVersion(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
-    n.setGlobal(v, function(err) {
-      if(err) abort(err.message+'. Sorry.');
-      console.log(v);
-      exit();
-    });
+  n.setGlobal(version, function(err) {
+    if(err) abort(err.message+'. Sorry.');
+    console.log(version);
+    exit();
   });
 }
 // HELP display help for unknown cli parameters
