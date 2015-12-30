@@ -194,7 +194,12 @@ func getInstalledVersions() (versions []*semver.Version, error error) {
 }
 
 func getTargetEngine() (spec string, error error) {
+  if len(os.Args) < 2 {
+    return
+  }
+  
   targetFile := os.Args[1]
+  
   dir := filepath.Dir(targetFile)
   if !filepath.IsAbs(dir) {
     cwd, err := os.Getwd()
