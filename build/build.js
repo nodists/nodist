@@ -3,6 +3,7 @@ var P = require('bluebird');
 var exec = require('child_process').exec;
 var fs = require('fs');
 var mkdirp = require('mkdirp');
+var ncp = require('ncp');
 var path = require('path');
 var promisePipe = require('promisepipe');
 var recursiveReaddir = require('recursive-readdir');
@@ -10,14 +11,22 @@ var request = require('request');
 var rimraf = require('rimraf');
 var unzip = require('unzip');
 
-var helper = require('./helper');
+var github = require('../lib/github');
+var helper = require('../lib/build');
+var npm = require('../lib/npm');
+var pkg = require('../package.json');
+
+
 
 //make some promises
 P.promisifyAll(fs);
+P.promisifyAll(github);
+P.promisifyAll(github.releases);
 P.promisifyAll(helper);
 P.promisifyAll(request);
 exec = P.promisify(exec);
 mkdirp = P.promisify(mkdirp);
+ncp = P.promisify(ncp);
 rimraf = P.promisify(rimraf);
 recursiveReaddir = P.promisify(recursiveReaddir);
 
@@ -59,13 +68,11 @@ node.exe - latest node executable downloaded from nodejs.org
 
 //we ship the 32bit version for the bootstrap and download 64bit versions later
 //var nodeLatestUrl = 'http://nodejs.org/dist/latest/win-x86/node.exe';
-var nodeLatestUrl = 'https://nodejs.org/dist/latest/win-x86/node.exe';
-var npmLatestReleaseUrl = 'https://github.com/npm/npm/releases/latest';
-//this gets updated once we know the right version
-var npmLatestUrl = 'https://codeload.github.com/npm/npm/zip/vVERSION';
+var nodeLatestUrlx86 = 'https://nodejs.org/dist/VERSION/win-x86/node.exe';
+var nodeLatestUrlx64 = 'https://nodejs.org/dist/VERSION/win-x64/node.exe';
 
 //setup some folders
-var outDir = path.resolve(path.join(__dirname, 'out'))
+var outDir = path.resolve(path.join(__dirname, 'out'));
 var tmpDir = path.resolve(path.join(outDir, 'tmp'));
 var stagingDir = path.resolve(path.join(outDir, 'staging'));
 var stagingBin = path.join(stagingDir,'bin');
@@ -80,6 +87,10 @@ var npmZip = path.resolve(tmpDir + '/npm.zip');
 
 //default npm version to the latest at the time of writing
 var npmVersion = '3.3.8';
+var nodeVersion = '4.2.1';
+
+var versionPathx86 = '';
+var versionPathx64 = '';
 
 //manifests
 var installManifest = [];
@@ -127,7 +138,13 @@ P.all([
         nodistBin + '/npm.cmd',stagingBin + '/npm.cmd'),
       //lib folder
       helper.copyFileAsync(
+        nodistLib + '/build.js',stagingLib + '/build.js'),
+      helper.copyFileAsync(
+        nodistLib + '/github.js',stagingLib + '/github.js'),
+      helper.copyFileAsync(
         nodistLib + '/nodist.js',stagingLib + '/nodist.js'),
+      helper.copyFileAsync(
+        nodistLib + '/npm.js',stagingLib + '/npm.js'),
       helper.copyFileAsync(
         nodistLib + '/versions.js',stagingLib + '/versions.js'),
       //root level files
@@ -141,23 +158,61 @@ P.all([
   })
   .then(function(){
     console.log('Finished copying static files');
-    console.log('Downloading the latest Node for packaging');
-    return helper.downloadFileAsync(nodeLatestUrl,stagingDir + '/node.exe');
+    console.log('Determining latest version of node');
+    return request.getAsync({
+      url: 'https://nodejs.org/dist/index.json',
+      json: true
+    });
+  })
+  .spread(function(res,body){
+    nodeVersion = body[0].version;
+    nodeLatestUrlx86 = nodeLatestUrlx86.replace('VERSION',nodeVersion);
+    nodeLatestUrlx64 = nodeLatestUrlx64.replace('VERSION',nodeVersion);
+    console.log('Latest version of Node ' + nodeVersion);
+    console.log('Downloading ' + nodeLatestUrlx86);
+    return helper.downloadFileAsync(nodeLatestUrlx86,stagingDir + '/node.exe');
+  })
+  .then(function(){
+
+  })
+  .then(function(){
+    console.log('Copying that EXE as if it were installed normally');
+    versionPathx86 = stagingDir + '/v/' + nodeVersion.replace('v','');
+    versionPathx64 = stagingDir + '/v-x64/' + nodeVersion.replace('v','');
+    return P.all([
+      mkdirp(versionPathx86),
+      mkdirp(versionPathx64)
+    ]);
+  })
+  .then(function(){
+    return ncp(
+      stagingDir + '/node.exe',
+      versionPathx86 + '/node.exe'
+    );
+  })
+  .then(function(){
+    //download the 64bit version as well
+    console.log('Downloading the 64bit version for packaging');
+    return helper.downloadFileAsync(
+      nodeLatestUrlx64,versionPathx64 + '/node.exe');
+  })
+  .then(function(){
+    console.log('Writing ' + nodeVersion + ' as version for Nodist to use');
+    return fs.writeFileAsync(
+      path.resolve(path.join(stagingDir,'.node-version')),
+      nodeVersion
+    );
   })
   .then(function(){
     console.log('Figure out the latest version of NPM');
-    return request.headAsync({
-      url: npmLatestReleaseUrl,
-      followRedirect: false
-    });
+    return npm.latestVersion();
   })
-  .spread(function(resp){
-    //extract version from url
-    npmVersion = resp.headers.location.match(/v(.+)$/).slice(1);
+  .then(function(version){
+    npmVersion = version;
+    var downloadLink = npm.downloadUrl(version);
     console.log('Determined latest NPM as ' + npmVersion);
-    npmLatestUrl = npmLatestUrl.replace('VERSION',npmVersion);
-    console.log('Downloading latest NPM from ' + npmLatestUrl);
-    return helper.downloadFileAsync(npmLatestUrl,npmZip);
+    console.log('Downloading latest NPM from ' + downloadLink);
+    return helper.downloadFileAsync(downloadLink,npmZip);
   })
   .then(function(){
     console.log('Extracting NPM to staging folder');
@@ -171,7 +226,9 @@ P.all([
   })
   .then(function(){
     return fs.renameAsync(
-      path.resolve(path.dirname(stagingNpmDir) + '/npm-' + npmVersion),
+      path.resolve(
+        path.dirname(stagingNpmDir) + '/npm-' + npmVersion.replace('v','')
+      ),
       stagingNpmDir
     );
   })
@@ -214,6 +271,10 @@ P.all([
   .then(function(nsiTemplate){
     nsiTemplate = nsiTemplate.toString();
     nsiTemplate = nsiTemplate.replace(
+      ';VERSION;',
+      pkg.version
+    );
+    nsiTemplate = nsiTemplate.replace(
       ';ADD_FILES;',
       installManifest.join('\n')
     );
@@ -231,8 +292,8 @@ P.all([
     );
   })
   .then(function() {
-    console.log('Run NSIS compiler')
-    return exec('makensis "' + nodistDir + '/build/out/Nodist.nsi"')
+    console.log('Run NSIS compiler');
+    return exec('makensis "' + nodistDir + '/build/out/Nodist.nsi"');
   })
   .then(function(){
     console.log('Build complete!');

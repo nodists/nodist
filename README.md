@@ -109,6 +109,46 @@ call nodist env 0.7.12
 # Displays a complete list of commands with examples.
 ```
 
+### NPM Version Management
+
+As of `v0.8.0` Nodist now implements NPM version management.
+
+The installation package is going to come with the latest NPM and the latest
+version of Node.
+
+Currently, Nodist does not offer any support for relating the version of NPM
+to Node.
+
+Version management is trivial
+
+```
+$ nodist npm
+//install latest version
+$ nodist npm latest
+//install latest version
+$ nodist npm 2.x
+//install latest 2.x version
+$ nodist npm 3.3.x
+//latest in the 3.3 branch
+$ nodist npm 3.4.1
+//install version 3.4.1
+```
+
+The copies of NPM are saved to the `npmv` folder of the local Nodist install.
+If any errors occur during download. These files might prevent the version
+manager from using a complete installation. To remove a version use the
+following.
+
+```
+$ nodist npm remove 3.4.1
+//only accepts exact versions
+//removed version 3.4.1
+//now to reinstall
+$ nodist npm 3.4.1
+```
+
+Enjoy!
+
 ### Settings
 
 ```
@@ -179,10 +219,17 @@ $ DEBUG=nodist node app
 ```
 
 ## Legal
-Copyright (c) 2012-2014 by Marcel Klehr  
+Copyright (c) 2012-2016 by Marcel Klehr  
 MIT License
 
 ## Changelog
+
+v0.8.0
+* Add NPM version management
+* Improve build scripting in regards to NPM downloads
+* Implement NPM helper library
+* Implement GitHub API to iterate NPM installation
+* Bump Copyright year
 
 v0.7.2
 * correct version of NPM

@@ -1,6 +1,6 @@
 {
   "name": "nodist",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "description": "Natural node version manager for windows",
   "keywords": [
     "node",
@@ -22,6 +22,7 @@
   "dependencies": {
     "bluebird": "^2.10.2",
     "debug": "^2.2.0",
+    "github": "nullivex/node-github",
     "mkdirp": "~0.5",
     "ncp": "^2.0.0",
     "progress": "nullivex/node-progress",
@@ -29,7 +30,7 @@
     "recursive-readdir": "^1.2.1",
     "request": "~2.65",
     "rimraf": "~2",
-    "semver": "*",
+    "semver": "^5.1.0",
     "unzip": "^0.1.11"
   },
   "devDependencies": {

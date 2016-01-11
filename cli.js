@@ -26,6 +26,7 @@
 
 var version = process.argv[2];
 var nodist = require('./lib/nodist');
+var npm = require('./lib/npm');
 var path = require('path');
 var fs = require('fs');
 
@@ -77,7 +78,7 @@ var proxy = (
   process.env.https_proxy ||
   ''
 );
-var wantX64 = process.env.NODIST_X64 == 1;
+var wantX64 = (+process.env.NODIST_X64) === 1;
 var envVersion = process.env.NODIST_VERSION ?
   process.env.NODIST_VERSION.replace(/"/g, '') : process.env.NODIST_VERSION;
 
@@ -176,6 +177,32 @@ else if (command.match(/^dist|ds$/i)) {
     if(n.proxy) console.log('\n  (Proxy: ' + n.proxy + ')');
     exit();
   });
+}
+//NPM version management
+else if (command.match(/^npm/i)){
+  //so now what shall we do with npm, we probably want something like
+  //'latest' and then 'version' with similar version parsing to node version
+  version = argv[1];
+  if('remove' === version){
+    version = argv[2];
+    npm.resolveVersion(version, function(er, v){
+      if(er) abort(er.message+'. Sorry.');
+      console.log('Resolved NPM version to ' + v);
+      npm.remove(v,function(err,v){
+        if(err) abort(err.message + '. Sorry.');
+        console.log('NPM ' + v + ' removed!');
+      });
+    });
+  } else {
+    npm.resolveVersion(version, function(er, v) {
+      if(er) abort(er.message+'. Sorry.');
+      console.log('Resolved NPM version to ' + v);
+      npm.install(v, function(err, v) {
+        if(err) abort(err.message+'. Sorry.');
+        console.log('NPM ' + v + ' installed and in use!');
+      });
+    });
+  }
 }
 // ADD fetch a specific build
 else if ((command.match(/^add|\+$/i)) && argv[1]) {
