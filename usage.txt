@@ -24,10 +24,6 @@ Usage:
     nodist local <version>          Use <version> in this directory and its subdirectories.
                                     (will add a ./node-version file)
 
-    nodist args <version> <args..>  Set command line args that will always be passed
-                                    to this version (e.g. --harmony-generators or v8 tweaks).
-                                    Omit <args..> to reset.
-
     nodist run <version> -- <args..>    Run <args> with the specified node version
     nodist r <version> -- <args..>      (downloads the executable, if necessary).
 
