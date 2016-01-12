@@ -5,13 +5,13 @@
 A node.js and io.js version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
 ```
-> nodist 0.10
+...> nodist 0.10
 nodev0.10.26
 
-> node -v
+...> node -v
 v0.10.26
 
-> nodist
+...> nodist
   nodev0.10.24
   nodev0.10.25
 > nodev0.10.26 (global)
@@ -22,6 +22,7 @@ v0.10.26
 
 (see [Usage](#usage))
 
+*Hey! We're preparing the release of version 0.8 at the moment and would like your opinion on [the upcoming changes](https://github.com/marcelklehr/nodist/milestones/0.8). Feel free to drop us a comment :)*
 
 ## Installation
 Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
