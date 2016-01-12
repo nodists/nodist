@@ -22,7 +22,7 @@ v0.10.26
 
 (see [Usage](#usage))
 
-*Hey! We're preparing the release of version 0.8 at the moment and would like your opinion on [the upcoming changes](https://github.com/marcelklehr/nodist/milestones/0.8). Feel free to drop us a comment :)*
+*Hey! We're preparing the release of version 0.8 at the moment and would like your opinion on [the upcoming changes](https://github.com/marcelklehr/nodist/issues?utf8=✓&q=milestone%3A0.8). Feel free to drop us a comment :)*
 
 ## Installation
 Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
