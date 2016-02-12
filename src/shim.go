@@ -75,7 +75,7 @@ func main() {
 
   for _, v := range installed {
     if constraint.Check(v) {
-      version = "v"+v.String()
+      version = v.String()
       break
     }
   }
