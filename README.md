@@ -170,10 +170,10 @@ $ vows --spec test\cli-test.js
 
 ## Debugging
 
-All debug logging now uses the [https://github.com/visionmedia/debug](debug)
+All debug logging now uses the [https://github.com/tj/debug](debug)
 package.
 
-The following can be used to see all messages (typically used in dev)
+The following can be used to see all messages (typically used in dev; you don't need to install `debug`!)
 
 ```
 $ DEBUG=nodist node app
