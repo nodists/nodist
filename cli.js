@@ -130,34 +130,28 @@ if (command.match(/^list|ls$/i)) {
 
   n.getGlobal(function(err, global){
     if(err) void(0);
-    n.getLocal(function(err, local, localFile){
+    n.getEnv(function(err, env){
       if(err) void(0);
-      n.getEnv(function(err, env){
-        if(err) void(0);
-        n.listInstalled(function(err, ls) {
-          if(err) abort(err.message+'. Sorry.');
-          if(n.wantX64) console.log('  (x64)');
-          if(ls.length === 0) abort('No builds installed, yet.');
-          var current = env || local || global;
-          // display all versions
-          ls.forEach(function(version) {
-            var del = '  ';
-            var note = ' ';
-            if (version === env) {
-              note += ' (env)';
-            }
-            if (version === local) {
-              note += ' ('+localFile+')';
-            }
-            if (version === global) {
-              note += ' (global)';
-            }
-            if (version === current) del ='> ';// highlight current
+      n.listInstalled(function(err, ls) {
+        if(err) abort(err.message+'. Sorry.');
+        if(n.wantX64) console.log('  (x64)');
+        if(ls.length === 0) abort('No builds installed, yet.');
+        var current = env || local || global;
+        // display all versions
+        ls.forEach(function(version) {
+          var del = '  ';
+          var note = ' ';
+          if (version === env) {
+            note += ' (env)';
+          }
+          if (version === global) {
+            note += ' (global)';
+          }
+          if (version === current) del ='> ';// highlight current
 
-            console.log(del + version+note);
-          });
-          exit();
+          console.log(del + version+note);
         });
+        exit();
       });
     });
   });
@@ -274,18 +268,6 @@ else if (command.match(/^args$/i) && argv[1]) {
     n.setArgsForVersion(v, args, function(err) {
       if(err) abort(err.message+'. Sorry.');
       console.log(v, args);
-      exit();
-    });
-  });
-}
-// LOCAL use the specified version locally
-else if (command.match(/^local$/i) && argv[1]) {
-  version = argv[1];
-  n.resolveVersion(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
-    n.setLocal(v, function(err, file) {
-      if(err) abort(err.message+'. Sorry.');
-      console.log(v, '(' + file + ')');
       exit();
     });
   });
