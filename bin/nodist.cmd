@@ -7,10 +7,7 @@ goto next1
 
 :env
   call %0 + %2
-  if ERRORLEVEL 0 (
-    :: get version and set NODIST_VERSION
-    FOR /F "tokens=1 delims=" %%A in ('"%0" add %2') do @set "NODIST_VERSION=%%A"
-  )
+  @set "NODIST_VERSION=%2"
   :: goto end
   GOTO end
 
