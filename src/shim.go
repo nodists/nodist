@@ -27,10 +27,6 @@ func main() {
   // Determine version spec
 
   var spec string = ""
-  if v, err := getTargetEngine(); err == nil && strings.Trim(string(v), " \r\n") != "" {
-    spec = v
-    //fmt.Println("Target engine found:'", spec, "'")
-  } else
   if v := os.Getenv("NODE_VERSION"); v != "" {
     spec = v
     //fmt.Println("NODE_VERSION found:'", spec, "'")
@@ -38,6 +34,10 @@ func main() {
   if v = os.Getenv("NODIST_VERSION"); v != "" {
     spec = v
     //fmt.Println("NODIST_VERSION found:'", spec, "'")
+  } else
+  if v, err := getTargetEngine(); err == nil && strings.Trim(string(v), " \r\n"$
+    spec = v
+    //fmt.Println("Target engine found:'", spec, "'")
   } else
   if v, _, err := getLocalVersion(); err == nil && strings.Trim(string(v), " \r\n") != "" {
     spec = string(v)
@@ -104,18 +104,18 @@ func main() {
   if x64 {
     path += "-x64"
   }
-  
+
   path = path+"/"+version
   nodebin = path+"/node.exe"
 
   // Run node!
-  
+
   cmd := exec.Command(nodebin, os.Args[1:]...)
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
   cmd.Stdin = os.Stdin
   err = cmd.Run()
-  
+
   if err != nil {
     exitError, isExitError := err.(*(exec.ExitError))
     if isExitError {
@@ -130,11 +130,24 @@ func main() {
 }
 
 func getLocalVersion() (version string, file string, error error) {
-  dir, err := os.Getwd()
+  if len(os.Args) < 2 {
+    dir, err := os.Getwd()
+    if err != nil {
+      error = err
+      return
+    }
+  }else{
+    targetFile := os.Args[1]
+    dir := filepath.Dir(targetFile)
 
-  if err != nil {
-    error = err
-    return
+    if !filepath.IsAbs(dir) {
+      cwd, err := os.Getwd()
+      if err != nil {
+        error = err
+        return
+      }
+      dir = filepath.Join(cwd, dir)
+    }
   }
 
   dirSlice := strings.Split(dir, pathSep) // D:\Programme\nodist => [D:, Programme, nodist]
@@ -197,9 +210,9 @@ func getTargetEngine() (spec string, error error) {
   if len(os.Args) < 2 {
     return
   }
-  
+
   targetFile := os.Args[1]
-  
+
   dir := filepath.Dir(targetFile)
   if !filepath.IsAbs(dir) {
     cwd, err := os.Getwd()
