@@ -256,20 +256,43 @@ else if (command.match(/^args$/i) && argv[1]) {
 }
 // LOCAL use the specified version locally
 else if (command.match(/^local$/i) && argv[1]) {
-  version = argv[1];
-  n.setLocal(version, function(err, file) {
+  var spec = argv[1];
+  n.setLocal(spec, function(err, file) {
     if(err) abort(err.message+'. Sorry.');
     console.log(version, '(' + file + ')');
-    exit();
+    n.resolveVersionLocally(spec, function(er, found) {
+      if(found) {
+        exit();
+      }
+      n.resolveVersion(spec, function(er, version) {
+        console.log("Installing "+version)
+        n.install(version, function(er) {
+          if(er) return abort(er.message+'. Sorry.')
+          exit(0, 'Installation successfull.')
+        })
+      })
+    })
   });
 }
 // GLOBAL globally use the specified node version
 else if (command.match(/^global$/i) && argv[1] || argv[0] && !argv[1]) {
-  version = argv[1] || argv[0];
-  n.setGlobal(version, function(err) {
+  spec = argv[1] || argv[0];
+  n.setGlobal(spec, function(err) {
     if(err) abort(err.message+'. Sorry.');
-    console.log(version);
-    exit();
+    console.log(spec);
+    n.resolveVersionLocally(spec, function(er, found) {
+      if(found) {
+        exit();
+      }
+      n.resolveVersion(spec, function(er, version) {
+        console.log("Installing "+version)
+        n.install(version, function(er) {
+          if(er) return abort(er.message+'. Sorry.')
+          exit(0, 'Installation successfull.')
+        })
+      })
+    })
+
   });
 }
 // HELP display help for unknown cli parameters
