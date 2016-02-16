@@ -7,7 +7,7 @@
 !define APP_NAME "Nodist"
 !define COMP_NAME "Nodist"
 !define WEB_SITE "https://github.com/marcelklehr/nodist"
-!define VERSION "0.7.0.0"
+!define VERSION ";VERSION;.0"
 !define COPYRIGHT "Marcel Klehr  ? 2015"
 !define DESCRIPTION "Node Version Manager for Windows"
 !define LICENSE_TXT "staging\LICENSE.txt"
@@ -116,6 +116,8 @@ SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=50
 AccessControl::GrantOnFile "$INSTDIR" "(BU)" "FullAccess"
 ; set the NPM prefix
 Exec '"$INSTDIR\node.exe" "$INSTDIR\bin\node_modules\npm\bin\npm-cli.js" config set prefix "$INSTDIR\bin"'
+; run the selfupdate
+Exec '"$INSTDIR\bin\nodist.cmd" "selfupdate"'
 SectionEnd
 
 ######################################################################
