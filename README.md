@@ -5,13 +5,13 @@
 A node.js and io.js version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
 ```
-...> nodist 0.10
+> nodist 0.10
 nodev0.10.26
 
-...> node -v
+> node -v
 v0.10.26
 
-...> nodist
+> nodist
   nodev0.10.24
   nodev0.10.25
 > nodev0.10.26 (global)
@@ -22,7 +22,6 @@ v0.10.26
 
 (see [Usage](#usage))
 
-*Hey! We're preparing the release of version 0.8 at the moment and would like your opinion on [the upcoming changes](https://github.com/marcelklehr/nodist/issues?utf8=✓&q=milestone%3A0.8). Feel free to drop us a comment :)*
 
 ## Installation
 Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
@@ -110,46 +109,6 @@ call nodist env 0.7.12
 # Displays a complete list of commands with examples.
 ```
 
-### NPM Version Management
-
-As of `v0.8.0` Nodist now implements NPM version management.
-
-The installation package is going to come with the latest NPM and the latest
-version of Node.
-
-Currently, Nodist does not offer any support for relating the version of NPM
-to Node.
-
-Version management is trivial
-
-```
-$ nodist npm
-//install latest version
-$ nodist npm latest
-//install latest version
-$ nodist npm 2.x
-//install latest 2.x version
-$ nodist npm 3.3.x
-//latest in the 3.3 branch
-$ nodist npm 3.4.1
-//install version 3.4.1
-```
-
-The copies of NPM are saved to the `npmv` folder of the local Nodist install.
-If any errors occur during download. These files might prevent the version
-manager from using a complete installation. To remove a version use the
-following.
-
-```
-$ nodist npm remove 3.4.1
-//only accepts exact versions
-//removed version 3.4.1
-//now to reinstall
-$ nodist npm 3.4.1
-```
-
-Enjoy!
-
 ### Settings
 
 ```
@@ -210,27 +169,20 @@ $ vows --spec test\cli-test.js
 
 ## Debugging
 
-All debug logging now uses the [https://github.com/tj/debug](debug)
+All debug logging now uses the [https://github.com/visionmedia/debug](debug)
 package.
 
-The following can be used to see all messages (typically used in dev; you don't need to install `debug`!)
+The following can be used to see all messages (typically used in dev)
 
 ```
 $ DEBUG=nodist node app
 ```
 
 ## Legal
-Copyright (c) 2012-2016 by Marcel Klehr  
+Copyright (c) 2012-2014 by Marcel Klehr  
 MIT License
 
 ## Changelog
-
-v0.8.0
-* Add NPM version management
-* Improve build scripting in regards to NPM downloads
-* Implement NPM helper library
-* Implement GitHub API to iterate NPM installation
-* Bump Copyright year
 
 v0.7.2
 * correct version of NPM
