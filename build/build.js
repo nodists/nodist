@@ -152,6 +152,8 @@ P.all([
         nodistDir + '/cli.js',stagingDir + '/cli.js'),
       helper.copyFileAsync(
         nodistDir + '/LICENSE.txt',stagingDir + '/LICENSE.txt'),
+	  helper.copyFileAsync(
+        nodistDir + '/usage.txt',stagingDir + '/usage.txt'),
       helper.copyFileAsync(
         nodistDir + '/package.json',stagingDir + '/package.json')
     ]);
