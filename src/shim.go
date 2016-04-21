@@ -35,7 +35,7 @@ func main() {
     spec = v
     //fmt.Println("NODIST_VERSION found:'", spec, "'")
   } else
-  if v, err := getTargetEngine(); err == nil && strings.Trim(string(v), " \r\n"$
+  if v, err := getTargetEngine(); err == nil && strings.Trim(string(v), " \r\n") == "" {
     spec = v
     //fmt.Println("Target engine found:'", spec, "'")
   } else
@@ -129,21 +129,23 @@ func main() {
   }
 }
 
-func getLocalVersion() (version string, file string, error error) {
+func getLocalVersion() (version string, file string, returnedError error) {
+  var dir string
+  var err error
   if len(os.Args) < 2 {
-    dir, err := os.Getwd()
+    dir, err = os.Getwd()
     if err != nil {
-      error = err
+      returnedError = err
       return
     }
   }else{
     targetFile := os.Args[1]
-    dir := filepath.Dir(targetFile)
+    dir = filepath.Dir(targetFile)
 
     if !filepath.IsAbs(dir) {
       cwd, err := os.Getwd()
       if err != nil {
-        error = err
+        returnedError = err
         return
       }
       dir = filepath.Join(cwd, dir)
@@ -163,7 +165,7 @@ func getLocalVersion() (version string, file string, error error) {
     }
 
     if !os.IsNotExist(err) {
-      error = err // some other error.. bad luck.
+      returnedError = err // some other error.. bad luck.
       return
     }
 
