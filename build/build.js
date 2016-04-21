@@ -295,7 +295,8 @@ P.all([
   })
   .then(function() {
     console.log('Run NSIS compiler');
-    return exec('makensis "' + nodistDir + '/build/out/Nodist.nsi"');
+	// /Vx verbosity where x is 4=all,3=no script,2=no info,1=no warnings,0=none
+    return exec('makensis /V2"' + nodistDir + '/build/out/Nodist.nsi"'); // Verbosity level 2, because we don't want to exhaust the buffer
   })
   .then(function(){
     console.log('Build complete!');
