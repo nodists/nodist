@@ -68,8 +68,8 @@ if(!process.env.NODIST_PREFIX){
   );
 }
 
-var distUrl = 'https://nodejs.org/dist';
-var iojsDistUrl = 'https://iojs.org/dist';
+var distUrl = process.env.NODIST_NODE_MIRROR || 'https://nodejs.org/dist';
+var iojsDistUrl = process.env.NODIST_IOJS_MIRROR || 'https://iojs.org/dist';
 var nodistPrefix = process.env.NODIST_PREFIX.replace(/"/g, '');
 var proxy = (
   process.env.HTTP_PROXY ||

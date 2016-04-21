@@ -118,6 +118,12 @@ call nodist env 0.7.12
 ```
 
 ```
+> set NODIST_NODE_MIRROR=https://mymirror.com/dist
+# Set a mirror that has the same directory structure as https://nodejs.org/dist
+# (you may also use `NODIST_IOJS_MIRROR` in the same fashion).
+```
+
+```
 > set NODIST_X64=0
 # Override x64 auto-detection.
 # (Set to `1` to enforce 64bit, `0` to enforce 32bit.)
@@ -148,23 +154,23 @@ $ npm test
 For development a more interactive test method might be best
 
 ```
-$ npm -g install vows
-$ vows --spec test\cli-test.js
+> npm -g install vows
+> vows --spec test\cli-test.js
 ```
 
 To see nodist output during tests try this
 
 ```
-$ set DEBUG=nodist*
-$ set TEST=test
-$ vows --spec test\cli-test.js
+> set DEBUG=nodist*
+> set TEST=test
+> vows --spec test\cli-test.js
 ```
 
-Testing also accepts env variables for using a mirror to download from.
+Testing also accepts env variables for using a mirror to download from, as well as setting a proxy.
 
 ```
-$ set NODIST_NODE_MIRROR=http://nodejs.serverpals.com/dist
-$ vows --spec test\cli-test.js
+> set NODIST_NODE_MIRROR=http://nodejs.serverpals.com/dist
+> vows --spec test\cli-test.js
 ```
 
 ## Debugging
@@ -172,10 +178,10 @@ $ vows --spec test\cli-test.js
 All debug logging now uses the [https://github.com/visionmedia/debug](debug)
 package.
 
-The following can be used to see all messages (typically used in dev)
+use the following before running nodist to see all debug messages (typically used in dev)
 
 ```
-$ DEBUG=nodist node app
+> set DEBUG=nodist
 ```
 
 ## Legal

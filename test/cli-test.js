@@ -42,6 +42,8 @@ var execNodist = function execNodist(args, cb){
     {
       env: {
         NODIST_PREFIX: testPath,
+		NODIST_NODE_MIRROR: n.iojsSourceUrl
+		NODIST_IOJS_MIRROR: n.sourceUrl
         HTTP_PROXY: proxy,
         DEBUG: process.env.DEBUG
       }
