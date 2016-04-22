@@ -128,36 +128,39 @@ if (!argv[0]) {
 // LIST all installed buids
 if (command.match(/^list|ls$/i)) {
 
-  n.getGlobal(function(err, global){
-    if(err) void(0);
-    n.getLocal(function(err, local, localFile){
-      if(err) void(0);
-      n.getEnv(function(err, env){
-        if(err) void(0);
-        n.listInstalled(function(err, ls) {
-          if(err) abort(err.message+'. Sorry.');
-          if(n.wantX64) console.log('  (x64)');
-          if(ls.length === 0) abort('No builds installed, yet.');
-          var current = env || local || global;
-          // display all versions
-          ls.forEach(function(version) {
-            var del = '  ';
-            var note = ' ';
-            if (version === env) {
-              note += ' (env)';
-            }
-            if (version === local) {
-              note += ' ('+localFile+')';
-            }
-            if (version === global) {
-              note += ' (global)';
-            }
-            if (version === current) del ='> ';// highlight current
+  n.getGlobal(function(err, globalSpec){
+    n.resolveVersionLocally(globalSpec, function(er, globalVersion) {
+      n.getLocal(function(err, localSpec, localFile){
+        n.resolveVersionLocally(localSpec, function(er, localVersion) {
+          n.getEnv(function(err, envSpec){
+            n.resolveVersionLocally(envSpec, function(er, envVersion) {
+              n.listInstalled(function(err, ls) {
+                if(err) abort(err.message+'. Sorry.');
+                if(n.wantX64) console.log('  (x64)');
+                if(ls.length === 0) abort('No builds installed, yet.');
+                var current = envVersion || localVersion || globalVersion;
+                // display all versions
+                ls.forEach(function(version) {
+                  var del = '  ';
+                  var note = ' ';
+                  if (version === envVersion) {
+                    note += ' (env)';
+                  }
+                  if (version === localVersion) {
+                    note += ' ('+localFile+')';
+                  }
+                  if (version === globalVersion) {
+                    note += ' (global)';
+                  }
+                  if (version === current) del ='> ';// highlight current
 
-            console.log(del + version+note);
-          });
-          exit();
-        });
+                  console.log(del + version+note);
+                });
+                exit();
+              });
+            })
+          })
+        })
       });
     });
   });
@@ -280,26 +283,43 @@ else if (command.match(/^args$/i) && argv[1]) {
 }
 // LOCAL use the specified version locally
 else if (command.match(/^local$/i) && argv[1]) {
-  version = argv[1];
-  n.resolveVersion(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
-    n.setLocal(v, function(err, file) {
-      if(err) abort(err.message+'. Sorry.');
-      console.log(v, '(' + file + ')');
-      exit();
-    });
+  var spec = argv[1];
+  n.setLocal(spec, function(err, file) {
+    if(err) abort(err.message+'. Sorry.');
+    console.log(version, '(' + file + ')');
+    n.resolveVersionLocally(spec, function(er, found) {
+      if(found) {
+        exit();
+      }
+      n.resolveVersion(spec, function(er, version) {
+        console.log("Installing "+version)
+        n.install(version, function(er) {
+          if(er) return abort(er.message+'. Sorry.')
+          exit(0, 'Installation successfull.')
+        })
+      })
+    })
   });
 }
 // GLOBAL globally use the specified node version
 else if (command.match(/^global$/i) && argv[1] || argv[0] && !argv[1]) {
-  version = argv[1] || argv[0];
-  n.resolveVersion(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
-    n.setGlobal(v, function(err) {
-      if(err) abort(err.message+'. Sorry.');
-      console.log(v);
-      exit();
-    });
+  spec = argv[1] || argv[0];
+  n.setGlobal(spec, function(err) {
+    if(err) abort(err.message+'. Sorry.');
+    console.log(spec);
+    n.resolveVersionLocally(spec, function(er, found) {
+      if(found) {
+        exit();
+      }
+      n.resolveVersion(spec, function(er, version) {
+        console.log("Installing "+version)
+        n.install(version, function(er) {
+          if(er) return abort(er.message+'. Sorry.')
+          exit(0, 'Installation successfull.')
+        })
+      })
+    })
+
   });
 }
 // HELP display help for unknown cli parameters

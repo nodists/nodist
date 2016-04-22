@@ -1,10 +1,8 @@
 param($cmd,$ver,[Switch]$v)
 if ($cmd -eq "use" -or $cmd -eq "env") {
-  $version = (nodist.cmd add $ver)
-  if($LastExitCode -eq 0) {
-    $env:NODIST_VERSION = $version
-    echo $env:NODIST_VERSION
-  }
+  nodist.cmd add $ver
+  $env:NODIST_VERSION = $ver
+  echo $ver
 }
 elseif ($v){
   nodist.cmd -v

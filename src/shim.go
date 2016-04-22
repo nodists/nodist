@@ -6,7 +6,11 @@ import (
   "os/exec"
   "syscall"
   "io/ioutil"
+  "path/filepath"
   "strings"
+  "sort"
+  "encoding/json"
+  "github.com/Masterminds/semver"
 )
 
 const pathSep = string(os.PathSeparator)
@@ -20,38 +24,70 @@ func main() {
   }
 
 
-  // Determine version
-  
-  var version string = ""
-  
+  // Determine version spec
+
+  var spec string = ""
   if v := os.Getenv("NODE_VERSION"); v != "" {
-    version = v
-    //fmt.Println("NODE_VERSION found:'", version, "'")
+    spec = v
+    //fmt.Println("NODE_VERSION found:'", spec, "'")
   } else
   if v = os.Getenv("NODIST_VERSION"); v != "" {
-    version = v
-    //fmt.Println("NODIST_VERSION found:'", version, "'")
+    spec = v
+    //fmt.Println("NODIST_VERSION found:'", spec, "'")
+  } else
+  if v, err := getTargetEngine(); err == nil && strings.Trim(string(v), " \r\n") == "" {
+    spec = v
+    //fmt.Println("Target engine found:'", spec, "'")
   } else
   if v, _, err := getLocalVersion(); err == nil && strings.Trim(string(v), " \r\n") != "" {
-    version = string(v)
-    //fmt.Println("Local file found:'", version, "' @ ", localFile)
+    spec = string(v)
+    //fmt.Println("Local file found:'", spec, "' @ ", localFile)
   } else
   if v, err := ioutil.ReadFile(os.Getenv("NODIST_PREFIX")+"\\.node-version"); err == nil {
-    version = string(v)
-    //fmt.Println("Global file found:'", version, "'")
+    spec = string(v)
+    //fmt.Println("Global file found:'", spec, "'")
   }
 
-  version = strings.Trim(version, "v \r\n")
+  spec = strings.Trim(spec, "v \r\n")
 
-  if version == "" {
+  if spec == "" {
     fmt.Println("Sorry, there's a problem with nodist. Couldn't decide which node version to use. Please set a version.")
     os.Exit(41)
   }
-  
-  
+
+  constraint, err := semver.NewConstraint(spec)
+
+  if err != nil {
+    fmt.Println("Sorry, there's a problem with nodist. Couldn't decide which node version to use. Malformatted version spec ", spec, " . Please set a new version.")
+    os.Exit(43)
+  }
+
+  // Find an installed version matching the spec...
+
+  installed, err := getInstalledVersions()
+
+  if err != nil {
+    fmt.Println("Sorry, there's a problem with nodist. Couldn't list installed versions.")
+    os.Exit(44)
+  }
+
+  version := ""
+
+  for _, v := range installed {
+    if constraint.Check(v) {
+      version = v.String()
+      break
+    }
+  }
+
+  if version == "" {
+    fmt.Println("Sorry, there's a problem with nodist. Couldn't find an installed version that matches version spec ", spec)
+    os.Exit(45)
+  }
+
   // Determine architecture
 
-  x64 := (os.Getenv("PROCESSOR_ARCHITECTURE") == "x64")
+  x64 := false
 
   if wantX64 := os.Getenv("NODIST_X64"); wantX64 != "" {
     x64 = (wantX64 == "1")
@@ -68,30 +104,18 @@ func main() {
   if x64 {
     path += "-x64"
   }
-  
+
   path = path+"/"+version
   nodebin = path+"/node.exe"
-  
-  
-  // Get args
-  
-  var nodeargs []string
-  
-  if a, err := ioutil.ReadFile(path+"/args"); err == nil && len(a) != 0 {
-    argsFile := strings.Split(string(a), " ")
-    nodeargs = append(nodeargs, argsFile...)
-  }
-  
-  nodeargs = append(nodeargs, os.Args[1:]...)
-  
+
   // Run node!
-  
-  cmd := exec.Command(nodebin, nodeargs...)
+
+  cmd := exec.Command(nodebin, os.Args[1:]...)
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
   cmd.Stdin = os.Stdin
-  err := cmd.Run()
-  
+  err = cmd.Run()
+
   if err != nil {
     exitError, isExitError := err.(*(exec.ExitError))
     if isExitError {
@@ -105,23 +129,116 @@ func main() {
   }
 }
 
-func getLocalVersion() (version string, file string, error error) {
-  dir, err := os.Getwd()
-  
-  if err != nil {
-    error = err
-    return
+func getLocalVersion() (version string, file string, returnedError error) {
+  var dir string
+  var err error
+  if len(os.Args) < 2 {
+    dir, err = os.Getwd()
+    if err != nil {
+      returnedError = err
+      return
+    }
+  }else{
+    targetFile := os.Args[1]
+    dir = filepath.Dir(targetFile)
+
+    if !filepath.IsAbs(dir) {
+      cwd, err := os.Getwd()
+      if err != nil {
+        returnedError = err
+        return
+      }
+      dir = filepath.Join(cwd, dir)
+    }
   }
-  
+
   dirSlice := strings.Split(dir, pathSep) // D:\Programme\nodist => [D:, Programme, nodist]
-  
+
   for len(dirSlice) != 1 {
     dir = strings.Join(dirSlice, pathSep)
     file = dir+"\\.node-version"
     v, err := ioutil.ReadFile(file);
-    
+
     if err == nil {
       version = string(v)
+      return
+    }
+
+    if !os.IsNotExist(err) {
+      returnedError = err // some other error.. bad luck.
+      return
+    }
+
+    // `$ cd ..`
+    dirSlice = dirSlice[:len(dirSlice)-1] // pop the last dir
+  }
+
+  version = ""
+  return
+}
+
+func getInstalledVersions() (versions []*semver.Version, error error) {
+  // Determine architecture
+  x64 := false
+  if wantX64 := os.Getenv("NODIST_X64"); wantX64 != "" {
+    x64 = (wantX64 == "1")
+  }
+  // construct path to version dir
+  path := os.Getenv("NODIST_PREFIX")+"/v"
+  if x64 {
+    path += "-x64"
+  }
+
+  dirs, err := ioutil.ReadDir(path)
+  if err != nil {
+    error = err
+    return
+  }
+
+  versions = make([]*semver.Version, len(dirs))
+  for i, dir := range dirs {
+    v, err := semver.NewVersion(dir.Name())
+    if err == nil {
+      versions[i] = v
+    }
+  }
+
+  sort.Sort(semver.Collection(versions))
+
+  return
+}
+
+func getTargetEngine() (spec string, error error) {
+  if len(os.Args) < 2 {
+    return
+  }
+
+  targetFile := os.Args[1]
+
+  dir := filepath.Dir(targetFile)
+  if !filepath.IsAbs(dir) {
+    cwd, err := os.Getwd()
+    if err != nil {
+      error = err
+      return
+    }
+    dir = filepath.Join(cwd, dir)
+  }
+
+  //fmt.Println("getTargetEngine: targetDir:", dir)
+
+  dirSlice := strings.Split(dir, pathSep) // D:\Programme\nodist => [D:, Programme, nodist]
+
+  spec = ""
+
+  for len(dirSlice) != 1 {
+    dir = strings.Join(dirSlice, pathSep)
+    file := dir+"\\package.json"
+    rawPackageJSON, err := ioutil.ReadFile(file);
+    //fmt.Println("getTargetEngine: ReadFile ", file)
+    if err == nil {
+      // no error handling for parsing, cause we don't want to use a different package.json if we've already found one
+      spec, error = getVerSpecFromPackageJSON(rawPackageJSON)
       return
     }
 
@@ -129,11 +246,31 @@ func getLocalVersion() (version string, file string, error error) {
       error = err // some other error.. bad luck.
       return
     }
-    
+
     // `$ cd ..`
     dirSlice = dirSlice[:len(dirSlice)-1] // pop the last dir
   }
   
-  version = ""
+  return
+}
+
+func getVerSpecFromPackageJSON(rawPackageJSON []byte) (spec string, err error) {
+  type PackageJSON struct {
+    Engines struct {
+      Node string
+    }
+  }
+  var packageJSON PackageJSON
+  err = json.Unmarshal(rawPackageJSON, &packageJSON)
+
+  if err == nil {
+    spec = packageJSON.Engines.Node
+    //fmt.Println("getVerSpecFromPackageJSON: %+v", packageJSON)
+    return
+  }
+
+  //fmt.Println("getVerSpecFromPackageJSON: error:", err.Error())
+
+  // incorrect JSON -- bad luck
   return
 }
