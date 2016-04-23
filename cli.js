@@ -29,6 +29,7 @@ var nodist = require('./lib/nodist');
 var npm = require('./lib/npm');
 var path = require('path');
 var fs = require('fs');
+var debug = require('debug')('nodist:cli')
 
 // Exit with a code and (optionally) with a message
 var exit = function exit(code, msg){
@@ -180,26 +181,23 @@ else if (command.match(/^dist|ds$/i)) {
 }
 //NPM version management
 else if (command.match(/^npm/i)){
-  //so now what shall we do with npm, we probably want something like
-  //'latest' and then 'version' with similar version parsing to node version
   version = argv[1];
   if('remove' === version){
     version = argv[2];
     npm.resolveVersion(version, function(er, v){
       if(er) abort(er.message+'. Sorry.');
-      console.log('Resolved NPM version to ' + v);
+      debug('Resolved NPM version to ' + v);
       npm.remove(v,function(err,v){
         if(err) abort(err.message + '. Sorry.');
-        console.log('NPM ' + v + ' removed!');
       });
     });
   } else {
     npm.resolveVersion(version, function(er, v) {
       if(er) abort(er.message+'. Sorry.');
-      console.log('Resolved NPM version to ' + v);
+      debug('Resolved NPM version to ' + v);
       npm.install(v, function(err, v) {
         if(err) abort(err.message+'. Sorry.');
-        console.log('NPM ' + v + ' installed and in use!');
+        console.log('npm ' + v);
       });
     });
   }
