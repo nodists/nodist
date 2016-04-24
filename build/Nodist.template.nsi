@@ -86,16 +86,6 @@ InstallDir "$PROGRAMFILES\Nodist"
 
 ######################################################################
 
-; this sets up the component selection for build type
-SectionGroup "Node.js Architecture"
-  Section "x86" wantx86
-    WriteRegExpandStr ${ENV_HKLM} NODIST_X64 0
-  SectionEnd
-  Section /o "x64" wantx64
-    WriteRegExpandStr ${ENV_HKLM} NODIST_X64 1
-  SectionEnd
-SectionGroupEnd
-
 Section -MainProgram
 ${INSTALL_TYPE}
 SetOverwrite ifnewer
@@ -106,6 +96,14 @@ SetOutPath "$INSTDIR"
 ; Set Path
 Push "$INSTDIR\bin"
 Call AddToPath
+
+; Detect x64
+push $1
+ReadEnvStr $1 PROCESSOR_ARCHITECTURE
+${IF} $1 != "x86"
+  WriteRegExpandStr ${ENV_HKLM} NODIST_X64 "1"
+${ENDIF}
+pop $1
 
 ; set variable
 WriteRegExpandStr ${ENV_HKLM} NODIST_PREFIX "$INSTDIR"
