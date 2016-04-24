@@ -217,9 +217,9 @@ SectionEnd
 
 ; Registry Entry for environment (NT4,2000,XP)
 ; All users:
-;!define Environ 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
+!define Environ 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
 ; Current user only:
-!define Environ 'HKCU "Environment"'
+;!define Environ 'HKCU "Environment"'
 
 
 ; AddToPath - Appends dir to PATH
@@ -239,8 +239,8 @@ Function AddToPath
   ; NSIS ReadRegStr returns empty string on string overflow
   ; Native calls are used here to check actual length of PATH
 
-  ; $4 = RegOpenKey(HKEY_CURRENT_USER, "Environment", &$3)
-  System::Call "advapi32::RegOpenKey(i 0x80000001, t'Environment', *i.r3) i.r4"
+  ; $4 = RegOpenKey(HKEY_LOCAL_MACHINE, "SYSTEM\...\Environment", &$3)
+  System::Call "advapi32::RegOpenKey(i 0x80000002, t'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', *i.r3) i.r4"
   IntCmp $4 0 0 done done
   ; $4 = RegQueryValueEx($3, "PATH", (DWORD*)0, (DWORD*)0, &$1, ($2=NSIS_MAX_STRLEN, &$2))
   ; RegCloseKey($3)
