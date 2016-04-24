@@ -10,7 +10,7 @@ import (
   "strings"
   "sort"
   "encoding/json"
-  "github.com/Masterminds/semver"
+  "github.com/marcelklehr/semver"
 )
 
 import . "github.com/tj/go-debug"
