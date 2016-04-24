@@ -26,7 +26,7 @@
 
 var version = process.argv[2];
 var nodist = require('./lib/nodist');
-var npm = require('./lib/npm');
+var npmist = require('./lib/npm');
 var path = require('path');
 var fs = require('fs');
 var debug = require('debug')('nodist:cli')
@@ -92,6 +92,8 @@ var n = new nodist(
   wantX64,
   envVersion
 );
+
+var npm = new npmist(n)
 
 // Parse args
 var argv = process.argv.splice(2);
