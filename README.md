@@ -143,27 +143,19 @@ As the global node version will be subject to change, `nodist` comes with its ow
 ## Got ideas?  Doesn't work for you? Want to give feedback?
 [File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
 
+## Debugging
+To see all debug messages, set the DEBUG env var before running nodist or node as follows:
+
+```
+> set DEBUG=nodist:*
+```
+
 ## Testing
 
 The default test suite can be ran using npm
 
 ```
 $ npm test
-```
-
-For development a more interactive test method might be best
-
-```
-> npm -g install vows
-> vows --spec test\cli-test.js
-```
-
-To see nodist output during tests try this
-
-```
-> set DEBUG=nodist*
-> set TEST=test
-> vows --spec test\cli-test.js
 ```
 
 Testing also accepts env variables for using a mirror to download from, as well as setting a proxy.
@@ -173,16 +165,20 @@ Testing also accepts env variables for using a mirror to download from, as well 
 > vows --spec test\cli-test.js
 ```
 
-## Debugging
+## Building
+Building nodist requires
+ * [go](https://golang.org) for compiling the shim
+ * [NSIS](http://nsis.sourceforge.net/Main_Page) v2 for compiling the installer
+ * node.js for running the build script
+ * and npm for installing nodist's dependencies
+ * Finally you need to `go get github.com/marcelklehr/semver github.com/tj/go-debug`
 
-All debug logging now uses the [https://github.com/visionmedia/debug](debug)
-package.
-
-use the following before running nodist to see all debug messages (typically used in dev)
+If you have met all requirements, run the build command:
 
 ```
-> set DEBUG=nodist
+> npm run build
 ```
+Afterwards you'll find the installer in `build/out/NodistSetup.exe` and fully prepared installation folder in `build/out/staging` (you could zip this, for example).
 
 ## Legal
 Copyright (c) 2012-2014 by Marcel Klehr  

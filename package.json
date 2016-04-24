@@ -37,8 +37,7 @@
     "vows": "*"
   },
   "scripts": {
-    "build": "./build/node.exe build.js",
-    "latest": "node cli.js",
+    "build": "node ./build/build.js",
     "test": "node ./node_modules/vows/bin/vows --spec ./test/*-test.js"
   },
   "os": [

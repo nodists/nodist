@@ -13,7 +13,7 @@ var unzip = require('unzip');
 
 var github = require('../lib/github');
 var helper = require('../lib/build');
-var npm = require('../lib/npm');
+var npm = new (require('../lib/npm'))();
 var pkg = require('../package.json');
 
 
@@ -125,8 +125,6 @@ P.all([
     return P.all([
       //bin folder
       helper.copyFileAsync(
-        nodistBin + '/node.exe',stagingBin + '/node.exe'),
-      helper.copyFileAsync(
         nodistBin + '/nodist',stagingBin + '/nodist'),
       helper.copyFileAsync(
         nodistBin + '/nodist.cmd',stagingBin + '/nodist.cmd'),
@@ -160,6 +158,13 @@ P.all([
   })
   .then(function(){
     console.log('Finished copying static files');
+    
+    console.log('Compiling shim')
+    return exec('go build -o "'+stagingBin +'/node.exe" src/shim.go')
+  })
+  .then(function() {
+    console.log('Done compiling shim')
+    
     console.log('Determining latest version of node');
     return request.getAsync({
       url: 'https://nodejs.org/dist/index.json',
@@ -296,7 +301,7 @@ P.all([
   .then(function() {
     console.log('Run NSIS compiler');
 	// /Vx verbosity where x is 4=all,3=no script,2=no info,1=no warnings,0=none
-    return exec('makensis /V2"' + nodistDir + '/build/out/Nodist.nsi"'); // Verbosity level 2, because we don't want to exhaust the buffer
+    return exec('makensis /V2 "' + nodistDir + '/build/out/Nodist.nsi"'); // Verbosity level 2, because we don't want to exhaust the buffer
   })
   .then(function(){
     console.log('Build complete!');
