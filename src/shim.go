@@ -59,11 +59,16 @@ func main() {
     os.Exit(41)
   }
 
-  constraint, err := semver.NewConstraint(spec)
+  var constraint *semver.Constraints
 
-  if err != nil {
-    fmt.Println("Sorry, there's a problem with nodist. Couldn't decide which node version to use. Malformatted version spec ", spec, " . Please set a new version.")
-    os.Exit(43)
+  if spec != "latest" {
+    var err error
+    constraint, err = semver.NewConstraint(spec)
+
+    if err != nil {
+      fmt.Println("Sorry, there's a problem with nodist. Couldn't decide which node version to use. Malformatted version spec ", spec, " . Please set a new version.")
+      os.Exit(43)
+    }
   }
 
   // Find an installed version matching the spec...
@@ -77,10 +82,14 @@ func main() {
 
   version := ""
 
-  for _, v := range installed {
-    if constraint.Check(v) {
-      version = v.String()
-      break
+  if spec == "latest" {
+    version = installed[len(installed)-1].String()
+  }else{
+    for _, v := range installed {
+      if constraint.Check(v) {
+	version = v.String()
+	break
+      }
     }
   }
 
