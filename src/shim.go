@@ -13,6 +13,10 @@ import (
   "github.com/Masterminds/semver"
 )
 
+import . "github.com/tj/go-debug"
+
+var debug = Debug("nodist:shim")
+
 const pathSep = string(os.PathSeparator)
 
 func main() {
@@ -29,23 +33,23 @@ func main() {
   var spec string = ""
   if v := os.Getenv("NODE_VERSION"); v != "" {
     spec = v
-    //fmt.Println("NODE_VERSION found:'", spec, "'")
+    debug("NODE_VERSION found:'%s'", spec)
   } else
   if v = os.Getenv("NODIST_VERSION"); v != "" {
     spec = v
-    //fmt.Println("NODIST_VERSION found:'", spec, "'")
+    debug("NODIST_VERSION found:'%s'", spec)
   } else
-  if v, err := getTargetEngine(); err == nil && strings.Trim(string(v), " \r\n") == "" {
+  if v, err := getTargetEngine(); err == nil && strings.Trim(string(v), " \r\n") != "" {
     spec = v
-    //fmt.Println("Target engine found:'", spec, "'")
+    debug("Target engine found:'%s'", spec)
   } else
-  if v, _, err := getLocalVersion(); err == nil && strings.Trim(string(v), " \r\n") != "" {
+  if v, localFile, err := getLocalVersion(); err == nil && strings.Trim(string(v), " \r\n") != "" {
     spec = string(v)
-    //fmt.Println("Local file found:'", spec, "' @ ", localFile)
+    debug("Local file found:'%s' @ %s", spec, localFile)
   } else
   if v, err := ioutil.ReadFile(os.Getenv("NODIST_PREFIX")+"\\.node-version"); err == nil {
     spec = string(v)
-    //fmt.Println("Global file found:'", spec, "'")
+    debug("Global file found: '%s'", spec)
   }
 
   spec = strings.Trim(spec, "v \r\n")
@@ -225,7 +229,7 @@ func getTargetEngine() (spec string, error error) {
     dir = filepath.Join(cwd, dir)
   }
 
-  //fmt.Println("getTargetEngine: targetDir:", dir)
+  debug("getTargetEngine: targetDir: %s", dir)
 
   dirSlice := strings.Split(dir, pathSep) // D:\Programme\nodist => [D:, Programme, nodist]
 
@@ -235,7 +239,7 @@ func getTargetEngine() (spec string, error error) {
     dir = strings.Join(dirSlice, pathSep)
     file := dir+"\\package.json"
     rawPackageJSON, err := ioutil.ReadFile(file);
-    //fmt.Println("getTargetEngine: ReadFile ", file)
+    debug("getTargetEngine: ReadFile %s", file)
     if err == nil {
       // no error handling for parsing, cause we don't want to use a different package.json if we've already found one
       spec, error = getVerSpecFromPackageJSON(rawPackageJSON)
@@ -265,11 +269,11 @@ func getVerSpecFromPackageJSON(rawPackageJSON []byte) (spec string, err error) {
 
   if err == nil {
     spec = packageJSON.Engines.Node
-    //fmt.Println("getVerSpecFromPackageJSON: %+v", packageJSON)
+    debug("getVerSpecFromPackageJSON: %+v", packageJSON)
     return
   }
 
-  //fmt.Println("getVerSpecFromPackageJSON: error:", err.Error())
+  debug("getVerSpecFromPackageJSON: error: %s", err.Error())
 
   // incorrect JSON -- bad luck
   return
