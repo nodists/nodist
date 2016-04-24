@@ -83,9 +83,10 @@ func main() {
   version := ""
 
   if spec == "latest" {
-    version = installed[len(installed)-1].String()
+    version = installed[0].String()
   }else{
     for _, v := range installed {
+      debug("checking %s against %s", v.String(), spec)
       if constraint.Check(v) {
 	version = v.String()
 	break
@@ -97,6 +98,8 @@ func main() {
     fmt.Println("Sorry, there's a problem with nodist. Couldn't find an installed version that matches version spec ", spec)
     os.Exit(45)
   }
+
+  debug("found matching version: %s", version)
 
   // Determine architecture
 
@@ -216,7 +219,7 @@ func getInstalledVersions() (versions []*semver.Version, error error) {
     }
   }
 
-  sort.Sort(semver.Collection(versions))
+  sort.Sort(sort.Reverse(semver.Collection(versions)))
 
   return
 }
