@@ -268,19 +268,6 @@ else if (command.match(/^path$/i) && argv[1]) {
     });
   });
 }
-// ARGS globally use the specified node version
-else if (command.match(/^args$/i) && argv[1]) {
-  version = argv[1];
-  args = argv.slice(2).join(' ');
-  n.resolveVersion(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
-    n.setArgsForVersion(v, args, function(err) {
-      if(err) abort(err.message+'. Sorry.');
-      console.log(v, args);
-      exit();
-    });
-  });
-}
 // LOCAL use the specified version locally
 else if (command.match(/^local$/i) && argv[1]) {
   var spec = argv[1];
