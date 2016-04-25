@@ -17,13 +17,13 @@ Usage:
     
     nodist <version>                Use the specified node version globally
     nodist global <version>         (downloads the executable, if necessary).
-    
-    nodist use <version>            Use <version> in the current environment only
-    nodist env <version>            (usually the current terminal window).
 
     nodist local <version>          Use <version> in this directory and its subdirectories.
                                     (will add a ./node-version file)
-
+    
+    nodist use <version>            Use <version> in the current environment only
+    nodist env <version>            (usually the current terminal window).
+    
     nodist run <version> -- <args..>    Run <args> with the specified node version
     nodist r <version> -- <args..>      (downloads the executable, if necessary).
 
@@ -33,6 +33,12 @@ Usage:
     nodist path <version>           Get the path to the specified node version directory
                                     (downloads the executable, if necessary).
     
+    nodist npm <version>            Activate the specified npm version
+                                    (downloads it if necessary)
+
+    nodist npm match                Activate the npm version matching the active
+                                    node version.
+
     nodist --help                   Display this help
 
     nodist -v                       Display nodist version
@@ -63,3 +69,9 @@ Env vars:
 
     HTTP_PROXY                      Will use the Url and port specified as a proxy
                                     (e.g. http://myproxy.com:8213 )
+
+    NODIST_NODE_MIRROR              Set an alternative URL to fetch the node executables
+                                    from (e.g. http://mymirror.com/dist)
+
+    NODIST_IOJS_MIRROR              Set an alternative URL to fetch io.js exectuables
+                                    from.
