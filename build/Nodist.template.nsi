@@ -159,6 +159,10 @@ SectionEnd
 Section Uninstall
 ${INSTALL_TYPE}
 
+; Try to revert .npmrc to previous state.
+; We assume prefix wasn't set before installing nodist
+ExecWait 'npm config delete prefix'
+
 ;DELETE_FILES;
 
 ;DELETE_FOLDERS;
