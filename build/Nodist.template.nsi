@@ -114,8 +114,6 @@ SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=50
 AccessControl::GrantOnFile "$INSTDIR" "(BU)" "FullAccess"
 ; set the NPM prefix
 Exec '"$INSTDIR\node.exe" "$INSTDIR\bin\node_modules\npm\bin\npm-cli.js" config set prefix "$INSTDIR\bin"'
-; run the selfupdate
-Exec '"$INSTDIR\bin\nodist.cmd" "selfupdate"'
 SectionEnd
 
 ######################################################################
