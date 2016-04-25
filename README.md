@@ -66,6 +66,11 @@ Btw, nodist also works in your PowerShell, but you might first need to 'Unblock'
 ```
 
 ```
+> nodist 5
+# Sets the global node version to the latest installed version of the v5 branch.
+```
+
+```
 > nodist local 0.8.1
 # Sets the node version per directory (including subdirectories).
 ```
@@ -93,6 +98,9 @@ call nodist env 0.7.12
 ```
 > nodist + v0.8.1
 # Just checks, if the version is installed and downloads it if not.
+
+> nodist + 4.x
+# Checks if the latest version of the v4 branch is installed and downloads it if not.
 
 > nodist + all
 # will install *everything*.
