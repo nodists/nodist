@@ -147,13 +147,13 @@ if (command.match(/^list|ls$/i)) {
                   var del = '  ';
                   var note = ' ';
                   if (version === envVersion) {
-                    note += ' (env)';
+                    note += ' (env: '+envSpec+')';
                   }
                   if (version === localVersion) {
-                    note += ' ('+localFile+')';
+                    note += ' ('+localFile+': '+localSpec+')';
                   }
                   if (version === globalVersion) {
-                    note += ' (global)';
+                    note += ' (global: '+globalSpec+')';
                   }
                   if (version === current) del ='> ';// highlight current
 
