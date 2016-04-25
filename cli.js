@@ -81,7 +81,9 @@ var proxy = (
 );
 var wantX64 = (+process.env.NODIST_X64) === 1;
 var envVersion = process.env.NODIST_VERSION ?
-  process.env.NODIST_VERSION.replace(/"/g, '') : process.env.NODIST_VERSION;
+  process.env.NODIST_NODE_VERSION.replace(/"/g, '') : process.env.NODIST_NODE_VERSION;
+var npmEnvVersion = process.env.NODIST_NPM_VERSION ?
+  process.env.NODIST_NPM_VERSION.replace(/"/g, '') : process.NODIST_NPM_VERSION
 
 // Create a nodist instance
 var n = new nodist(
@@ -93,7 +95,9 @@ var n = new nodist(
   envVersion
 );
 
-var npm = new npmist(n)
+var npm = new npmist(n,
+  npmEnvVersion
+)
 
 // Parse args
 var argv = process.argv.splice(2);
@@ -182,24 +186,85 @@ else if (command.match(/^dist|ds$/i)) {
   });
 }
 //NPM version management
-else if (command.match(/^npm/i)){
-  version = argv[1];
-  if('remove' === version){
+else if (command.match(/^npm$/i)){
+  var subcmd = argv[1] || 'ls';
+  if(subcmd.match(/^add|\+$/i)){
     version = argv[2];
     npm.resolveVersion(version, function(er, v){
       if(er) abort(er.message+'. Sorry.');
-      debug('Resolved NPM version to ' + v);
+      npm.install(v,function(err,v){
+        if(err) abort(err.message + '. Sorry.');
+      });
+    });
+  } else
+  if(subcmd.match(/^remove$/i)){
+    version = argv[2];
+    npm.resolveVersionLocally(version, function(er, v){
+      if(er) abort(er.message+'. Sorry.');
       npm.remove(v,function(err,v){
         if(err) abort(err.message + '. Sorry.');
       });
     });
-  } else {
-    npm.resolveVersion(version, function(er, v) {
+  } else
+  if(subcmd.match(/^ls|list$/i)){
+    npm.getGlobal(function(err, globalSpec){
+      npm.resolveVersionLocally(globalSpec, function(er, globalVersion) {
+	npm.getLocal(function(err, localSpec, localFile){
+	  npm.resolveVersionLocally(localSpec, function(er, localVersion) {
+	    npm.getEnv(function(err, envSpec){
+	      npm.resolveVersionLocally(envSpec, function(er, envVersion) {
+		npm.listInstalled(function(err, ls) {
+		  if(err) abort(err.message+'. Sorry.');
+		  if(ls.length === 0) abort('No builds installed, yet.');
+		  var current = envVersion || localVersion || globalVersion;
+		  // display all versions
+		  ls.forEach(function(version) {
+		    var del = '  ';
+		    var note = ' ';
+		    if (version === envVersion) {
+		      note += ' (env: '+envSpec+')';
+		    }
+		    if (version === localVersion) {
+		      note += ' ('+localFile+': '+localSpec+')';
+		    }
+		    if (version === globalVersion) {
+		      note += ' (global: '+globalSpec+')';
+		    }
+		    if (version === current) del ='> ';// highlight current
+
+		    console.log(del + version+note);
+		  });
+		  exit();
+		});
+	      })
+	    })
+	  })
+	});
+      });
+    });
+  } else
+  if(subcmd.match(/^local$/i)){
+    version = argv[2];
+    npm.setLocal(version, function(er){
       if(er) abort(er.message+'. Sorry.');
-      debug('Resolved NPM version to ' + v);
-      npm.install(v, function(err, v) {
-        if(err) abort(err.message+'. Sorry.');
-        console.log('npm ' + v);
+      npm.resolveVersion(version, function(er, v) {	
+	if(er) abort(er.message + '. Sorry.');
+	npm.install(v,function(err,v){
+	  if(er) abort(er.message + '. Sorry.');
+	});
+      })
+    });
+  } else
+  if (subcmd.match(/^global$/i) && argv[2] || argv[1] && !argv[2]) {
+    version = argv[2] || argv[1]
+    npm.setGlobal(version, function(er) {
+      if(er) abort(er.message+'. Sorry.');
+      console.log('npm ' + version);
+      npm.resolveVersion(version, function(er, v) {
+        if(er) abort(er.message+'. Sorry.');
+	npm.install(v, function(er, v) {
+	  if (er) abort(er.message+'. Sorry.')
+	})
       });
     });
   }

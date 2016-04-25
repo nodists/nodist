@@ -13,7 +13,6 @@ var unzip = require('unzip');
 
 var github = require('../lib/github');
 var helper = require('../lib/build');
-var npm = new (require('../lib/npm'))();
 var pkg = require('../package.json');
 
 
@@ -50,8 +49,7 @@ bin
   nodist - this is a bash script that chain loads the cli.js
   nodist.cmd - this is a cmd that interacts with the nodist cli
   nodist.ps1 - a ps1 file for nodist
-  npm - this is a shell script that chain loads to the npm cli
-  npm.cmd - a windows cmd script that chain loads the npm cli
+  npm.exe - this is the binary shim for npm
   node_modules - folder to contain modules used globally
     npm - latest copy of npm
 lib
@@ -75,12 +73,14 @@ var nodeLatestUrlx64 = 'https://nodejs.org/dist/VERSION/win-x64/node.exe';
 var outDir = path.resolve(path.join(__dirname, 'out'));
 var tmpDir = path.resolve(path.join(outDir, 'tmp'));
 var stagingDir = path.resolve(path.join(outDir, 'staging'));
+var stagingNpmDir = path.join(stagingDir, 'npmv')
 var stagingBin = path.join(stagingDir,'bin');
 var stagingLib = path.join(stagingDir,'lib');
-var stagingNpmDir = stagingBin + '/node_modules/npm';
 var nodistDir = path.resolve(path.dirname(__dirname));
 var nodistBin = path.join(nodistDir,'bin');
 var nodistLib = path.join(nodistDir,'lib');
+
+var npm = new (require('../lib/npm'))({nodistDir: stagingDir});
 
 //file paths
 var npmZip = path.resolve(tmpDir + '/npm.zip');
@@ -108,7 +108,8 @@ P.all([
   .then(function(){
     return P.all([
       mkdirp(stagingDir),
-      mkdirp(tmpDir)
+      mkdirp(tmpDir),
+      mkdirp(stagingNpmDir)
     ]);
   })
   .then(function(){
@@ -130,10 +131,6 @@ P.all([
         nodistBin + '/nodist.cmd',stagingBin + '/nodist.cmd'),
       helper.copyFileAsync(
         nodistBin + '/nodist.ps1',stagingBin + '/nodist.ps1'),
-      helper.copyFileAsync(
-        nodistBin + '/npm',stagingBin + '/npm'),
-      helper.copyFileAsync(
-        nodistBin + '/npm.cmd',stagingBin + '/npm.cmd'),
       //lib folder
       helper.copyFileAsync(
         nodistLib + '/build.js',stagingLib + '/build.js'),
@@ -159,11 +156,17 @@ P.all([
   .then(function(){
     console.log('Finished copying static files');
     
+    console.log('Compiling node shim')
+    return exec('go build -o "'+stagingBin +'/node.exe" src/shim-node.go')
+  })
+  .then(function(){
+    console.log('Done compiling node shim')
+    
     console.log('Compiling shim')
-    return exec('go build -o "'+stagingBin +'/node.exe" src/shim.go')
+    return exec('go build -o "'+stagingBin +'/npm.exe" src/shim-npm.go')
   })
   .then(function() {
-    console.log('Done compiling shim')
+    console.log('Done compiling npm shim')
     
     console.log('Determining latest version of node');
     return request.getAsync({
@@ -204,7 +207,7 @@ P.all([
       nodeLatestUrlx64,versionPathx64 + '/node.exe');
   })
   .then(function(){
-    console.log('Writing ' + nodeVersion + ' as version for Nodist to use');
+    console.log('Writing ' + nodeVersion + ' as global node version');
     return fs.writeFileAsync(
       path.resolve(path.join(stagingDir,'.node-version')),
       nodeVersion
@@ -222,21 +225,25 @@ P.all([
     return helper.downloadFileAsync(downloadLink,npmZip);
   })
   .then(function(){
-    console.log('Extracting NPM to staging folder');
-    return mkdirp(path.dirname(stagingNpmDir));
-  })
-  .then(function(){
+    console.log("Extracting zip")
     return promisePipe(
       fs.createReadStream(npmZip).
-        pipe(unzip.Extract({ path: path.dirname(stagingNpmDir) }))
+        pipe(unzip.Extract({ path: stagingNpmDir}))
     );
   })
   .then(function(){
     return fs.renameAsync(
       path.resolve(
-        path.dirname(stagingNpmDir) + '/npm-' + npmVersion.replace('v','')
+        stagingNpmDir + '/npm-' + npmVersion.replace('v','')
       ),
-      stagingNpmDir
+      stagingNpmDir+'/'+npmVersion.replace('v','')
+    );
+  })
+  .then(function(){
+    console.log('Writing ' + npmVersion + ' as global npm version');
+    return fs.writeFileAsync(
+      path.resolve(path.join(stagingDir,'.npm-version')),
+      nodeVersion
     );
   })
   .then(function(){

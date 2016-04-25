@@ -2,8 +2,13 @@
 
 if [ "$1" = "env" -o "$1" = "use" ]; then
     \nodist + $2
-    if [ $? -eq 0 ]; then
-        export NODIST_VERSION=$2
+    if [ $? -eq 0 ]; then # if the last command exited with 0
+        export NODIST_NODE_VERSION=$2
+    fi
+else if ["$1" = "npm" -a "$2" = "env"]; then
+    \nodist npm + $3
+    if [ $? -eq 0 ]; then # if the last command exited with 0
+        export NODIST_NPM_VERSION=$3
     fi
 else
     \nodist $*
