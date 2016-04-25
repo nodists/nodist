@@ -5,19 +5,16 @@
 A node.js and io.js version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
 ```
-> nodist 0.10
-nodev0.10.26
+...> nodist 5
+5
 
-> node -v
-v0.10.26
+...> node -v
+v5.11.0
 
-> nodist
-  nodev0.10.24
-  nodev0.10.25
-> nodev0.10.26 (global)
-  nodev0.11.11
-  nodev0.11.12
-  iojsv2.3.4
+...> nodist
+  0.10.26
+  4.4.3
+> 5.11.0 (global: 5)
 ```
 
 (see [Usage](#usage))
@@ -31,7 +28,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.7.2/NodistSetup-v0.7.2.exe)
 2. Run the installer and follow the install wizard
 
-### Migrating from <=0.6 to 0.7
+### Migrating from <=0.6
 If you're looking to upgrade your Nodist installation, the easiest way is to uninstall (see below) the old installation and install the new version with the installer above.
 
 ### Uninstall (<v0.7)
@@ -46,37 +43,47 @@ If you're looking to upgrade your Nodist installation, the easiest way is to uni
 
 
 ## Usage
-Nodist understands version patterns, like `0.8` or `0.8.x` or `~0.8` as well as `0.8.12` or `v0.8.12`.
-As an added bonus, you may also use `latest` and `stable`.
-When dealing with io.js versions you need to use the following: `iojsv2.x` and `iojs-latest`.
+Nodist understands version patterns, like `0.12` or `4.x` or `~5` as well as `4.4.3` or `v4.4.3`.
+As an added bonus, you may also use `latest`.
 
-Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `\bin\nodist.ps1`.
+io.js is supported natively: Since node and io.js versions form a continuum you can simply use io.js versions as if they were node versions.
+
+Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `bin\nodist.ps1`.
 
 ### Commands
-*All commands implicitly install the specified version before using it, if it's not installed already.*
+*All commands automatically install the latest matching version before setting the version pattern.*
 
 ```
 > nodist
-# Lists installed versions highlighting the active one.
+# Lists installed versions highlighting the active ones.
 ```
 
 ```
-> nodist 0.8.1
+> nodist 4.x
 # Sets the global node version.
 ```
 
 ```
-> nodist local 0.8.1
-# Sets the node version per directory (including subdirectories).
+> nodist local 4.x
+# Sets the node version per directory (including all subdirectories).
 ```
 
 ```
-> nodist env v0.7.12
+> nodist env 4.x
 # Sets the node version per terminal.
 ```
 
 ```
-call nodist env 0.7.12
+> nodist npm 3.x
+# Globally activate npm 3
+
+> nodist npm match
+# Globally activates the npm version that corresponds to the active node version
+# (the active node version may be the env, local or global version)
+```
+
+```
+call nodist env 4.x
 # In a batch script use `call`.
 ```
 
@@ -86,12 +93,12 @@ call nodist env 0.7.12
 ```
 
 ```
-> nodist r v0.8.1 -- foo.js -s
+> nodist r 4.x -- foo.js -s
 # Runs a specific version without modifying any state.
 ```
 
 ```
-> nodist + v0.8.1
+> nodist + 4.x
 # Just checks, if the version is installed and downloads it if not.
 
 > nodist + all
@@ -99,7 +106,7 @@ call nodist env 0.7.12
 ```
 
 ```
-> nodist - 0.5.10
+> nodist - 4.1.1
 # Removes a version.
 ```
 
@@ -125,18 +132,17 @@ call nodist env 0.7.12
 
 ```
 > set NODIST_X64=0
-# Override x64 auto-detection.
 # (Set to `1` to enforce 64bit, `0` to enforce 32bit.)
 ```
 
 ## Details
 Node executables are stored in `NODIST_PREFIX\v` and `NODIST_PREFIX\v-x64`.
 The global `node.exe` is a shim and chooses the right node version to run based on the various version settings:
- * global -- `NODIST_PREFIX\.node-version` contains the global node version 
- * local -- `./.node-version` in the current working directory contains the local node verison
- * env -- `NODIST_VERSION` containst the environmental node version
+ * global -- `NODIST_PREFIX\.node-version` contains the global node version pattern
+ * local -- `./.node-version` in the current working directory contains the local version pattern
+ * env -- `NODIST_VERSION` containst the per-terminal version pattern
 
-The latest npm version is available out of the box.
+npm is always switched globally!
 
 As the global node version will be subject to change, `nodist` comes with its own dedicated node binary.
 
@@ -181,10 +187,25 @@ If you have met all requirements, run the build command:
 Afterwards you'll find the installer in `build/out/NodistSetup.exe` and fully prepared installation folder in `build/out/staging` (you could zip this, for example).
 
 ## Legal
-Copyright (c) 2012-2014 by Marcel Klehr  
+Copyright (c) 2012-2016 by Marcel Klehr  
 MIT License
 
 ## Changelog
+
+v0.8.0
+* Add NPM version management (thanks to @nullivex)
+* Treat io.js versions as node versions
+* Allow setting ranges in global/local/env (don't resolve before setting versions)
+* Drop support for setting node command line args
+* Respect engines field declaration in package.json
+* Fix local switching: Use the target script's dir as the base dir
+* Allow setting env vars for mirror support
+* Support bash
+* Remove selfupdate command
+* Fix help flag
+* [installer] Fix: Set system not user PATH
+* [installer] Fix: auto-detect x64 arch
+* Improve build script
 
 v0.7.2
 * correct version of NPM
