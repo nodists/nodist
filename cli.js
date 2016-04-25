@@ -226,7 +226,7 @@ else if ((command.match(/^add|\+$/i)) && argv[1]) {
 // REMOVE an installed build
 else if (command.match(/^remove|rm|-$/i) && argv[1]) {
   version = argv[1];
-  n.resolveVersion(version, function(er, v) {
+  n.resolveVersionLocally(version, function(er, v) {
     if(er) abort(er.message+'. Sorry.');
     n.remove(v, function(er) {
       if(er) abort(er.message+'. Sorry.');
