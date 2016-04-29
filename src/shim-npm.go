@@ -58,10 +58,10 @@ func main() {
     os.Exit(41)
   }
 
-  npmVersion, err := nodist.ResolveNpmVersion(npmSpec)
+  npmVersion, err := nodist.ResolveNpmVersion(npmSpec, version)
 
   if err != nil {
-    fmt.Println("Sorry, there's a problem with nodist. Couldn't resolve npm version spec %s: %s", npmSpec, err.Error())
+    fmt.Println("Sorry, there's a problem with nodist. Couldn't resolve npm version spec", npmSpec, ":", err.Error())
     os.Exit(44)
   }
 
