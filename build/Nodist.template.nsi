@@ -98,7 +98,7 @@ Call AddToPath
 ; Detect x64
 push $1
 ReadEnvStr $1 PROCESSOR_ARCHITECTURE
-${IF} $1 != "x86"
+${IF} "$1" != "x86"
   WriteRegExpandStr ${ENV_HKLM} NODIST_X64 "1"
 ${ENDIF}
 pop $1
