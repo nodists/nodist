@@ -59,8 +59,6 @@ InstallDir "$PROGRAMFILES\Nodist"
 !insertmacro MUI_PAGE_LICENSE "${LICENSE_TXT}"
 !endif
 
-!insertmacro MUI_PAGE_COMPONENTS
-
 !insertmacro MUI_PAGE_DIRECTORY
 
 !ifdef REG_START_MENU
