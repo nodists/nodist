@@ -338,7 +338,7 @@ else if (command.match(/^local$/i) && argv[1]) {
   var spec = argv[1];
   n.setLocal(spec, function(err, file) {
     if(err) abort(err.message+'. Sorry.');
-    console.log(version, '(' + file + ')');
+    console.log(spec, '(' + file + ')');
     n.resolveVersionLocally(spec, function(er, found) {
       if(found) {
         exit();

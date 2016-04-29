@@ -95,13 +95,22 @@ func GetInstalledNodeVersions() (versions []*semver.Version, err error) {
   return
 }
 
-func ResolveNpmVersion(spec string) (version string, err error){
+func ResolveNpmVersion(spec string, nodeVersion string) (version string, err error){
   // Find an installed version matching the spec...
 
   installed, err := GetInstalledNpmVersions()
 
   if err != nil {
     return
+  }
+
+  if spec == "match" {
+    spec, err = getMatchingNpmVersion(nodeVersion)
+    if err != nil {
+      return
+    }
+    // we feed this result to resolveVersion, too, because we need
+    // to see if it is actually installed
   }
 
   version, err = resolveVersion(spec, installed)
@@ -134,6 +143,33 @@ func resolveVersion(spec string, installed []*semver.Version) (version string, e
   if version == "" {
     err = errors.New("Couldn't find any matching version")
   }
+  return
+}
+
+type Version struct {
+  Version string
+  Npm string
+}
+
+func getMatchingNpmVersion(nodeVersion string) (version string, err error) {
+  file := os.Getenv("NODIST_PREFIX")+pathSep+"versions.json"
+  rawJSON, err := ioutil.ReadFile(file)
+  if err != nil {
+    return
+  }
+  var versions []Version
+  err = json.Unmarshal(rawJSON, &versions)
+  if err != nil {
+    return
+  }
+  for i:=0; i < len(versions); i++ {
+    if versions[i].Version[1:] != nodeVersion {
+      continue
+    }
+    version = versions[i].Npm
+    return
+  }
+  err = errors.New("No npm version found that matches node version "+nodeVersion)
   return
 }
 
