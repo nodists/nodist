@@ -243,7 +243,7 @@ P.all([
     console.log('Writing ' + npmVersion + ' as global npm version');
     return fs.writeFileAsync(
       path.resolve(path.join(stagingDir,'.npm-version')),
-      nodeVersion
+      npmVersion.replace('v','')
     );
   })
   .then(function(){
