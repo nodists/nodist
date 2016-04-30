@@ -24,7 +24,7 @@
 
 ; make some includes
 !include "WinMessages.nsh"
-;!include "x64.nsh"
+!include "x64.nsh"
 
 ######################################################################
 
@@ -96,12 +96,9 @@ Push "$INSTDIR\bin"
 Call AddToPath
 
 ; Detect x64
-push $1
-ReadEnvStr $1 PROCESSOR_ARCHITECTURE
-${IF} "$1" != "x86"
+${IF} ${RunningX64} 
   WriteRegExpandStr ${ENV_HKLM} NODIST_X64 "1"
 ${ENDIF}
-pop $1
 
 ; set variable
 WriteRegExpandStr ${ENV_HKLM} NODIST_PREFIX "$INSTDIR"
