@@ -127,6 +127,10 @@ P.all([
       helper.copyFileAsync(
         nodistBin + '/nodist',stagingBin + '/nodist'),
       helper.copyFileAsync(
+        nodistBin + '/nodist.sh',stagingBin + '/nodist.sh'),
+      helper.copyFileAsync(
+        nodistBin + '/bash_profile_content.sh',stagingBin + '/bash_profile_content.sh'),
+      helper.copyFileAsync(
         nodistBin + '/nodist.cmd',stagingBin + '/nodist.cmd'),
       helper.copyFileAsync(
         nodistBin + '/nodist.ps1',stagingBin + '/nodist.ps1'),
@@ -158,13 +162,13 @@ P.all([
   })
   .then(function(){
     console.log('Finished copying static files');
-    
+
     console.log('Compiling shim')
     return exec('go build -o "'+stagingBin +'/node.exe" src/shim.go')
   })
   .then(function() {
     console.log('Done compiling shim')
-    
+
     console.log('Determining latest version of node');
     return request.getAsync({
       url: 'https://nodejs.org/dist/index.json',
