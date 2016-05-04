@@ -1,7 +1,7 @@
 ############################################################################################
 #      NSIS Installation Script created by NSIS Quick Setup Script Generator v1.09.18
-#               Entirely Edited with NullSoft Scriptable Installation System                
-#              by Vlasis K. Barkas aka Red Wine red_wine@freemail.gr Sep 2006               
+#               Entirely Edited with NullSoft Scriptable Installation System
+#              by Vlasis K. Barkas aka Red Wine red_wine@freemail.gr Sep 2006
 ############################################################################################
 
 !define APP_NAME "Nodist"
@@ -47,6 +47,9 @@ InstallDirRegKey "${REG_ROOT}" "${REG_APP_PATH}" ""
 InstallDir "$PROGRAMFILES\Nodist"
 
 ######################################################################
+
+!include "StrFunc.nsh"
+${StrRep}
 
 !include "MUI.nsh"
 
@@ -114,6 +117,22 @@ FileRead $4 $3
 FileClose $4
 Exec '"$INSTDIR\node.exe" "$INSTDIR\npmv\$3\bin\npm-cli.js" config set prefix "$INSTDIR\bin"'
 pop $3
+; add to git bash if present
+push $1
+ReadEnvStr $1 USERPROFILE
+IfFileExists "$1\.bash_profile" 0 +12
+    push $2
+    push $3
+    FileOpen $2 "$INSTDIR\bin\bash_profile_content.sh" r
+    FileRead $2 $3
+    FileClose $2
+    FileOpen $2 "$1\.bash_profile" a
+    FileSeek $2 0 END
+    FileWrite $2 "$\n$3"
+    FileClose $2
+    pop $3
+    pop $2
+pop $1
 SectionEnd
 
 ######################################################################
@@ -177,7 +196,7 @@ DeleteRegValue ${ENV_HKLM} NODE_PATH
 DeleteRegValue ${ENV_HKLM} NODIST_X64
 ; make sure windows knows about the change
 SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
- 
+
 Delete "$INSTDIR\uninstall.exe"
 !ifdef WEB_SITE
 Delete "$INSTDIR\${APP_NAME} website.url"

@@ -128,6 +128,10 @@ P.all([
       helper.copyFileAsync(
         nodistBin + '/nodist',stagingBin + '/nodist'),
       helper.copyFileAsync(
+        nodistBin + '/nodist.sh',stagingBin + '/nodist.sh'),
+      helper.copyFileAsync(
+        nodistBin + '/bash_profile_content.sh',stagingBin + '/bash_profile_content.sh'),
+      helper.copyFileAsync(
         nodistBin + '/nodist.cmd',stagingBin + '/nodist.cmd'),
       helper.copyFileAsync(
         nodistBin + '/nodist.ps1',stagingBin + '/nodist.ps1'),

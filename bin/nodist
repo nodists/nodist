@@ -1,16 +1,4 @@
 #!/bin/sh
 
-if [ "$1" = "env" -o "$1" = "use" ]; then
-    "$0" + $2
-    if [ $? -eq 0 ]; then # if the last command exited with 0
-        export NODIST_NODE_VERSION=$2
-    fi
-else if ["$1" = "npm" -a "$2" = "env"]; then
-    "$0" npm + $3
-    if [ $? -eq 0 ]; then # if the last command exited with 0
-        export NODIST_NPM_VERSION=$3
-    fi
-else
-    DIR="`dirname \"$0\"`"
-    "$DIR/../node.exe" "$DIR/../cli" $*
-fi
+DIR=$(echo "$NODIST_PREFIX" | sed -e 's,\\,/,g')
+"$DIR/node.exe" "$DIR/cli" "$@"
