@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 nodist() {
     local NODIST_BIN_DIR__
