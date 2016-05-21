@@ -402,16 +402,3 @@ FunctionEnd
 !macroend
 !insertmacro StrStr ""
 !insertmacro StrStr "un."
-
-; handle radio buttons for build types
-
-Function .onInit
-  StrCpy $1 ${wantx86}
-FunctionEnd
-
-Function .onSelChange
-  !insertmacro StartRadioButtons $1
-    !insertmacro RadioButton ${wantx86}
-    !insertmacro RadioButton ${wantx64}
-  !insertmacro EndRadioButtons
-FunctionEnd

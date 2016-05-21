@@ -10,6 +10,7 @@ var recursiveReaddir = require('recursive-readdir');
 var request = require('request');
 var rimraf = require('rimraf');
 var unzip = require('unzip');
+var cpr = require('cpr');
 
 var github = require('../lib/github');
 var helper = require('../lib/build');
@@ -230,17 +231,19 @@ P.all([
   })
   .then(function(){
     console.log("Extracting zip")
-    return promisePipe(
-      fs.createReadStream(npmZip).
-        pipe(unzip.Extract({ path: stagingNpmDir}))
-    );
+    return new Promise(resolve => {
+      fs.createReadStream(npmZip)
+      .pipe(unzip.Extract({ path: tmpDir}))
+      .on('close', resolve)
+    });
   })
   .then(function(){
-    return fs.renameAsync(
-      path.resolve(
-        stagingNpmDir + '/npm-' + npmVersion.replace('v','')
-      ),
-      stagingNpmDir+'/'+npmVersion.replace('v','')
+    return new Promise(resolve =>
+     cpr(tmpDir + '/npm-' + npmVersion.replace('v','')
+       , stagingNpmDir+'/'+npmVersion.replace('v','')
+     , {overwrite: true, confirm: true}
+     , resolve
+     )
     );
   })
   .then(function(){
