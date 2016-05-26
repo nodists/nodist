@@ -8,7 +8,7 @@ goto main
 
 :nodeenv
   call %0 + %2
-  @set "NODIST_VERSION=%2"
+  @set "NODIST_NODE_VERSION=%2"
   :: goto end
   GOTO end
 

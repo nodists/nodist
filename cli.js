@@ -80,7 +80,7 @@ var proxy = (
   ''
 );
 var wantX64 = (+process.env.NODIST_X64) === 1;
-var envVersion = process.env.NODIST_VERSION ?
+var envVersion = process.env.NODIST_NODE_VERSION ?
   process.env.NODIST_NODE_VERSION.replace(/"/g, '') : process.env.NODIST_NODE_VERSION;
 var npmEnvVersion = process.env.NODIST_NPM_VERSION ?
   process.env.NODIST_NPM_VERSION.replace(/"/g, '') : process.NODIST_NPM_VERSION
