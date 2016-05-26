@@ -175,6 +175,7 @@ Testing also accepts env variables for using a mirror to download from, as well 
 Building nodist requires
  * [go](https://golang.org) for compiling the shim
  * [NSIS](http://nsis.sourceforge.net/Main_Page) v2 for compiling the installer
+   * NSIS Plugin: [AccessControl](http://nsis.sourceforge.net/AccessControl_plug-in)
  * node.js for running the build script
  * and npm for installing nodist's dependencies
  * Finally you need to `go get github.com/marcelklehr/semver github.com/tj/go-debug`
