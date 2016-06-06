@@ -22,7 +22,7 @@ func GetCurrentNodeVersionSpec(currentDir string) (spec string) {
     spec = v
     debug("NODE_VERSION found:'%s'", spec)
   } else
-  if v = os.Getenv("NODIST_VERSION"); v != "" {
+  if v = os.Getenv("NODIST_NODE_VERSION"); v != "" {
     spec = v
     debug("NODIST_NODE_VERSION found:'%s'", spec)
   } else
@@ -34,7 +34,7 @@ func GetCurrentNodeVersionSpec(currentDir string) (spec string) {
     spec = string(v)
     debug("Local file found:'%s' @ %s", spec, localFile)
   } else
-  if v, err := ioutil.ReadFile(os.Getenv("NODIST_PREFIX")+"\\.node-version"); err == nil {
+  if v, err := ioutil.ReadFile(os.Getenv("NODIST_PREFIX")+"\\.node-version-global"); err == nil {
     spec = string(v)
     debug("Global file found: '%s'", spec)
   }
@@ -58,7 +58,7 @@ func GetCurrentNpmVersionSpec(currentDir string) (spec string) {
     spec = string(v)
     debug("Local file with npm spec found:'%s' @ %s", spec, localFile)
   } else
-  if v, err := ioutil.ReadFile(os.Getenv("NODIST_PREFIX")+"\\.npm-version"); err == nil {
+  if v, err := ioutil.ReadFile(os.Getenv("NODIST_PREFIX")+"\\.npm-version-global"); err == nil {
     spec = string(v)
     debug("Global file found: '%s'", spec)
   }

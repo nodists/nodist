@@ -213,7 +213,7 @@ P.all([
   .then(function(){
     console.log('Writing ' + nodeVersion + ' as global node version');
     return fs.writeFileAsync(
-      path.resolve(path.join(stagingDir,'.node-version')),
+      path.resolve(path.join(stagingDir,'.node-version-global')),
       nodeVersion
     );
   })
@@ -249,7 +249,7 @@ P.all([
   .then(function(){
     console.log('Writing ' + npmVersion + ' as global npm version');
     return fs.writeFileAsync(
-      path.resolve(path.join(stagingDir,'.npm-version')),
+      path.resolve(path.join(stagingDir,'.npm-version-global')),
       npmVersion.replace('v','')
     );
   })
