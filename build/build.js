@@ -5,11 +5,10 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var ncp = require('ncp');
 var path = require('path');
-var promisePipe = require('promisepipe');
 var recursiveReaddir = require('recursive-readdir');
 var request = require('request');
 var rimraf = require('rimraf');
-var unzip = require('unzip');
+var extract = require('extract-zip');
 var cpr = require('cpr');
 
 var github = require('../lib/github');
@@ -231,11 +230,12 @@ P.all([
   })
   .then(function(){
     console.log("Extracting zip")
-    return new Promise(resolve => {
-      fs.createReadStream(npmZip)
-      .pipe(unzip.Extract({ path: tmpDir}))
-      .on('close', resolve)
-    });
+    return new Promise((resolve,reject) => {
+      extract(npmZip, { dir: tmpDir}, (er) => {
+        if (er) reject(er)
+        resolve()
+      })
+    })
   })
   .then(function(){
     return new Promise(resolve =>

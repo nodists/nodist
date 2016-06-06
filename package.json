@@ -25,13 +25,13 @@
     "github": "nullivex/node-github",
     "mkdirp": "~0.5",
     "ncp": "^2.0.0",
-    "progress": "*",
+    "progress": "1.x",
     "promisepipe": "^1.0.1",
     "recursive-readdir": "^1.2.1",
     "request": "~2.65",
     "rimraf": "~2",
     "semver": "^5.1.0",
-    "unzip": "^0.1.11",
+    "extract-zip": "1.x",
     "cpr": "1.x"
   },
   "devDependencies": {
