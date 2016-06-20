@@ -8,8 +8,8 @@ var path = require('path');
 var recursiveReaddir = require('recursive-readdir');
 var request = require('request');
 var rimraf = require('rimraf');
-var extract = require('extract-zip');
-var cpr = require('cpr');
+var tar = require('tar');
+var zlib = require('zlib')
 
 var github = require('../lib/github');
 var helper = require('../lib/build');
@@ -81,9 +81,6 @@ var nodistBin = path.join(nodistDir,'bin');
 var nodistLib = path.join(nodistDir,'lib');
 
 var npm = new (require('../lib/npm'))({nodistDir: stagingDir});
-
-//file paths
-var npmZip = path.resolve(tmpDir + '/npm.zip');
 
 //default npm version to the latest at the time of writing
 var npmVersion = '3.3.8';
@@ -226,25 +223,20 @@ P.all([
     var downloadLink = npm.downloadUrl(version);
     console.log('Determined latest NPM as ' + npmVersion);
     console.log('Downloading latest NPM from ' + downloadLink);
-    return helper.downloadFileAsync(downloadLink,npmZip);
-  })
-  .then(function(){
-    console.log("Extracting zip")
-    return new Promise((resolve,reject) => {
-      extract(npmZip, { dir: tmpDir}, (er) => {
-        if (er) reject(er)
-        resolve()
+    return Promise.resolve()
+    .then(() => mkdirp(stagingNpmDir+'/'+npmVersion.replace('v','')))
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        helper.downloadFileStream(downloadLink)
+        .pipe(zlib.createUnzip())
+        .pipe(tar.Extract({
+          path: stagingNpmDir+'/'+npmVersion.replace('v','')
+        , strip: 1
+        }))
+        .on('error', reject)
+        .on('end', resolve)
       })
     })
-  })
-  .then(function(){
-    return new Promise(resolve =>
-     cpr(tmpDir + '/npm-' + npmVersion.replace('v','')
-       , stagingNpmDir+'/'+npmVersion.replace('v','')
-     , {overwrite: true, confirm: true}
-     , resolve
-     )
-    );
   })
   .then(function(){
     console.log('Writing ' + npmVersion + ' as global npm version');
