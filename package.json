@@ -31,8 +31,7 @@
     "request": "~2.65",
     "rimraf": "~2",
     "semver": "^5.1.0",
-    "extract-zip": "1.x",
-    "cpr": "1.x"
+    "tar": "2.x"
   },
   "devDependencies": {
     "vows": "*"
