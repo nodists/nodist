@@ -1,7 +1,7 @@
 ############################################################################################
 #      NSIS Installation Script created by NSIS Quick Setup Script Generator v1.09.18
-#               Entirely Edited with NullSoft Scriptable Installation System                
-#              by Vlasis K. Barkas aka Red Wine red_wine@freemail.gr Sep 2006               
+#               Entirely Edited with NullSoft Scriptable Installation System
+#              by Vlasis K. Barkas aka Red Wine red_wine@freemail.gr Sep 2006
 ############################################################################################
 
 !define APP_NAME "Nodist"
@@ -24,7 +24,7 @@
 
 ; make some includes
 !include "WinMessages.nsh"
-;!include "x64.nsh"
+!include "x64.nsh"
 
 ######################################################################
 
@@ -48,6 +48,9 @@ InstallDir "$PROGRAMFILES\Nodist"
 
 ######################################################################
 
+!include "StrFunc.nsh"
+${StrRep}
+
 !include "MUI.nsh"
 
 !define MUI_ABORTWARNING
@@ -58,8 +61,6 @@ InstallDir "$PROGRAMFILES\Nodist"
 !ifdef LICENSE_TXT
 !insertmacro MUI_PAGE_LICENSE "${LICENSE_TXT}"
 !endif
-
-!insertmacro MUI_PAGE_COMPONENTS
 
 !insertmacro MUI_PAGE_DIRECTORY
 
@@ -98,12 +99,9 @@ Push "$INSTDIR\bin"
 Call AddToPath
 
 ; Detect x64
-push $1
-ReadEnvStr $1 PROCESSOR_ARCHITECTURE
-${IF} $1 != "x86"
+${IF} ${RunningX64} 
   WriteRegExpandStr ${ENV_HKLM} NODIST_X64 "1"
 ${ENDIF}
-pop $1
 
 ; set variable
 WriteRegExpandStr ${ENV_HKLM} NODIST_PREFIX "$INSTDIR"
@@ -113,9 +111,28 @@ SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=50
 ; change the permssions on the install dir, since everyone needs ot write to it
 AccessControl::GrantOnFile "$INSTDIR" "(BU)" "FullAccess"
 ; set the NPM prefix
-Exec '"$INSTDIR\node.exe" "$INSTDIR\bin\node_modules\npm\bin\npm-cli.js" config set prefix "$INSTDIR\bin"'
-; run the selfupdate
-Exec '"$INSTDIR\bin\nodist.cmd" "selfupdate"'
+push $3
+FileOpen $4 "$INSTDIR\.npm-version" r
+FileRead $4 $3
+FileClose $4
+Exec '"$INSTDIR\node.exe" "$INSTDIR\npmv\$3\bin\npm-cli.js" config set prefix "$INSTDIR\bin"'
+pop $3
+; add to git bash if present
+push $1
+ReadEnvStr $1 USERPROFILE
+IfFileExists "$1\.bash_profile" 0 +12
+    push $2
+    push $3
+    FileOpen $2 "$INSTDIR\bin\bash_profile_content.sh" r
+    FileRead $2 $3
+    FileClose $2
+    FileOpen $2 "$1\.bash_profile" a
+    FileSeek $2 0 END
+    FileWrite $2 "$\n$3"
+    FileClose $2
+    pop $3
+    pop $2
+pop $1
 SectionEnd
 
 ######################################################################
@@ -161,6 +178,10 @@ SectionEnd
 Section Uninstall
 ${INSTALL_TYPE}
 
+; Try to revert .npmrc to previous state.
+; We assume prefix wasn't set before installing nodist
+ExecWait 'npm config delete prefix'
+
 ;DELETE_FILES;
 
 ;DELETE_FOLDERS;
@@ -175,7 +196,7 @@ DeleteRegValue ${ENV_HKLM} NODE_PATH
 DeleteRegValue ${ENV_HKLM} NODIST_X64
 ; make sure windows knows about the change
 SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
- 
+
 Delete "$INSTDIR\uninstall.exe"
 !ifdef WEB_SITE
 Delete "$INSTDIR\${APP_NAME} website.url"
@@ -381,16 +402,3 @@ FunctionEnd
 !macroend
 !insertmacro StrStr ""
 !insertmacro StrStr "un."
-
-; handle radio buttons for build types
-
-Function .onInit
-  StrCpy $1 ${wantx86}
-FunctionEnd
-
-Function .onSelChange
-  !insertmacro StartRadioButtons $1
-    !insertmacro RadioButton ${wantx86}
-    !insertmacro RadioButton ${wantx64}
-  !insertmacro EndRadioButtons
-FunctionEnd

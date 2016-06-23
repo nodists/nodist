@@ -1,14 +1,20 @@
 @echo off
 
 :: hook `nodist use <version>`
-if "%1"=="use" goto env
-if "%1"=="env" goto env
-goto next1
+if "%1"=="use" goto nodeenv
+if "%1"=="env" goto nodeenv
+if "%1"=="npm" if "%2"=="env" goto npmenv
+goto main
 
-:env
+:nodeenv
   call %0 + %2
-  @set "NODIST_VERSION=%2"
+  @set "NODIST_NODE_VERSION=%2"
   :: goto end
+  GOTO end
+
+:npmenv
+  call %0 npm + %3
+  @set "NODIST_NPM_VERSION=%3"
   GOTO end
 
 :main

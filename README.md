@@ -4,20 +4,22 @@
 
 A node.js and io.js version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
+*Heads up! Nodist v0.8 is here!*
+
 ```
-> nodist 0.10
-nodev0.10.26
+...> nodist + 5
+5.11.0
 
-> node -v
-v0.10.26
+...> nodist global 5
+5
 
-> nodist
-  nodev0.10.24
-  nodev0.10.25
-> nodev0.10.26 (global)
-  nodev0.11.11
-  nodev0.11.12
-  iojsv2.3.4
+...> node -v
+v5.11.0
+
+...> nodist
+  0.10.26
+  4.4.3
+> 5.11.0 (global: 5)
 ```
 
 (see [Usage](#usage))
@@ -26,12 +28,17 @@ v0.10.26
 ## Installation
 Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
 
-### Installing with the official installer
+### with the installer
 
 1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.7.2/NodistSetup-v0.7.2.exe)
 2. Run the installer and follow the install wizard
 
-### Migrating from <=0.6 to 0.7
+### via chocolatey
+For this you'll need [chocolatey](https://chocolatey.org),  of course.
+
+1. `choco install nodist`
+
+### Migrating from <=0.6
 If you're looking to upgrade your Nodist installation, the easiest way is to uninstall (see below) the old installation and install the new version with the installer above.
 
 ### Uninstall (<v0.7)
@@ -46,37 +53,60 @@ If you're looking to upgrade your Nodist installation, the easiest way is to uni
 
 
 ## Usage
-Nodist understands version patterns, like `0.8` or `0.8.x` or `~0.8` as well as `0.8.12` or `v0.8.12`.
-As an added bonus, you may also use `latest` and `stable`.
-When dealing with io.js versions you need to use the following: `iojsv2.x` and `iojs-latest`.
+Nodist understands version patterns, like `0.12` or `4.x` or `~5` as well as `4.4.3` or `v4.4.3`.
+As an added bonus, you may also use `latest`.
 
-Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `\bin\nodist.ps1`.
+io.js is supported natively: Since node and io.js versions form a continuum you can simply use io.js versions as if they were node versions.
+
+Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `bin\nodist.ps1`.
+
+### Upgrading from < 0.8?
+Starting in v0.8 Nodist employs lazy version pattern evaluation. This means that setting versions per env/locally/globally doesn't set an explicit version, if you didn't give one. Instead the node.exe shim chooses a suitable version *at runtime*. To update your node version (if your global version is set to `6`, e.g.), you now need to run `nodist + 6` (i.e. `nodist 6` doesn't do that for you anymore), which is probably how it should have worked all along.
 
 ### Commands
-*All commands implicitly install the specified version before using it, if it's not installed already.*
+*All commands automatically install the latest matching version before setting the version pattern.*
 
 ```
 > nodist
-# Lists installed versions highlighting the active one.
+# Lists installed versions highlighting the active ones.
 ```
 
 ```
-> nodist 0.8.1
+> nodist 4.x
 # Sets the global node version.
 ```
 
 ```
-> nodist local 0.8.1
-# Sets the node version per directory (including subdirectories).
+> nodist local 4.x
+# Sets the node version per directory (including all subdirectories).
 ```
 
 ```
-> nodist env v0.7.12
+> nodist env 4.x
 # Sets the node version per terminal.
 ```
 
 ```
-call nodist env 0.7.12
+> nodist npm 3.x
+# Globally activate npm 3
+
+> nodist npm match
+# Globally activates the npm version that corresponds to the active node version
+# (the active node version may be the env, local or global version)
+```
+
+```
+> nodist npm local 2.x
+# Set the npm version for the current directory.
+```
+
+```
+> nodist npm env 2.x
+# Set the npm version for the current terminal environment.
+```
+
+```
+call nodist env 4.x
 # In a batch script use `call`.
 ```
 
@@ -86,12 +116,12 @@ call nodist env 0.7.12
 ```
 
 ```
-> nodist r v0.8.1 -- foo.js -s
+> nodist r 4.x -- foo.js -s
 # Runs a specific version without modifying any state.
 ```
 
 ```
-> nodist + v0.8.1
+> nodist + 4.x
 # Just checks, if the version is installed and downloads it if not.
 
 > nodist + all
@@ -99,7 +129,7 @@ call nodist env 0.7.12
 ```
 
 ```
-> nodist - 0.5.10
+> nodist - 4.1.1
 # Removes a version.
 ```
 
@@ -125,18 +155,17 @@ call nodist env 0.7.12
 
 ```
 > set NODIST_X64=0
-# Override x64 auto-detection.
 # (Set to `1` to enforce 64bit, `0` to enforce 32bit.)
 ```
 
 ## Details
 Node executables are stored in `NODIST_PREFIX\v` and `NODIST_PREFIX\v-x64`.
 The global `node.exe` is a shim and chooses the right node version to run based on the various version settings:
- * global -- `NODIST_PREFIX\.node-version` contains the global node version 
- * local -- `./.node-version` in the current working directory contains the local node verison
- * env -- `NODIST_VERSION` containst the environmental node version
+ * global -- `NODIST_PREFIX\.node-version` contains the global node version pattern
+ * local -- `./.node-version` in the current working directory contains the local version pattern
+ * env -- `NODIST_VERSION` containst the per-terminal version pattern
 
-The latest npm version is available out of the box.
+npm is always switched globally!
 
 As the global node version will be subject to change, `nodist` comes with its own dedicated node binary.
 
@@ -169,6 +198,7 @@ Testing also accepts env variables for using a mirror to download from, as well 
 Building nodist requires
  * [go](https://golang.org) for compiling the shim
  * [NSIS](http://nsis.sourceforge.net/Main_Page) v2 for compiling the installer
+   * NSIS Plugin: [AccessControl](http://nsis.sourceforge.net/AccessControl_plug-in)
  * node.js for running the build script
  * and npm for installing nodist's dependencies
  * Finally you need to `go get github.com/marcelklehr/semver github.com/tj/go-debug`
@@ -179,12 +209,29 @@ If you have met all requirements, run the build command:
 > npm run build
 ```
 Afterwards you'll find the installer in `build/out/NodistSetup.exe` and fully prepared installation folder in `build/out/staging` (you could zip this, for example).
+The chocolatey package will be in `build/out/package`, you can run `cpack` and `cpush --source https://chocolatey.org/` inside that directory (if you are a registered maintainer).
 
 ## Legal
-Copyright (c) 2012-2014 by Marcel Klehr  
+Copyright (c) 2012-2016 by Marcel Klehr  
 MIT License
 
 ## Changelog
+
+v0.8.0
+* Add NPM version management (thanks to @nullivex)
+* Treat io.js versions as node versions
+* Allow setting ranges in global/local/env (don't resolve before setting versions)
+* Drop support for setting node command line args
+* Respect engines field declaration in package.json
+* Fix local switching: Use the target script's dir as the base dir
+* Allow setting env vars for mirror support
+* Support bash
+* Remove selfupdate command
+* Fix help flag
+* [installer] Fix: Set system not user PATH
+* [installer] Fix: auto-detect x64 arch
+* Improve build script
+* Revive chocolatey package
 
 v0.7.2
 * correct version of NPM
