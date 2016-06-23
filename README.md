@@ -23,10 +23,15 @@ v5.11.0
 ## Installation
 Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
 
-### Installing with the official installer
+### with the installer
 
 1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.7.2/NodistSetup-v0.7.2.exe)
 2. Run the installer and follow the install wizard
+
+### via chocolatey
+For this you'll need [chocolatey](https://chocolatey.org),  of course.
+
+1. `choco install nodist`
 
 ### Migrating from <=0.6
 If you're looking to upgrade your Nodist installation, the easiest way is to uninstall (see below) the old installation and install the new version with the installer above.
@@ -186,6 +191,7 @@ If you have met all requirements, run the build command:
 > npm run build
 ```
 Afterwards you'll find the installer in `build/out/NodistSetup.exe` and fully prepared installation folder in `build/out/staging` (you could zip this, for example).
+The chocolatey package will be in `build/out/package`, you can run `cpack` and `cpush --source https://chocolatey.org/` inside that directory (if you are a registered maintainer).
 
 ## Legal
 Copyright (c) 2012-2016 by Marcel Klehr  

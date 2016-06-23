@@ -71,6 +71,7 @@ var nodeLatestUrlx64 = 'https://nodejs.org/dist/VERSION/win-x64/node.exe';
 
 //setup some folders
 var outDir = path.resolve(path.join(__dirname, 'out'));
+var packageDir = path.resolve(path.join(outDir, 'package'))
 var tmpDir = path.resolve(path.join(outDir, 'tmp'));
 var stagingDir = path.resolve(path.join(outDir, 'staging'));
 var stagingNpmDir = path.join(stagingDir, 'npmv')
@@ -310,6 +311,27 @@ P.all([
     return exec('makensis /V2 "' + nodistDir + '/build/out/Nodist.nsi"'); // Verbosity level 2, because we don't want to exhaust the buffer
   })
   .then(function(){
+    console.log('NSIS compilation complete!');
+    console.log('Preparing chocolatey package')
+  })
+  .then(() => Promise.all([mkdirp(packageDir), mkdirp(packageDir+'/tools')]))
+  .then(() => fs.readFileAsync(
+      path.resolve(nodistDir + '/build/nodist.template.nuspec')
+   ))
+   .then((nuspec) => {
+     nuspec = nuspec.toString().replace('__VERSION__', pkg.version)
+     return Promise.all([
+       fs.writeFileAsync(
+         path.resolve(packageDir + '/nodist.nuspec'),
+         nuspec
+       )
+     , helper.copyFileAsync(nodistDir+'/build/chocolateyinstall.ps1', packageDir+'/tools/chocolateyinstall.ps1')
+     , helper.copyFileAsync(nodistDir+'/build/chocolateyuninstall.ps1', packageDir+'/tools/chocolateyuninstall.ps1')
+     , helper.copyFileAsync(nodistDir+'/LICENSE.txt', packageDir+'/tools/LICENSE.txt')
+     , helper.copyFileAsync(outDir+'/NodistSetup.exe', packageDir+'/tools/Installer.exe')
+     ])
+   })
+  .then(() => {
     console.log('Build complete!');
     process.exit(0);
   })
