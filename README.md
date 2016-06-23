@@ -4,8 +4,13 @@
 
 A node.js and io.js version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
+*Heads up! Nodist v0.8 is here!*
+
 ```
-...> nodist 5
+...> nodist + 5
+5.11.0
+
+...> nodist global 5
 5
 
 ...> node -v
@@ -55,6 +60,9 @@ io.js is supported natively: Since node and io.js versions form a continuum you 
 
 Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `bin\nodist.ps1`.
 
+### Upgrading from < 0.8?
+Starting in v0.8 Nodist employs lazy version pattern evaluation. This means that setting versions per env/locally/globally doesn't set an explicit version, if you didn't give one. Instead the node.exe shim chooses a suitable version *at runtime*. To update your node version (if your global version is set to `6`, e.g.), you now need to run `nodist + 6` (i.e. `nodist 6` doesn't do that for you anymore), which is probably how it should have worked all along.
+
 ### Commands
 *All commands automatically install the latest matching version before setting the version pattern.*
 
@@ -85,6 +93,16 @@ Btw, nodist also works in your PowerShell, but you might first need to 'Unblock'
 > nodist npm match
 # Globally activates the npm version that corresponds to the active node version
 # (the active node version may be the env, local or global version)
+```
+
+```
+> nodist npm local 2.x
+# Set the npm version for the current directory.
+```
+
+```
+> nodist npm env 2.x
+# Set the npm version for the current terminal environment.
 ```
 
 ```
@@ -213,6 +231,7 @@ v0.8.0
 * [installer] Fix: Set system not user PATH
 * [installer] Fix: auto-detect x64 arch
 * Improve build script
+* Revive chocolatey package
 
 v0.7.2
 * correct version of NPM
