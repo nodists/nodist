@@ -112,7 +112,7 @@ SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=50
 AccessControl::GrantOnFile "$INSTDIR" "(BU)" "FullAccess"
 ; set the NPM prefix
 push $3
-FileOpen $4 "$INSTDIR\.npm-version" r
+FileOpen $4 "$INSTDIR\.npm-version-global" r
 FileRead $4 $3
 FileClose $4
 Exec '"$INSTDIR\node.exe" "$INSTDIR\npmv\$3\bin\npm-cli.js" config set prefix "$INSTDIR\bin"'
