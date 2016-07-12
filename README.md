@@ -38,8 +38,15 @@ For this you'll need [chocolatey](https://chocolatey.org),  of course.
 
 1. `choco install nodist`
 
-### Migrating from <=0.6
+### Migrating from 0.7 or lower
 If you're looking to upgrade your Nodist installation, the easiest way is to uninstall (see below) the old installation and install the new version with the installer above.
+You may need to reset your per-directory node version settings in order for them to work in v0.8 (ones set using nodist v0.6 should work fine, ones set using v0.7 will not).
+
+### Uninstall (v0.7)
+
+1. Run the uninstaller either from the directory where you installed nodist, or from the Software Control Panel
+
+2. Make sure to completely remove the nodist directory
 
 ### Uninstall (<v0.7)
 
@@ -60,7 +67,7 @@ io.js is supported natively: Since node and io.js versions form a continuum you 
 
 Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `bin\nodist.ps1`.
 
-### Upgrading from < 0.8?
+### Upgrading from < v0.8?
 Starting in v0.8 Nodist employs lazy version pattern evaluation. This means that setting versions per env/locally/globally doesn't set an explicit version, if you didn't give one. Instead the node.exe shim chooses a suitable version *at runtime*. To update your node version (if your global version is set to `6`, e.g.), you now need to run `nodist + 6` (i.e. `nodist 6` doesn't do that for you anymore), which is probably how it should have worked all along.
 
 ### Commands
