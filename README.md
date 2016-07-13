@@ -235,6 +235,10 @@ MIT License
 
 ## Changelog
 
+v0.8.2
+* Fix Git bash support and add support for Cygwin
+* Fix `nodist dist` output being unsorted
+
 v0.8.1
 * Fix usage/help output: `stable` has been removed
 * Fix installer: Use the correct path to npm when setting npm prefix
