@@ -46,7 +46,7 @@ You may need to reset your per-directory node version settings in order for them
 
 1. Run the uninstaller either from the directory where you installed nodist, or from the Software Control Panel
 
-2. Make sure to completely remove the nodist directory
+2. Make sure to completely remove the nodist directory. (This will remove all your globally installed npm modules. If you don't want that, remove everything else, other than `nodist\bin\`.)
 
 ### Uninstall (<v0.7)
 
