@@ -7,16 +7,16 @@ A node.js and io.js version manager for the windows folks out there. Inspired by
 *Heads up! Nodist v0.8 is here! Nodist supports cmd, Powershell, Git bash and Cygwin!*
 
 ```
-...> nodist + 5
+C:\> nodist + 5
 5.11.0
 
-...> nodist global 5
+C:\> nodist global 5
 5
 
-...> node -v
+C:\> node -v
 v5.11.0
 
-...> nodist
+C:\> nodist
   0.10.26
   4.4.3
 > 5.11.0 (global: 5)
