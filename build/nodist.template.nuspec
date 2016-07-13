@@ -9,7 +9,9 @@
     <summary>A Node.js version manager.</summary>
     <description>A Node.js and io.js version manager. Inspired by n and nodenv. See github page https://github.com/marcelklehr/nodist for documentation.</description>
     <projectUrl>https://github.com/marcelklehr/nodist</projectUrl>
+    <projectSourceUrl>https://github.com/marcelklehr/nodist</projectSourceUrl>
     <docsUrl>https://raw.githubusercontent.com/marcelklehr/nodist/master/usage.txt</docsUrl>
+    <bugTrackerUrl>https://github.com/marcelklehr/nodist/issues</bugTrackerUrl>
     <tags>node nodejs javascript admin nvm version management</tags>
     <copyright>2013-2016</copyright>
     <licenseUrl>https://github.com/marcelklehr/nodist</licenseUrl>
