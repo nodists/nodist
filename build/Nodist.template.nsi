@@ -123,7 +123,7 @@ ReadEnvStr $1 USERPROFILE
 IfFileExists "$1\.bash_profile" 0 +12
     push $2
     push $3
-    FileOpen $2 "$INSTDIR\bin\bash_profile_content.sh" r
+    FileOpen $2 "$INSTDIR\bin\nodist_bash_profile_content.sh" r
     FileRead $2 $3
     FileClose $2
     FileOpen $2 "$1\.bash_profile" a

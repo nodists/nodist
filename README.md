@@ -4,7 +4,7 @@
 
 A node.js and io.js version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
-*Heads up! Nodist v0.8 is here!*
+*Heads up! Nodist v0.8 is here! Nodist supports cmd, Powershell, Git bash and Cygwin!*
 
 ```
 ...> nodist + 5
@@ -37,6 +37,17 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 For this you'll need [chocolatey](https://chocolatey.org),  of course.
 
 1. `choco install nodist`
+
+### Activating nodist in git bash
+Git bash integration is setup automatically.
+
+### Activating nodist in cygwin
+Before you are able to use nodist in cygwin you need to run the following in your cygwin terminal after installing nodist:
+
+```
+cat "$NODIST_PREFIX/bin/nodist_bash_profile_content.sh" >> ~/.bash_profile
+source ~/.bash_profile
+```
 
 ### Migrating from 0.7 or lower
 If you're looking to upgrade your Nodist installation, the easiest way is to uninstall (see below) the old installation and install the new version with the installer above.
