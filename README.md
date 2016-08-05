@@ -235,6 +235,10 @@ MIT License
 
 ## Changelog
 
+v0.8.3
+* Fix version spec parsing in shims
+* Fix npm builds: Lock node version for npm's child processes
+
 v0.8.2
 * Fix Git bash support and add support for Cygwin
 * Fix `nodist dist` output being unsorted
