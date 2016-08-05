@@ -83,6 +83,7 @@ func main() {
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
   cmd.Stdin = os.Stdin
+  cmd.Env = append(os.Environ(), "NODIST_NODE_VERSION="+version)// Lock the node version for all child processes
   err = cmd.Run()
 
   if err != nil {
