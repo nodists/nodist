@@ -81,6 +81,18 @@ Btw, nodist also works in your PowerShell, but you might first need to 'Unblock'
 ### Upgrading from < v0.8?
 Starting in v0.8 Nodist employs lazy version pattern evaluation. This means that setting versions per env/locally/globally doesn't set an explicit version, if you didn't give one. Instead the node.exe shim chooses a suitable version *at runtime*. To update your node version (if your global version is set to `6`, e.g.), you now need to run `nodist + 6` (i.e. `nodist 6` doesn't do that for you anymore), which is probably how it should have worked all along.
 
+### Scope precedence
+Nodist allows you to set node and npm versions for different scopes. The following is a list of all scopes ordered by precedence (the first scope is the one with the highest priority; only if it's not set, the second scope is examined).
+
+1. Environment (`NODIST_NODE_VERSION`and `NODIST_NPM_VERSION` env vars)
+2. Package (`package.json` with an `engines` field in the *directory of interest* or one of its parent directories)
+3. Directory (`.node-version` or `.npm-version` in the *directory of interest* or one of its parent directories)
+4. Global (globally set node or npm version)
+
+When you're just running node, the *directory of interest* is the directory of the javascript file to be executed. When running npm, it is the current working directory.
+
+Any instances of node invoked by npm will be locked to the same version npm runs on.
+
 ### Commands
 *All commands automatically install the latest matching version before setting the version pattern.*
 
@@ -177,13 +189,8 @@ call nodist env 4.x
 ```
 
 ## Details
-Node executables are stored in `NODIST_PREFIX\v` and `NODIST_PREFIX\v-x64`.
-The global `node.exe` is a shim and chooses the right node version to run based on the various version settings:
- * global -- `NODIST_PREFIX\.node-version` contains the global node version pattern
- * local -- `./.node-version` in the current working directory contains the local version pattern
- * env -- `NODIST_VERSION` containst the per-terminal version pattern
-
-npm is always switched globally!
+Node executables are stored in `NODIST_PREFIX\v` and `NODIST_PREFIX\v-x64`, npm versions in `NODIST_PREFIX\npmv.
+The global `node.exe` is a shim and chooses the right node version to run based on the various version settings. The same applies for npm.
 
 As the global node version will be subject to change, `nodist` comes with its own dedicated node binary.
 
