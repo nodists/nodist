@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/marcelklehr/nodist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/marcelklehr/nodist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-A node.js and io.js version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
+A node.js and npm version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
 *Heads up! Nodist v0.8 is here! Nodist supports cmd, Powershell, Git bash and Cygwin!*
 
@@ -30,7 +30,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 ### with the installer
 
-1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.2/NodistSetup-v0.8.2.exe)
+1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.3/NodistSetup-v0.8.3.exe)
 2. Run the installer and follow the install wizard
 
 ### via chocolatey
