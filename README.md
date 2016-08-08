@@ -30,7 +30,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 ### with the installer
 
-1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.3/NodistSetup-v0.8.3.exe)
+1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.4/NodistSetup-v0.8.4.exe)
 2. Run the installer and follow the install wizard
 
 ### via chocolatey
@@ -242,8 +242,10 @@ MIT License
 
 ## Changelog
 
-v0.8.3
+v0.8.4
 * Fix version spec parsing in shims
+
+v0.8.3
 * Fix npm builds: Lock node version for npm's child processes
 
 v0.8.2
