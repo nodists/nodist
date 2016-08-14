@@ -30,7 +30,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 ### with the installer
 
-1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.4/NodistSetup-v0.8.4.exe)
+1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.5/NodistSetup-v0.8.5.exe)
 2. Run the installer and follow the install wizard
 
 ### via chocolatey
@@ -241,6 +241,9 @@ Copyright (c) 2012-2016 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.8.5
+* Disable package.json inspection by default
 
 v0.8.4
 * Fix version spec parsing in shims
