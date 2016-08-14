@@ -249,6 +249,9 @@ MIT License
 
 ## Changelog
 
+v0.8.5
+* Disable package.json inspection by default
+
 v0.8.4
 * Fix version spec parsing in shims
 
