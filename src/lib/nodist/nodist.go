@@ -18,6 +18,7 @@ const pathSep = string(os.PathSeparator)
 func GetCurrentNodeVersionSpec(currentDir string) (spec string) {
   // Determine version spec
   var v string
+  clever := os.Getenv("NODIST_INSPECT_PACKAGEJSON"); 
   if v = os.Getenv("NODE_VERSION"); v != "" {
     spec = v
     debug("NODE_VERSION found:'%s'", spec)
@@ -26,7 +27,7 @@ func GetCurrentNodeVersionSpec(currentDir string) (spec string) {
     spec = v
     debug("NODIST_NODE_VERSION found:'%s'", spec)
   } else
-  if v, err := getLocalEngineNode(currentDir); err == nil && strings.Trim(string(v), " \r\n") != "" {
+  if v, err := getLocalEngineNode(currentDir); clever != "" && err == nil && strings.Trim(string(v), " \r\n") != "" {
     spec = v
     debug("Target engine found:'%s'", spec)
   } else
@@ -46,11 +47,12 @@ func GetCurrentNodeVersionSpec(currentDir string) (spec string) {
 func GetCurrentNpmVersionSpec(currentDir string) (spec string) {
   // Determine version spec
   var v string
+  clever := os.Getenv("NODIST_INSPECT_PACKAGEJSON"); 
   if v = os.Getenv("NODIST_NPM_VERSION"); v != "" {
     spec = v
     debug("NODIST_NPM_VERSION found:'%s'", spec)
   } else
-  if v, err := getLocalEngineNpm(currentDir); err == nil && strings.Trim(string(v), " \r\n") != "" {
+  if v, err := getLocalEngineNpm(currentDir); clever != "" && err == nil && strings.Trim(string(v), " \r\n") != "" {
     spec = v
     debug("Target engine npm spec found:'%s'", spec)
   } else
