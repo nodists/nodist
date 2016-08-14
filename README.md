@@ -85,13 +85,15 @@ Starting in v0.8 Nodist employs lazy version pattern evaluation. This means that
 Nodist allows you to set node and npm versions for different scopes. The following is a list of all scopes ordered by precedence (the first scope is the one with the highest priority; only if it's not set, the second scope is examined).
 
 1. Environment (`NODIST_NODE_VERSION`and `NODIST_NPM_VERSION` env vars)
-2. Package (`package.json` with an `engines` field in the *directory of interest* or one of its parent directories)
+2. (optional:) Package (`package.json` with an `engines` field in the *directory of interest* or one of its parent directories)
 3. Directory (`.node-version` or `.npm-version` in the *directory of interest* or one of its parent directories)
 4. Global (globally set node or npm version)
 
 When you're just running node, the *directory of interest* is the directory of the javascript file to be executed. When running npm, it is the current working directory.
 
 Any instances of node invoked by npm will be locked to the same version npm runs on.
+
+Package.json inspection is turned off by default as of nodist v0.8.5. You can turn it on by setting `NODIST_INSPECT_PACKAGEJSON=1`.
 
 ### Commands
 *All commands automatically install the latest matching version before setting the version pattern.*
@@ -186,6 +188,11 @@ call nodist env 4.x
 ```
 > set NODIST_X64=0
 # (Set to `1` to enforce 64bit, `0` to enforce 32bit.)
+```
+
+```
+> set NODIST_INSPECT_PACKAGEJSON=1
+# Enable package.json inspection: Nodist will check the engines field of the package.json file of scripts to be executed and use the node version specified there. Turned off by default as of v0.8.5.
 ```
 
 ## Details
