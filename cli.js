@@ -115,6 +115,10 @@ var args = argv.join(' ');
 var command = argv[0];
 
 
+// (bare call of 'nodist') -> list
+if (!argv[0]) {
+  command = 'list';
+}
 
 // -V Display nodist version
 if (args.match(/-v/i) !== null) {
@@ -123,17 +127,13 @@ if (args.match(/-v/i) !== null) {
 }
 
 // --HELP Display help
-if (args.match(/--help/i)) {
+else if (args.match(/--help/i)) {
   help();
 }
 
-// (bare call of 'nodist') -> list
-if (!argv[0]) {
-  command = 'list';
-}
 
 // LIST all installed buids
-if (command.match(/^list|ls$/i)) {
+else if (command.match(/^list|ls$/i)) {
 
   n.getGlobal(function(err, globalSpec){
     n.resolveVersionLocally(globalSpec, function(er, globalVersion) {
