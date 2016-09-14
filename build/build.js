@@ -133,6 +133,8 @@ P.all([
         nodistBin + '/nodist.cmd',stagingBin + '/nodist.cmd'),
       helper.copyFileAsync(
         nodistBin + '/nodist.ps1',stagingBin + '/nodist.ps1'),
+      helper.copyFileAsync(
+        nodistBin + '/npm.cmd',stagingBin + '/npm.cmd'),
       //lib folder
       helper.copyFileAsync(
         nodistLib + '/build.js',stagingLib + '/build.js'),
