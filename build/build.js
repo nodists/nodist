@@ -117,7 +117,8 @@ P.all([
     console.log('Starting to stage static files');
     return P.all([
       fs.mkdirAsync(path.join(stagingDir,'bin')),
-      fs.mkdirAsync(path.join(stagingDir,'lib'))
+      fs.mkdirAsync(path.join(stagingDir,'lib')),
+      mkdirp(path.join(stagingDir,'npm','bin'))
     ]);
   })
   .then(function(){
@@ -135,6 +136,9 @@ P.all([
         nodistBin + '/nodist.ps1',stagingBin + '/nodist.ps1'),
       helper.copyFileAsync(
         nodistBin + '/npm.cmd',stagingBin + '/npm.cmd'),
+      //npm folder
+      helper.copyFileAsync(
+        nodistDir + '/npm/bin/npm-cli.js',stagingDir + '/npm/bin/npm-cli.js'),
       //lib folder
       helper.copyFileAsync(
         nodistLib + '/build.js',stagingLib + '/build.js'),

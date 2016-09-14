@@ -49,11 +49,16 @@ cat "$NODIST_PREFIX/bin/nodist_bash_profile_content.sh" >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
+### Make it work in your IDE
+If your IDE cannot access node or npm right away, don't fret! Find the relevant configuration settings and either set `path\to\Nodist\bin` as the Node installation dir or set `path\to\Nodist\bin\node.exe` as the path to the node binary directly.
+
+Similar for npm: either set `...\Nodist\bin` as the installation path or `...\Nodist\bin\npm.cmd` directly. Some IDEs (eg. WebStorm) require you to set the path to an npm package containing `bin\npm-cli.js`. Nodist comes with a proxy npm folder: Simply set `...\Nodist\npm` as the npm package (this feature is experimental and feedback is appreciated!).
+
 ### Migrating from 0.7 or lower
 If you're looking to upgrade your Nodist installation, the easiest way is to uninstall (see below) the old installation and install the new version with the installer above.
 You may need to reset your per-directory node version settings in order for them to work in v0.8 (ones set using nodist v0.6 should work fine, ones set using v0.7 will not).
 
-### Uninstall (v0.7)
+#### Uninstall (v0.7)
 
 1. Run the uninstaller either from the directory where you installed nodist, or from the Software Control Panel
 
