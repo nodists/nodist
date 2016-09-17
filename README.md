@@ -30,7 +30,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 ### with the installer
 
-1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.5/NodistSetup-v0.8.5.exe)
+1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.6/NodistSetup-v0.8.6.exe)
 2. Run the installer and follow the install wizard
 
 ### via chocolatey
@@ -234,7 +234,7 @@ Testing also accepts env variables for using a mirror to download from, as well 
 ## Building
 Building nodist requires
  * [go](https://golang.org) for compiling the shim
- * [NSIS](http://nsis.sourceforge.net/Main_Page) v2 for compiling the installer
+ * [NSIS](http://nsis.sourceforge.net/Main_Page) v3 for compiling the installer (use the large strings build to avoid errors when manipulating PATH)
    * NSIS Plugin: [AccessControl](http://nsis.sourceforge.net/AccessControl_plug-in)
  * node.js for running the build script
  * and npm for installing nodist's dependencies
@@ -253,6 +253,10 @@ Copyright (c) 2012-2016 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.8.6
+* Fix installer: Increase MAX_LEN for manipulating PATH to 8000
+* Add support for WebStorm and VisualStudio
 
 v0.8.5
 * Disable package.json inspection by default
