@@ -49,6 +49,9 @@ cat "$NODIST_PREFIX/bin/nodist_bash_profile_content.sh" >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
+### Activating nodist in PowerShell
+You might need to 'Unblock' the file `bin\nodist.ps1` by right clicking on it in the Explorer and selecting that menu entry.
+
 ### Make it work in your IDE
 If your IDE cannot access node or npm right away, don't fret! Find the relevant configuration settings and either set `path\to\Nodist\bin` as the Node installation dir or set `path\to\Nodist\bin\node.exe` as the path to the node binary directly.
 
@@ -58,13 +61,16 @@ Similar for npm: either set `...\Nodist\bin` as the installation path or `...\No
 If you're looking to upgrade your Nodist installation, the easiest way is to uninstall (see below) the old installation and install the new version with the installer above.
 You may need to reset your per-directory node version settings in order for them to work in v0.8 (ones set using nodist v0.6 should work fine, ones set using v0.7 will not).
 
+#### Important usage changes in v0.8
+Starting in v0.8 Nodist employs lazy version pattern evaluation. This means that setting versions per env/locally/globally doesn't set an explicit version, if you didn't give one. Instead the node.exe shim chooses a suitable version *at runtime*. Commands for installing a version and setting a requirement have been separated, thus, to update your node version (if your global version is set to `6`, e.g.), you now need to run `nodist + 6` (i.e. `nodist 6` doesn't do that for you anymore), which is probably how it should have worked all along.
+
 #### Uninstall (v0.7)
 
 1. Run the uninstaller either from the directory where you installed nodist, or from the Software Control Panel
 
 2. Make sure to completely remove the nodist directory. (This will remove all your globally installed npm modules. If you don't want that, remove everything else, other than `nodist\bin\`.)
 
-### Uninstall (<v0.7)
+#### Uninstall (before v0.7)
 
 1. Remove `<..path..>\nodist\bin` from your path. ([how?](http://www.computerhope.com/issues/ch000549.htm)).
 
@@ -76,18 +82,13 @@ You may need to reset your per-directory node version settings in order for them
 
 
 ## Usage
-Nodist understands version patterns, like `0.12` or `4.x` or `~5` as well as `4.4.3` or `v4.4.3`.
-As an added bonus, you may also use `latest`.
-
+Nodist allows you to set version requirements for different scopes.
+Version requirements can be fully specified versions, like `4.0.0` or patterns like `0.12`, `4.x`, `~5` or `latest`.
 io.js is supported natively: Since node and io.js versions form a continuum you can simply use io.js versions as if they were node versions.
-
-Btw, nodist also works in your PowerShell, but you might first need to 'Unblock' the file `bin\nodist.ps1`.
-
-### Upgrading from < v0.8?
-Starting in v0.8 Nodist employs lazy version pattern evaluation. This means that setting versions per env/locally/globally doesn't set an explicit version, if you didn't give one. Instead the node.exe shim chooses a suitable version *at runtime*. To update your node version (if your global version is set to `6`, e.g.), you now need to run `nodist + 6` (i.e. `nodist 6` doesn't do that for you anymore), which is probably how it should have worked all along.
+Setting a requirement installs a matching version only if there is no other matching version already installed; otherwise existing installed versions will get referenced when executing `node.exe`.
 
 ### Scope precedence
-Nodist allows you to set node and npm versions for different scopes. The following is a list of all scopes ordered by precedence (the first scope is the one with the highest priority; only if it's not set, the second scope is examined).
+The following is a list of all scopes ordered by precedence (the first scope is the one with the highest priority; only if it's not set, the second scope is examined).
 
 1. Environment (`NODIST_NODE_VERSION`and `NODIST_NPM_VERSION` env vars)
 2. (optional:) Package (`package.json` with an `engines` field in the *directory of interest* or one of its parent directories)
@@ -109,37 +110,37 @@ Package.json inspection is turned off by default as of nodist v0.8.5. You can tu
 ```
 
 ```
-> nodist 4.x
-# Sets the global node version.
+> nodist global 4.x
+# Sets the global node version requirement
 ```
 
 ```
 > nodist local 4.x
-# Sets the node version per directory (including all subdirectories).
+# Sets the node version requirement per directory (including all subdirectories).
 ```
 
 ```
 > nodist env 4.x
-# Sets the node version per terminal.
+# Sets the node version requirement per terminal.
 ```
 
 ```
-> nodist npm 3.x
-# Globally activate npm 3
+> nodist global npm 3.x
+# Set global node version requirement.
 
-> nodist npm match
-# Globally activates the npm version that corresponds to the active node version
-# (the active node version may be the env, local or global version)
+> nodist npm global match
+# Tell nodist to always choose the npm version that matches the current node version.
+# (the current node version may be determined by env, local or global requirements)
 ```
 
 ```
 > nodist npm local 2.x
-# Set the npm version for the current directory.
+# Set the npm version requirement for the current directory.
 ```
 
 ```
 > nodist npm env 2.x
-# Set the npm version for the current terminal environment.
+# Set the npm version requirement for the current terminal environment.
 ```
 
 ```
@@ -153,13 +154,8 @@ call nodist env 4.x
 ```
 
 ```
-> nodist r 4.x -- foo.js -s
-# Runs a specific version without modifying any state.
-```
-
-```
 > nodist + 4.x
-# Just checks, if the version is installed and downloads it if not.
+# Just checks, if the version is installed and installs it if not.
 
 > nodist + all
 # will install *everything*.
