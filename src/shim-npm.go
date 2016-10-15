@@ -4,6 +4,7 @@ import (
   "fmt"
   "os"
   "os/exec"
+  "os/signal"
   "syscall"
   "./lib/nodist"
 )
@@ -84,7 +85,18 @@ func main() {
   cmd.Stderr = os.Stderr
   cmd.Stdin = os.Stdin
   cmd.Env = append(os.Environ(), "NODIST_NODE_VERSION="+version)// Lock the node version for all child processes
+
+  // Proxy signals
+  sigc := make(chan os.Signal, 1)
+  signal.Notify(sigc)
+  go func() {
+    for s := range sigc {
+      cmd.Process.Signal(s)
+    }
+  }()
+
   err = cmd.Run()
+  signal.Stop(sigc)
 
   if err != nil {
     exitError, isExitError := err.(*(exec.ExitError))

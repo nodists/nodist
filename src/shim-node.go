@@ -5,6 +5,7 @@ import (
   "os"
   "path/filepath"
   "os/exec"
+  "os/signal"
   "syscall"
   "./lib/nodist"
 )
@@ -74,10 +75,23 @@ func main() {
   // Run node!
 
   cmd := exec.Command(nodebin, os.Args[1:]...)
+
+  // Proxy stdio
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
   cmd.Stdin = os.Stdin
+
+  // Proxy signals
+  sigc := make(chan os.Signal, 1)
+  signal.Notify(sigc)
+  go func() {
+    for s := range sigc {
+      cmd.Process.Signal(s)
+    }
+  }()
+
   err = cmd.Run()
+  signal.Stop(sigc)
 
   if err != nil {
     exitError, isExitError := err.(*(exec.ExitError))
