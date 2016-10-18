@@ -37,7 +37,7 @@ Usage:
                                     (installs the npm <version>, if necessary).
 
     nodist npm match                Activate the npm version matching the active node version
-                                    (active node version depends on env/local/global requirements)
+                                    (active node version depends on env/local/global requirements).
 
     nodist --help                   Display this help.
 
