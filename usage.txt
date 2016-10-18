@@ -24,8 +24,8 @@ Usage:
     nodist env <ver-req>            Set the requirement for the current environment only
                                     (usually the current terminal window).
     
-    nodist run <ver-req> -- <args>  Run <args> with a version matching the provided requirement.
-    nodist r <ver-req> -- <args>    (Will abort if no matching version is installed)
+    nodist run <ver-req> -- <args>  Run <args> with a version matching the provided requirement
+    nodist r <ver-req> -- <args>    (will abort if no matching version is installed).
 
     nodist bin <ver-req>            Get the path to the specified node <version>
                                     (installs the node <version>, if necessary).

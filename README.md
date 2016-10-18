@@ -126,7 +126,7 @@ Package.json inspection is turned off by default as of nodist v0.8.5. You can tu
 
 ```
 > nodist global npm 3.x
-# Set global node version requirement.
+# Set global npm version requirement.
 
 > nodist npm global match
 # Tell nodist to always choose the npm version that matches the current node version.
