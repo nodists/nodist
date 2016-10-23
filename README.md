@@ -97,9 +97,14 @@ The following is a list of all scopes ordered by precedence (the first scope is 
 
 When you're just running node, the *directory of interest* is the directory of the javascript file to be executed. When running npm, it is the current working directory.
 
+Package.json inspection is turned off by default as of nodist v0.8.5. You can turn it on by setting `NODIST_INSPECT_PACKAGEJSON=1`.
+
+### npm
 Any instances of node invoked by npm will be locked to the same version npm runs on.
 
-Package.json inspection is turned off by default as of nodist v0.8.5. You can turn it on by setting `NODIST_INSPECT_PACKAGEJSON=1`.
+Currently, all node and npm versions share the same global npm module space.
+
+If you have installed native modules (globally or locally) you may have to run `npm rebuild` after changing the node version (implicitly or explicitly). There is an [open issue](https://github.com/marcelklehr/nodist/issues/169) about how to avoid rebuilding globally installed native modules, feedback/input is welcome.
 
 ### Commands
 *All commands automatically install the latest matching version before setting the version pattern.*
