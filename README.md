@@ -255,6 +255,12 @@ MIT License
 
 ## Changelog
 
+v0.8.7
+
+* Update dependency: request (had a vulnerability)
+* Fix shim: Correctly proxy signals
+* Simplify usage and docs
+
 v0.8.6
 * Fix installer: Increase MAX_LEN for manipulating PATH to 8000
 * Add support for WebStorm and VisualStudio
