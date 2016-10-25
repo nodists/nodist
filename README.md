@@ -130,7 +130,7 @@ If you have installed native modules (globally or locally) you may have to run `
 ```
 
 ```
-> nodist global npm 3.x
+> nodist npm global 3.x
 # Set global npm version requirement.
 
 > nodist npm global match
