@@ -364,6 +364,7 @@ else if (command.match(/^global$/i) && argv[1] || argv[0] && !argv[1]) {
         exit();
       }
       n.resolveVersion(spec, function(er, version) {
+        if(er) return abort(er.message+'. Sorry.')
         console.log("Installing "+version)
         n.install(version, function(er) {
           if(er) return abort(er.message+'. Sorry.')
