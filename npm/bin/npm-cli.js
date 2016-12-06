@@ -8,7 +8,7 @@ Instructions:
 */
 var child_process = require('child_process')
 
-child_process.spawn(process.env['NODIST_PREFIX']+'/bin/npm.exe', process.argv.slice(1))
+child_process.spawn(process.env['NODIST_PREFIX']+'/bin/npm.exe', process.argv.slice(2), {stdio: 'inherit'})
 .on('error', function(er) {
   console.log('Sorry. There was a problem with nodist.')
   throw er
