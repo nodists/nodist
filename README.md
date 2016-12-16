@@ -30,7 +30,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 ### with the installer
 
-1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.8/NodistSetup-v0.8.7.exe)
+1. Download the installer [from the releases page](https://github.com/marcelklehr/nodist/releases)
 2. Run the installer and follow the install wizard
 
 ### via chocolatey
