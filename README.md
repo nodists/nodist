@@ -30,7 +30,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 ### with the installer
 
-1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.7/NodistSetup-v0.8.7.exe)
+1. Download the installer [here](https://github.com/marcelklehr/nodist/releases/download/v0.8.8/NodistSetup-v0.8.7.exe)
 2. Run the installer and follow the install wizard
 
 ### via chocolatey
@@ -210,6 +210,11 @@ As the global node version will be subject to change, `nodist` comes with its ow
 ## Got ideas?  Doesn't work for you? Want to give feedback?
 [File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
 
+## Malware warnings
+Nodist is not a virus. Nonetheless, some malware detection tools report the Nodist installer
+as a virus. If this happens, please contact the vendor of your malware detection tool and report
+the Nodist installer as a false positive.
+
 ## Debugging
 To see all debug messages, set the DEBUG env var before running nodist or node as follows:
 
@@ -254,6 +259,11 @@ Copyright (c) 2012-2016 by Marcel Klehr
 MIT License
 
 ## Changelog
+
+v0.8.8
+
+* Fix input validation for setting global version requirement
+* Fix npm prefix not being set correctly
 
 v0.8.7
 
