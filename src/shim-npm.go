@@ -84,7 +84,11 @@ func main() {
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
   cmd.Stdin = os.Stdin
-  cmd.Env = append(os.Environ(), "NODIST_NODE_VERSION="+version)// Lock the node version for all child processes
+  cmd.Env = os.Environ()
+  cmd.Env = append(cmd.Env, "NODIST_NODE_VERSION="+version)// Lock the node version for all child processes
+  // Set npm prefix correctly. Can't do this in installer, since npm doesn't know where to look (it looks at /v/x.x.x/ by default, so we'd have to put an npmrc in every version folder, which is overkill)
+  cmd.Env = append(cmd.Env, "npm_config_prefix="+os.Getenv("NODIST_PREFIX")+"/bin")
+
 
   // Proxy signals
   sigc := make(chan os.Signal, 1)
