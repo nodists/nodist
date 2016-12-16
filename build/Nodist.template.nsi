@@ -115,7 +115,7 @@ push $3
 FileOpen $4 "$INSTDIR\.npm-version-global" r
 FileRead $4 $3
 FileClose $4
-Exec '"$INSTDIR\node.exe" "$INSTDIR\npmv\$3\bin\npm-cli.js" config set prefix -g "$INSTDIR\bin"'
+Exec '"$INSTDIR\node.exe" "$INSTDIR\npmv\$3\bin\npm-cli.js" config set prefix "$INSTDIR\bin"'
 pop $3
 ; add to git bash if present
 push $1
