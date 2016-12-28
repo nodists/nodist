@@ -361,7 +361,7 @@ else if (command.match(/^global$/i) && argv[1] || argv[0] && !argv[1]) {
     if(found) {
       return n.setGlobal(spec, function(err) {
 	if(err) abort(err.message+'. Sorry.')
-        exit(0, 'Default global pacakge update dsuccessful.')
+        exit(0, 'Default global package update successful.')
       })
     }
     n.resolveVersion(spec, function(er, version) {
