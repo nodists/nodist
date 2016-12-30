@@ -45,8 +45,8 @@ Git bash integration is setup automatically.
 Before you are able to use nodist in cygwin you need to run the following in your cygwin terminal after installing nodist:
 
 ```
-cat "$NODIST_PREFIX/bin/nodist_bash_profile_content.sh" >> ~/.bash_profile
-source ~/.bash_profile
+cat "$NODIST_PREFIX/bin/nodist_bash_profile_content.sh" >> ~/.bashrc
+source ~/.bashrc
 ```
 
 ### Activating nodist in PowerShell

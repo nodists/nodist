@@ -126,7 +126,7 @@ IfFileExists "$1\.bash_profile" 0 +12
     FileOpen $2 "$INSTDIR\bin\nodist_bash_profile_content.sh" r
     FileRead $2 $3
     FileClose $2
-    FileOpen $2 "$1\.bash_profile" a
+    FileOpen $2 "$1\.bashrc" a
     FileSeek $2 0 END
     FileWrite $2 "$\n$3"
     FileClose $2
