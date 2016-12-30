@@ -24,6 +24,14 @@ C:\> nodist
 
 (see [Usage](#usage))
 
+## Known issues
+**Please read this!**
+
+Over the past months several problems have presented themselves, which are due to the way nodist works and are hard to fix:
+
+* process signals: Nodist employs a wrapper executable to shim the functionality of Node. Since Windows doesn't have signals, sending a SIGTERM, or similar will probably not be propagated to the actual node process, but get stuck in the shim. (see [#173](https://github.com/marcelklehr/nodist/issues/173))
+* native modules: Since the node version changes at the mercy of the shim executable, based on env vars, target directory and the global setting, and availability of node versions, it is possible that locally or globally installed node modules that depend on a specific version of node (usually native modules and downloaders) stop working. `npm rebuild` makes things work again in these cases.
+
 
 ## Installation
 Nodist was designed to replace any existing node.js installation, so *if node is already installed on your machine, uninstall it first*.
