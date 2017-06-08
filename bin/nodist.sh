@@ -13,7 +13,7 @@ nodist() {
             res=`"$NODIST_BIN_DIR__/nodist" + "$2"`
             ret=$?
             if [ $ret -eq 0 ]; then
-                export NODIST_NODE_VERSION=$res
+                export NODIST_NODE_VERSION=$2
             fi
             echo $res
         fi
@@ -22,10 +22,10 @@ nodist() {
             echo "Please specify a version to use."
             ret=1
         else
-            res=`"$NODIST_BIN_DIR__/nodist" npm + "$2"`
+            res=`"$NODIST_BIN_DIR__/nodist" npm + "$3"`
             ret=$?
             if [ $ret -eq 0 ]; then
-                export NODIST_NPM_VERSION=$res
+                export NODIST_NPM_VERSION=$3
             fi
             echo $res
         fi
