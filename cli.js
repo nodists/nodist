@@ -194,10 +194,11 @@ else if (command.match(/^npm$/i)){
       if(er) abort(er.message+'. Sorry.');
       npm.install(v,function(err,v){
         if(err) abort(err.message + '. Sorry.');
+        console.log(v);
       });
     });
   } else
-  if(subcmd.match(/^remove$/i)){
+  if(subcmd.match(/^remove|\-$/i)){
     version = argv[2];
     npm.resolveVersionLocally(version, function(er, v){
       if(er) abort(er.message+'. Sorry.');
@@ -247,7 +248,7 @@ else if (command.match(/^npm$/i)){
     version = argv[2];
     npm.setLocal(version, function(er){
       if(er) abort(er.message+'. Sorry.');
-      npm.resolveVersion(version, function(er, v) {	
+      npm.resolveVersion(version, function(er, v) {
 	if(er) abort(er.message + '. Sorry.');
 	npm.install(v,function(err,v){
 	  if(er) abort(er.message + '. Sorry.');
