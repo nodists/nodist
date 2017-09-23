@@ -131,7 +131,7 @@ func resolveVersion(spec string, installed []*semver.Version) (version string, e
   }
 
   if spec == "latest" {
-    version = installed[0].String()
+    version = installed[len(installed)-1].String()
   }else{
     for _, v := range installed {
       debug("checking %s against %s", v.String(), spec)
