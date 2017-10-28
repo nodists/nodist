@@ -68,7 +68,7 @@ unblock-file -path "C:\Program Files (x86)\Nodist\bin\nodist.ps1"
 
 If you still cannot run nodist you may also need amend your ExecutionPolicy setting.
 
-**Warning:** Please ensure you understand the risks associated with the different execution policies by first reviewing [about_Execuution_Policies - Microsoft Docs](http://go.microsoft.com/fwlink/?LinkID=135170)
+**Warning:** Please ensure you understand the risks associated with the different execution policies by first reviewing [about_Execution_Policies - Microsoft Docs](http://go.microsoft.com/fwlink/?LinkID=135170)
 
 ```
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
