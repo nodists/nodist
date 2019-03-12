@@ -60,6 +60,20 @@ source ~/.bashrc
 ### Activating nodist in PowerShell
 You might need to 'Unblock' the file `bin\nodist.ps1` by right clicking on it in the Explorer and selecting that menu entry.
 
+If you cannot see the unblock option after right-clicking > Properties in Explorer you can also perform the unblock via the following PowerShell command:
+
+```
+unblock-file -path "C:\Program Files (x86)\Nodist\bin\nodist.ps1"
+```
+
+If you still cannot run nodist you may also need amend your ExecutionPolicy setting.
+
+**Warning:** Please ensure you understand the risks associated with the different execution policies by first reviewing [about_Execution_Policies - Microsoft Docs](http://go.microsoft.com/fwlink/?LinkID=135170)
+
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+```
+
 ### Make it work in your IDE
 If your IDE cannot access node or npm right away, don't fret! Find the relevant configuration settings and either set `path\to\Nodist\bin` as the Node installation dir or set `path\to\Nodist\bin\node.exe` as the path to the node binary directly.
 
