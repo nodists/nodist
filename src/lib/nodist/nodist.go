@@ -10,7 +10,7 @@ import (
   "github.com/marcelklehr/semver"
 )
 
-import . "github.com/tj/go-debug"
+import . "github.com/computes/go-debug"
 
 var debug = Debug("nodist:shim")
 const pathSep = string(os.PathSeparator)

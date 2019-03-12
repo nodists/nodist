@@ -9,7 +9,7 @@ import (
   "./lib/nodist"
 )
 
-import . "github.com/tj/go-debug"
+import . "github.com/computes/go-debug"
 
 var debug = Debug("nodist:shim-npm")
 
