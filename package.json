@@ -1,6 +1,6 @@
 {
   "name": "nodist",
-  "version": "0.8.9",
+  "version": "0.9.0",
   "description": "Natural node version manager for windows",
   "keywords": [
     "node",
@@ -20,18 +20,18 @@
     "url": "http://github.com/marcelklehr/nodist.git"
   },
   "dependencies": {
-    "bluebird": "^2.10.2",
-    "debug": "^2.2.0",
+    "bluebird": "^3.5.3",
+    "debug": "^4.1.1",
     "github": "nullivex/node-github",
     "mkdirp": "~0.5",
     "ncp": "^2.0.0",
-    "progress": "1.x",
-    "promisepipe": "^1.0.1",
-    "recursive-readdir": "^1.2.1",
-    "request": "~2.74.0",
+    "progress": "2.x",
+    "promisepipe": "^3.0.0",
+    "recursive-readdir": "^2.2.2",
+    "request": "~2.88.0",
     "rimraf": "~2",
-    "semver": "^5.1.0",
-    "tar": "2.x"
+    "semver": "^6.0.0",
+    "tar": "4.x"
   },
   "devDependencies": {
     "vows": "*"

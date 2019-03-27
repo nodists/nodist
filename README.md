@@ -277,10 +277,18 @@ Afterwards you'll find the installer in `build/out/NodistSetup.exe` and fully pr
 The chocolatey package will be in `build/out/package`, you can run `cpack` and `cpush --source https://chocolatey.org/` inside that directory (if you are a registered maintainer).
 
 ## Legal
-Copyright (c) 2012-2016 by Marcel Klehr  
+Copyright (c) 2012-2019 by Marcel Klehr, Bryan Tong (@nullivex)  
 MIT License
 
 ## Changelog
+
+v0.9.0
+
+* Maintenance release. First release by @nullivex
+* Update to latest dependencies.
+* Fix for installing NPM newer than 6.1.0 PR#222
+* Add additional Nodist Powershell Activation PR#213
+* Fix `npm ls` to resolve correct version PR#210
 
 v0.8.8
 
