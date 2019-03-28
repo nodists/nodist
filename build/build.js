@@ -9,7 +9,7 @@ var recursiveReaddir = require('recursive-readdir');
 var request = require('request');
 var rimraf = require('rimraf');
 var tar = require('tar');
-var zlib = require('zlib')
+var zlib = require('zlib');
 
 var github = require('../lib/github');
 var helper = require('../lib/build');
@@ -71,10 +71,10 @@ var nodeLatestUrlx64 = 'https://nodejs.org/dist/VERSION/win-x64/node.exe';
 
 //setup some folders
 var outDir = path.resolve(path.join(__dirname, 'out'));
-var packageDir = path.resolve(path.join(outDir, 'package'))
+var packageDir = path.resolve(path.join(outDir, 'package'));
 var tmpDir = path.resolve(path.join(outDir, 'tmp'));
 var stagingDir = path.resolve(path.join(outDir, 'staging'));
-var stagingNpmDir = path.join(stagingDir, 'npmv')
+var stagingNpmDir = path.join(stagingDir, 'npmv');
 var stagingBin = path.join(stagingDir,'bin');
 var stagingLib = path.join(stagingDir,'lib');
 var nodistDir = path.resolve(path.dirname(__dirname));
@@ -164,17 +164,17 @@ P.all([
   .then(function(){
     console.log('Finished copying static files');
     
-    console.log('Compiling node shim')
-    return exec('go build -o "'+stagingBin +'/node.exe" src/shim-node.go')
+    console.log('Compiling node shim');
+    return exec('go build -o "'+stagingBin +'/node.exe" src/shim-node.go');
   })
   .then(function(){
-    console.log('Done compiling node shim')
+    console.log('Done compiling node shim');
     
-    console.log('Compiling shim')
-    return exec('go build -o "'+stagingBin +'/npm.exe" src/shim-npm.go')
+    console.log('Compiling shim');
+    return exec('go build -o "'+stagingBin +'/npm.exe" src/shim-npm.go');
   })
   .then(function() {
-    console.log('Done compiling npm shim')
+    console.log('Done compiling npm shim');
     
     console.log('Determining latest version of node');
     return request.getAsync({
@@ -182,16 +182,13 @@ P.all([
       json: true
     });
   })
-  .spread(function(res,body){
-    nodeVersion = body[0].version;
+  .then(function(res){
+    nodeVersion = res.body[0].version;
     nodeLatestUrlx86 = nodeLatestUrlx86.replace('VERSION',nodeVersion);
     nodeLatestUrlx64 = nodeLatestUrlx64.replace('VERSION',nodeVersion);
     console.log('Latest version of Node ' + nodeVersion);
     console.log('Downloading ' + nodeLatestUrlx86);
     return helper.downloadFileAsync(nodeLatestUrlx86,stagingDir + '/node.exe');
-  })
-  .then(function(){
-
   })
   .then(function(){
     console.log('Copying that EXE as if it were installed normally');
@@ -234,16 +231,18 @@ P.all([
     .then(() => mkdirp(stagingNpmDir+'/'+npmVersion.replace('v','')))
     .then(() => {
       return new Promise((resolve, reject) => {
+        var extractStream = tar.x({
+          cwd: stagingNpmDir+'/'+npmVersion.replace('v','')
+          , strip: 1
+        });
         helper.downloadFileStream(downloadLink)
         .pipe(zlib.createUnzip())
-        .pipe(tar.Extract({
-          path: stagingNpmDir+'/'+npmVersion.replace('v','')
-        , strip: 1
-        }))
-        .on('error', reject)
-        .on('end', resolve)
-      })
-    })
+        .pipe(extractStream)
+        .on('error', reject);
+        extractStream.on('error',reject);
+        extractStream.on('end', resolve);
+      });
+    });
   })
   .then(function(){
     console.log('Writing ' + npmVersion + ' as global npm version');
@@ -256,8 +255,7 @@ P.all([
     console.log('Install node_modules for distribution');
     return exec('npm install',{cwd: stagingDir});
   })
-  .spread(function(stdout){
-    console.log(stdout);
+  .spread(function(){
     console.log('Installation complete');
     console.log('Build Nodist.nsi');
     return recursiveReaddir(stagingDir);
@@ -318,14 +316,14 @@ P.all([
   })
   .then(function(){
     console.log('NSIS compilation complete!');
-    console.log('Preparing chocolatey package')
+    console.log('Preparing chocolatey package');
   })
   .then(() => Promise.all([mkdirp(packageDir), mkdirp(packageDir+'/tools')]))
   .then(() => fs.readFileAsync(
       path.resolve(nodistDir + '/build/nodist.template.nuspec')
    ))
    .then((nuspec) => {
-     nuspec = nuspec.toString().replace('__VERSION__', pkg.version)
+     nuspec = nuspec.toString().replace('__VERSION__', pkg.version);
      return Promise.all([
        fs.writeFileAsync(
          path.resolve(packageDir + '/nodist.nuspec'),
@@ -335,7 +333,7 @@ P.all([
      , helper.copyFileAsync(nodistDir+'/build/chocolateyuninstall.ps1', packageDir+'/tools/chocolateyuninstall.ps1')
      , helper.copyFileAsync(nodistDir+'/LICENSE.txt', packageDir+'/tools/LICENSE.txt')
      , helper.copyFileAsync(outDir+'/NodistSetup.exe', packageDir+'/tools/Installer.exe')
-     ])
+     ]);
    })
   .then(() => {
     console.log('Build complete!');
