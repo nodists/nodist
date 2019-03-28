@@ -332,6 +332,7 @@ P.all([
      , helper.copyFileAsync(nodistDir+'/build/chocolateyinstall.ps1', packageDir+'/tools/chocolateyinstall.ps1')
      , helper.copyFileAsync(nodistDir+'/build/chocolateyuninstall.ps1', packageDir+'/tools/chocolateyuninstall.ps1')
      , helper.copyFileAsync(nodistDir+'/LICENSE.txt', packageDir+'/tools/LICENSE.txt')
+     , helper.copyFileAsync(nodistDir+'/build/VERIFICATION.txt', packageDir+'/tools/VERIFICATION.txt')
      , helper.copyFileAsync(outDir+'/NodistSetup.exe', packageDir+'/tools/Installer.exe')
      ]);
    })
