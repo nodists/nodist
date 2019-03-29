@@ -282,6 +282,9 @@ MIT License
 
 ## Changelog
 
+v0.9.1
+* Fix issue with deprecated call to Tar.Extract in the NPM handler.
+
 v0.9.0
 
 * Maintenance release. First release by @nullivex
