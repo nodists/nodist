@@ -34,7 +34,7 @@
     "tar": "4.x"
   },
   "devDependencies": {
-    "vows": "*"
+    "vows": "^0.8.3"
   },
   "scripts": {
     "build": "node ./build/build.js",
