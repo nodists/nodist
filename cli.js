@@ -1,4 +1,5 @@
 'use strict';
+
 /*!
  * nodist
  * A Node version manager for the windows folks out there.
@@ -29,63 +30,65 @@ var nodist = require('./lib/nodist');
 var npmist = require('./lib/npm');
 var path = require('path');
 var fs = require('fs');
-var debug = require('debug')('nodist:cli')
+var debug = require('debug')('nodist:cli');
 
-// Exit with a code and (optionally) with a message
-var exit = function exit(code, msg){
-  if(msg) console.log(msg);
+// Exit with a code and (optionally) with a message.
+function exit(code, msg) {
+  if (msg) console.log(msg);
+
   process.exit(code);
 };
 
-// Abort with an optional message being displayed
-var abort = function abort(msg) {
-  exit(1, !msg? null : msg.split('. ').join('.\r\n'));
+// Abort with an optional message being displayed.
+function abort(msg) {
+  exit(1, typeof msg !== 'string' ? null : msg.replace(/\. /g, '.\r\n'));
 };
 
-// Display the command line help and exit
+// Display the command line help and exit.
 function help() {
-  fs.readFile(__dirname+'\\usage.txt', function(err, usage) {
-    if(err){
+  fs.readFile(__dirname + '\\usage.txt', function(err, usage) {
+    if (err)
       abort(
         'Could not fetch help info. You will have to look at the README. Sorry.'
       );
-    }
+
     console.log(usage.toString());
+
     exit();
   });
 }
 
 
 /**
- * Set the process title
+ * Set the process title.
  * @type {string}
  */
 process.title = 'nodist';
 
-if(!process.env.NODIST_PREFIX){
+if (!process.env.NODIST_PREFIX)
   abort(
     'Please set the path to the nodist directory ' +
     'in the NODIST_PREFIX environment variable.'
   );
-}
 
 var distUrl = process.env.NODIST_NODE_MIRROR || 'https://nodejs.org/dist';
 var iojsDistUrl = process.env.NODIST_IOJS_MIRROR || 'https://iojs.org/dist';
 var nodistPrefix = process.env.NODIST_PREFIX.replace(/"/g, '');
-var proxy = (
+var proxy =
   process.env.HTTP_PROXY ||
   process.env.http_proxy ||
   process.env.HTTPS_PROXY ||
   process.env.https_proxy ||
-  ''
-);
+  '';
 var wantX64 = (+process.env.NODIST_X64) === 1;
-var envVersion = process.env.NODIST_NODE_VERSION ?
-  process.env.NODIST_NODE_VERSION.replace(/"/g, '') : process.env.NODIST_NODE_VERSION;
-var npmEnvVersion = process.env.NODIST_NPM_VERSION ?
-  process.env.NODIST_NPM_VERSION.replace(/"/g, '') : process.NODIST_NPM_VERSION
+var envVersion = process.env.NODIST_NODE_VERSION
+  ? process.env.NODIST_NODE_VERSION.replace(/"/g, '')
+  : process.env.NODIST_NODE_VERSION;
+var npmEnvVersion = process.env.NODIST_NPM_VERSION
+  ? process.env.NODIST_NPM_VERSION.replace(/"/g, '')
+  : process.NODIST_NPM_VERSION;
 
-// Create a nodist instance
+// Create a nodist instance.
 var n = new nodist(
   distUrl,
   iojsDistUrl,
@@ -95,291 +98,325 @@ var n = new nodist(
   envVersion
 );
 
-var npm = new npmist(n,
-  npmEnvVersion
-)
+var npm = new npmist(n, npmEnvVersion);
 
-// Parse args
+// Parse args.
 var argv = process.argv.splice(2);
 
-
 /**
- * Store extra args
- * @type {Array}
+ * Store extra args.
+ * @type {any[]}
  */
 argv.remainder = [];
-if(argv.indexOf('--') !== -1) {
+
+if (argv.indexOf('--') !== -1)
   argv.remainder = argv.splice(argv.indexOf('--')).slice(1);
-}
+
 var args = argv.join(' ');
 var command = argv[0];
 
 
 // (bare call of 'nodist') -> list
-if (!argv[0]) {
-  command = 'list';
-}
+if (!argv[0]) command = 'list';
 
-// -V Display nodist version
-if (args.match(/-v/i) !== null) {
+// -V Display nodist version.
+if (/-v/i.test(args)) {
   console.log(require('./package.json').version);
+
   exit();
 }
-
-// --HELP Display help
-else if (args.match(/--help/i)) {
+// --HELP Display help.
+else if (/--help/i.test(args))
   help();
-}
-
-
-// LIST all installed buids
-else if (command.match(/^list|ls$/i)) {
-
-  n.getGlobal(function(err, globalSpec){
+// LIST all installed buids.
+else if (/^list|ls$/i.test(command)) {
+  n.getGlobal(function(err, globalSpec) {
     n.resolveVersionLocally(globalSpec, function(er, globalVersion) {
-      n.getLocal(function(err, localSpec, localFile){
+      n.getLocal(function(err, localSpec, localFile) {
         n.resolveVersionLocally(localSpec, function(er, localVersion) {
-          n.getEnv(function(err, envSpec){
+          n.getEnv(function(err, envSpec) {
             n.resolveVersionLocally(envSpec, function(er, envVersion) {
               n.listInstalled(function(err, ls) {
-                if(err) abort(err.message+'. Sorry.');
-                if(n.wantX64) console.log('  (x64)');
-                if(ls.length === 0) abort('No builds installed, yet.');
+                if (err) abort(err.message + '. Sorry.');
+                if (n.wantX64) console.log('  (x64)');
+                if (ls.length === 0) abort('No builds installed, yet.');
+
                 var current = envVersion || localVersion || globalVersion;
-                // display all versions
+
+                // Display all versions.
                 ls.forEach(function(version) {
                   var del = '  ';
                   var note = ' ';
-                  if (version === envVersion) {
-                    note += ' (env: '+envSpec+')';
-                  }
-                  if (version === localVersion) {
-                    note += ' ('+localFile+': '+localSpec+')';
-                  }
-                  if (version === globalVersion) {
-                    note += ' (global: '+globalSpec+')';
-                  }
-                  if (version === current) del ='> ';// highlight current
 
-                  console.log(del + version+note);
+                  if (version === envVersion)
+                    note += ` (env: ${envSpec})`;
+                  if (version === localVersion)
+                    note += ` (${localFile}: ${localSpec})`;
+                  if (version === globalVersion)
+                    note += ` (global: ${globalSpec})`;
+                  if (version === current)
+                    // Highlight current.
+                    del = '> ';
+
+                  console.log(del + version + note);
                 });
+
                 exit();
               });
-            })
-          })
-        })
+            });
+          });
+        });
       });
     });
   });
 }
-// DIST list all available buids
-else if (command.match(/^dist|ds$/i)) {
+// DIST list all available buids.
+else if (/^dist|ds$/i.test(command)) {
   n.listAvailable(function(err, ls) {
-    if(err) abort(err.message+'. Sorry.');
-    if(ls.length === 0) abort('No builds available. Strange...');
-    // display all versions
+    if (err) abort(err.message + '. Sorry.');
+    if (ls.length === 0) abort('No builds available. Strange...');
+
+    // Display all versions.
     ls.forEach(function(version) {
-      console.log('  '+version);
+      console.log('  ' + version);
     });
-    if(n.proxy) console.log('\n  (Proxy: ' + n.proxy + ')');
+
+    if (n.proxy) console.log(`\n  (Proxy: ${n.proxy})`);
+
     exit();
   });
 }
-//NPM version management
-else if (command.match(/^npm$/i)){
+// NPM version management.
+else if (/^npm$/i.test(command)){
   var subcmd = argv[1] || 'ls';
-  if(subcmd.match(/^add|\+$/i)){
+
+  if (/^add|\+$/i.test(subcmd)) {
     version = argv[2];
-    npm.resolveVersion(version, function(er, v){
-      if(er) abort(er.message+'. Sorry.');
-      npm.install(v,function(err,v){
-        if(err) abort(err.message + '. Sorry.');
+
+    npm.resolveVersion(version, function(er, v) {
+      if (er) abort(er.message + '. Sorry.');
+
+      npm.install(v, function(err, v) {
+        if (err) abort(err.message + '. Sorry.');
+
         console.log(v);
       });
     });
-  } else
-  if(subcmd.match(/^remove|\-$/i)){
+  } else if (/^remove|\-$/i.test(subcmd)) {
     version = argv[2];
-    npm.resolveVersionLocally(version, function(er, v){
-      if(er) abort(er.message+'. Sorry.');
-      npm.remove(v,function(err,v){
-        if(err) abort(err.message + '. Sorry.');
+
+    npm.resolveVersionLocally(version, function(er, v) {
+      if (er) abort(er.message + '. Sorry.');
+
+      npm.remove(v, function(err, v) {
+        if (err) abort(err.message + '. Sorry.');
       });
     });
-  } else
-  if(subcmd.match(/^ls|list$/i)){
-    npm.getGlobal(function(err, globalSpec){
+  } else if (/^ls|list$/i.test(subcmd)) {
+    npm.getGlobal(function(err, globalSpec) {
       npm.resolveVersionLocally(globalSpec, function(er, globalVersion) {
-	npm.getLocal(function(err, localSpec, localFile){
+	npm.getLocal(function(err, localSpec, localFile) {
 	  npm.resolveVersionLocally(localSpec, function(er, localVersion) {
-	    npm.getEnv(function(err, envSpec){
+	    npm.getEnv(function(err, envSpec) {
 	      npm.resolveVersionLocally(envSpec, function(er, envVersion) {
 		npm.listInstalled(function(err, ls) {
-		  if(err) abort(err.message+'. Sorry.');
-		  if(ls.length === 0) abort('No builds installed, yet.');
+		  if (err) abort(err.message + '. Sorry.');
+		  if (ls.length === 0) abort('No builds installed, yet.');
+
 		  var current = envVersion || localVersion || globalVersion;
-		  // display all versions
+
+		  // Display all versions.
 		  ls.forEach(function(version) {
 		    var del = '  ';
 		    var note = ' ';
-		    if (version === envVersion) {
-		      note += ' (env: '+envSpec+')';
-		    }
-		    if (version === localVersion) {
-		      note += ' ('+localFile+': '+localSpec+')';
-		    }
-		    if (version === globalVersion) {
-		      note += ' (global: '+globalSpec+')';
-		    }
-		    if (version === current) del ='> ';// highlight current
 
-		    console.log(del + version+note);
+		    if (version === envVersion)
+		      note += ` (env: ${envSpec})`;
+		    if (version === localVersion)
+		      note += ` (${localFile}: ${localSpec})`;
+		    if (version === globalVersion)
+		      note += ` (global: ${globalSpec})`;
+		    if (version === current)
+                      // Highlight current.
+                      del = '> ';
+
+		    console.log(del + version + note);
 		  });
+
 		  exit();
 		});
-	      })
-	    })
-	  })
+	      });
+	    });
+	  });
 	});
       });
     });
-  } else
-  if(subcmd.match(/^local$/i)){
+  } else if (/^local$/i.test(subcmd)) {
     version = argv[2];
-    npm.setLocal(version, function(er){
-      if(er) abort(er.message+'. Sorry.');
+
+    npm.setLocal(version, function(er) {
+      if (er) abort(er.message + '. Sorry.');
+
       npm.resolveVersion(version, function(er, v) {
-	if(er) abort(er.message + '. Sorry.');
-	npm.install(v,function(err,v){
-	  if(er) abort(er.message + '. Sorry.');
+	if (er) abort(er.message + '. Sorry.');
+
+	npm.install(v,function(err, v) {
+	  if (er) abort(er.message + '. Sorry.');
 	});
-      })
+      });
     });
-  } else
-  if (subcmd.match(/^global$/i) && argv[2] || argv[1] && !argv[2]) {
-    version = argv[2] || argv[1]
+  } else if (/^global$/i.test(subcmd) && argv[2] || argv[1] && !argv[2]) {
+    version = argv[2] || argv[1];
+
     npm.setGlobal(version, function(er) {
-      if(er) abort(er.message+'. Sorry.');
+      if (er) abort(er.message + '. Sorry.');
+
       console.log('npm ' + version);
+
       npm.resolveVersion(version, function(er, v) {
-        if(er) abort(er.message+'. Sorry.');
+        if (er) abort(er.message + '. Sorry.');
+
 	npm.install(v, function(er, v) {
-	  if (er) abort(er.message+'. Sorry.')
-	})
+	  if (er) abort(er.message + '. Sorry.');
+	});
       });
     });
   }
 }
-// ADD fetch a specific build
-else if ((command.match(/^add|\+$/i)) && argv[1]) {
+// ADD fetch a specific build.
+else if (/^add|\+$/i.test(command) && argv[1]) {
   version = argv[1];
-  if(version.match(/^all$/i)) {
+
+  if (/^all$/i.test(version))
     n.installAll(function(err, real_version) {
-      if(err) return console.log(err.message+'.');
-      console.log('Installed '+real_version);
+      if (err) return console.log(err.message + '.');
+
+      console.log('Installed ' + real_version);
     });
-  } else {
+  else
     n.resolveVersion(version, function(er, v) {
-      if(er) abort(er.message+'. Sorry.');
+      if (er) abort(er.message + '. Sorry.');
+
       n.install(v, function(err) {
-        if(err) abort(err.message+'. Sorry.');
+        if (err) abort(err.message + '. Sorry.');
+
         console.log(v);
         exit();
       });
     });
-  }
 }
-// REMOVE an installed build
-else if (command.match(/^remove|rm|-$/i) && argv[1]) {
+// REMOVE an installed build.
+else if (/^remove|rm|-$/i.test(command) && argv[1]) {
   version = argv[1];
+
   n.resolveVersionLocally(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
+    if (er) abort(er.message + '. Sorry.');
+
     n.remove(v, function(er) {
-      if(er) abort(er.message+'. Sorry.');
+      if (er) abort(er.message + '. Sorry.');
+
       exit();
     });
   });
 }
-// RUN a specific build
-else if (command.match(/^run|r$/i) && argv[1]) {
+// RUN a specific build.
+else if (/^run|r$/i.test(command) && argv[1]) {
   version = argv[1];
+
   n.resolveVersion(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
+    if (er) abort(er.message + '. Sorry.');
+
     n.emulate(v, argv.remainder, function(err, code) {
-      if(err) abort(err.message+'. Sorry.');
+      if (err) abort(err.message + '. Sorry.');
+
       exit(code);
     });
   });
 }
-// BIN get the path to a specific version
-else if (command.match(/^bin$/i) && argv[1]) {
+// BIN get the path to a specific version.
+else if (/^bin$/i.test(command) && argv[1]) {
   version = argv[1];
+
   n.resolveVersion(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
+    if (er) abort(er.message + '. Sorry.');
+
     n.install(v, function(err) {
-      if(err) abort(err.message+'. Sorry.');
+      if (err) abort(err.message + '. Sorry.');
+
       console.log(n.getPathToExe(v));
       exit();
     });
   });
 }
-// PATH get the directory of a specific version to be added to the path
-else if (command.match(/^path$/i) && argv[1]) {
+// PATH get the directory of a specific version to be added to the path.
+else if (/^path$/i.test(command) && argv[1]) {
   version = argv[1];
+
   n.resolveVersion(version, function(er, v) {
-    if(er) abort(er.message+'. Sorry.');
+    if (er) abort(er.message + '. Sorry.');
+
     n.install(v, function(err, v) {
-      if(err) abort(err.message+'. Sorry.');
+      if (err) abort(err.message + '. Sorry.');
+
       console.log(path.dirname(n.getPathToExe(v)));
     });
   });
 }
-// LOCAL use the specified version locally
-else if (command.match(/^local$/i) && argv[1]) {
+// LOCAL use the specified version locally.
+else if (/^local$/i.test(command) && argv[1]) {
   var spec = argv[1];
+
   n.setLocal(spec, function(err, file) {
-    if(err) abort(err.message+'. Sorry.');
-    console.log(spec, '(' + file + ')');
+    if (err) abort(err.message + '. Sorry.');
+
+    console.log(spec, `(${file})`);
+
     n.resolveVersionLocally(spec, function(er, found) {
-      if(found) {
-        exit();
-      }
+      if (found) exit();
+
       n.resolveVersion(spec, function(er, version) {
-        console.log("Installing "+version)
+        console.log('Installing ' + version);
+
         n.install(version, function(er) {
-          if(er) return abort(er.message+'. Sorry.')
-          exit(0, 'Installation successful.')
-        })
-      })
-    })
+          if (er) return abort(er.message + '. Sorry.');
+
+          exit(0, 'Installation successful.');
+        });
+      });
+    });
   });
 }
-// GLOBAL globally use the specified node version
-else if (command.match(/^global$/i) && argv[1] || argv[0] && !argv[1]) {
+// GLOBAL globally use the specified node version.
+else if (/^global$/i.test(command) && argv[1] || argv[0] && !argv[1]) {
   spec = argv[1] || argv[0];
+
   console.log(spec);
+
   n.resolveVersionLocally(spec, function(er, found) {
-    if(found) {
+    if (found)
       return n.setGlobal(spec, function(err) {
-	if(err) abort(err.message+'. Sorry.')
-        console.log(spec, '(global)')
-        exit()
-      })
-    }
+	if (err) abort(err.message + '. Sorry.');
+
+        console.log(spec, '(global)');
+        exit();
+      });
+
     n.resolveVersion(spec, function(er, version) {
-      if(er) return abort(er.message+'. Sorry.')
-      console.log("Installing "+version)
+      if (er) return abort(er.message + '. Sorry.');
+
+      console.log('Installing ' + version);
+
       n.install(version, function(er) {
-        if(er) return abort(er.message+'. Sorry.')
+        if (er) return abort(er.message + '. Sorry.');
+
         n.setGlobal(spec, function(err) {
-	  if(err) abort(err.message+'. Sorry.')
-          exit(0, 'Installation successful.')
-        })
-      })
-    })
-  })
+	  if (err) abort(err.message + '. Sorry.');
+
+          exit(0, 'Installation successful.');
+        });
+      });
+    });
+  });
 }
-// HELP display help for unknown cli parameters
-else {
-  help();
-}
+// HELP display help for unknown cli parameters.
+else help();
