@@ -223,6 +223,12 @@ call nodist env 4.x
 # Enable package.json inspection: Nodist will check the engines field of the package.json file of scripts to be executed and use the node version specified there. Turned off by default as of v0.8.5.
 ```
 
+```
+> set NODIST_GITHUB_TOKEN=your_github_personal_access_token
+# By default Nodist makes request to the GitHub API to list npm releases without any authentication, which is subject to [rate limiting](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting). By using your own [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) Nodist will be able to make more requests per hour.
+# Note: for security purposes it's best to use a token just for Nodist. The `repo:public_repo` scope should be more than sufficient.
+```
+
 ## Details
 Node executables are stored in `NODIST_PREFIX\v` and `NODIST_PREFIX\v-x64`, npm versions in `NODIST_PREFIX\npmv.
 The global `node.exe` is a shim and chooses the right node version to run based on the various version settings. The same applies for npm.

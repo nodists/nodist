@@ -11,7 +11,6 @@ var rimraf = require('rimraf');
 var tar = require('tar');
 var zlib = require('zlib');
 
-var github = require('../lib/github');
 var helper = require('../lib/build');
 var pkg = require('../package.json');
 
@@ -19,8 +18,6 @@ var pkg = require('../package.json');
 
 //make some promises
 P.promisifyAll(fs);
-P.promisifyAll(github);
-P.promisifyAll(github.releases);
 P.promisifyAll(helper);
 P.promisifyAll(request);
 exec = P.promisify(exec);
@@ -143,7 +140,7 @@ P.all([
       helper.copyFileAsync(
         nodistLib + '/build.js',stagingLib + '/build.js'),
       helper.copyFileAsync(
-        nodistLib + '/github.js',stagingLib + '/github.js'),
+        nodistLib + '/octokit.js',stagingLib + '/octokit.js'),
       helper.copyFileAsync(
         nodistLib + '/nodist.js',stagingLib + '/nodist.js'),
       helper.copyFileAsync(
