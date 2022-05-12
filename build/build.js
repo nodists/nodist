@@ -77,6 +77,7 @@ var stagingLib = path.join(stagingDir,'lib');
 var nodistDir = path.resolve(path.dirname(__dirname));
 var nodistBin = path.join(nodistDir,'bin');
 var nodistLib = path.join(nodistDir,'lib');
+var goSrcDir = path.join(nodistDir,'src');
 
 var npm = new (require('../lib/npm'))({nodistDir: stagingDir});
 
@@ -162,13 +163,13 @@ P.all([
     console.log('Finished copying static files');
     
     console.log('Compiling node shim');
-    return exec('go build -o "'+stagingBin +'/node.exe" src/shim-node.go');
+    return exec('go build -o "'+stagingBin +'/node.exe" shim-node.go', { cwd: goSrcDir });
   })
   .then(function(){
     console.log('Done compiling node shim');
     
     console.log('Compiling shim');
-    return exec('go build -o "'+stagingBin +'/npm.exe" src/shim-npm.go');
+    return exec('go build -o "'+stagingBin +'/npm.exe" shim-npm.go', { cwd: goSrcDir });
   })
   .then(function() {
     console.log('Done compiling npm shim');

@@ -1,4 +1,4 @@
-package nodist
+package lib
 
 import (
   "errors"
@@ -10,7 +10,7 @@ import (
   "github.com/marcelklehr/semver"
 )
 
-import . "github.com/computes/go-debug"
+import . "github.com/visionmedia/go-debug"
 
 var debug = Debug("nodist:shim")
 const pathSep = string(os.PathSeparator)

@@ -1,0 +1,4 @@
+github.com/marcelklehr/semver v0.0.0-20160716173943-4590ea5640ed h1:VZykzf0AXHbHB5seNQ1cTmAIY3fYjx7ZnSN51R1hkMA=
+github.com/marcelklehr/semver v0.0.0-20160716173943-4590ea5640ed/go.mod h1:f47/BgTZMEzS7Jz9fM/3uH/kNpv3l9mUq3HgP3p6Mh8=
+github.com/visionmedia/go-debug v0.0.0-20180109164601-bfacf9d8a444 h1:omAc9LPzvfCMXi9UuEB9gbnSVXvz3Bft2zlKZn5Ww7Y=
+github.com/visionmedia/go-debug v0.0.0-20180109164601-bfacf9d8a444/go.mod h1:7f/NuZ7w/RrrDGVKvezeak02MX7QbLs4Njo/I+GPxe0=

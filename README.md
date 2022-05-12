@@ -272,7 +272,6 @@ Building nodist requires
    * NSIS Plugin: [AccessControl](http://nsis.sourceforge.net/AccessControl_plug-in)
  * node.js for running the build script
  * and npm for installing nodist's dependencies
- * Finally you need to `go get github.com/marcelklehr/semver github.com/computes/go-debug`
 
 If you have met all requirements, run the build command:
 
@@ -287,6 +286,9 @@ Copyright (c) 2012-2019 by Marcel Klehr, Bryan Tong (@nullivex)
 MIT License
 
 ## Changelog
+
+v0.10.0
+* Fix building shims (for newer go versions) by using go modules
 
 v0.9.1
 * Fix issue with deprecated call to Tar.Extract in the NPM handler.
