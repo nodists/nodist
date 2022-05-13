@@ -82,8 +82,8 @@ var goSrcDir = path.join(nodistDir,'src');
 var npm = new (require('../lib/npm'))({nodistDir: stagingDir});
 
 //default npm version to the latest at the time of writing
-var npmVersion = '3.3.8';
-var nodeVersion = '4.2.1';
+var npmVersion = '6.14.16';
+var nodeVersion = '16.15.0';
 
 var versionPathx86 = '';
 var versionPathx64 = '';
@@ -96,6 +96,32 @@ var uninstallFolders = [];
 //lets get started by doing some bootstrapping
 console.log('Welcome to the Nodist Builder');
 console.log('  before going further we need to prep our staging folder');
+
+//defining helper functions
+function getLatestNodeVersionFor(nodeVersions, fileType) {
+  for (var key in nodeVersions) {
+    if (nodeVersions[key].files.includes(fileType)) {
+      return nodeVersions[key].version;
+    }
+  }
+}
+
+async function resolveLinkedWorkspaces(dirPath) {
+  let movedLinks = 0;
+  const files = await fs.readdirAsync(dirPath, { withFileTypes: true });
+  const dirPromises = [];
+  for (const file of files) {
+    const filePath = path.join(dirPath, file.name);
+    if (file.isSymbolicLink()) {
+      const linkTarget = await fs.readlinkAsync(filePath);
+      await fs.renameAsync(path.join(dirPath, linkTarget), filePath);
+      movedLinks++;
+    } else if (file.isDirectory()) {
+      dirPromises.push(resolveLinkedWorkspaces(filePath));
+    }
+  }
+  return (await Promise.all(dirPromises)).reduce((sum, num) => sum + num, movedLinks);
+}
 
 //start by clearing the staging and tmp folders
 P.all([
@@ -181,7 +207,7 @@ P.all([
     });
   })
   .then(function(res){
-    nodeVersion = res.body[0].version;
+    nodeVersion = getLatestNodeVersionFor(res.body, 'win-x86-exe');
     nodeLatestUrlx86 = nodeLatestUrlx86.replace('VERSION',nodeVersion);
     nodeLatestUrlx64 = nodeLatestUrlx64.replace('VERSION',nodeVersion);
     console.log('Latest version of Node ' + nodeVersion);
@@ -253,8 +279,16 @@ P.all([
     console.log('Install node_modules for distribution');
     return exec('npm install',{cwd: stagingDir});
   })
-  .spread(function(){
+  .then(function() {
     console.log('Installation complete');
+    return resolveLinkedWorkspaces(path.join(stagingNpmDir, npmVersion.replace('v', ''), 'node_modules'));
+  })
+  .then(function(movedLinks) {
+    if (movedLinks) {
+      console.log(`Resolved ${movedLinks} symlinks in node_modules folder`);
+    }
+  })
+  .then(function() {
     console.log('Build Nodist.nsi');
     return recursiveReaddir(stagingDir);
   })

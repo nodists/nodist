@@ -289,6 +289,9 @@ MIT License
 
 v0.10.0
 * Fix building shims (for newer go versions) by using go modules
+* Fix getting latest npm version
+* Use last available x86 version for building
+* Resolve symlinks for npm's node_modules
 
 v0.9.1
 * Fix issue with deprecated call to Tar.Extract in the NPM handler.
