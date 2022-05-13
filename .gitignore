@@ -6,3 +6,5 @@ node_modules
 /build/out
 /npmv
 /pkg
+/test/tmp
+/node.exe

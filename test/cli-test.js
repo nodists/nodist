@@ -6,6 +6,7 @@ var nodist = require('../lib/nodist.js');
 var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
+var rimraf = require('rimraf');
 
 var testPath = path.resolve(__dirname + '/tmp');
 var testVersion = '4.2.1';
@@ -17,6 +18,17 @@ var proxy = (
   process.env.HTTPS_PROXY ||
   process.env.https_proxy || ''
 );
+
+// check if node is available for tests
+if (!fs.existsSync(path.join(__dirname, '..', 'node.exe'))) {
+  console.log('node.exe missing in the main directory');
+  process.exit(1);
+}
+
+// clean testpath
+if ((process.env.NODIST_TESTS_CLEAN || '1') === '1') {
+  rimraf.sync(testPath);
+}
 
 //setup new nodist
 var n = new nodist(
@@ -42,8 +54,8 @@ var execNodist = function execNodist(args, cb){
     {
       env: {
         NODIST_PREFIX: testPath,
-        NODIST_NODE_MIRROR: n.iojsSourceUrl,
-        NODIST_IOJS_MIRROR: n.sourceUrl,
+        NODIST_NODE_MIRROR: n.sourceUrl,
+        NODIST_IOJS_MIRROR: n.iojsSourceUrl,
         HTTP_PROXY: proxy,
         DEBUG: process.env.DEBUG
       }
@@ -60,13 +72,13 @@ var execNodist = function execNodist(args, cb){
     stderr = stderr + chunk.toString();
   });
   cp.on('error', function(err){
-    console.log('execution error',err);
+    debug('execNodist', 'exec failed with error', err);
     cb(err);
   });
   cp.on('close', function(code){
-    debug('execNodist', 'exec complete', code);
-    console.log('exit code',code);
-    cb(null, stdout, stderr, code);
+    var err = null;
+    debug('execNodist', 'exec completed with', { err, stdout, stderr, code });
+    cb(err, stdout, stderr, code);
   });
 };
 
@@ -76,9 +88,9 @@ vows.describe('nodist cli')
       topic: function() {
         execNodist(['add',testVersion], this.callback);
       },
-      'should install the specified version': function(err) {
-        console.log('got response for should install', err);
+      'should install the specified version': function(err, stdout) {
         assert.isNull(err);
+        assert.match(stdout, new RegExp(testVersion));
         debug('nodist add test for', n.getPathToExe(testVersion));
         debug('nodist add exists', fs.existsSync(n.getPathToExe(testVersion)));
         assert.ok(fs.existsSync(n.getPathToExe(testVersion)));
@@ -93,7 +105,7 @@ vows.describe('nodist cli')
       'should list the installed version': function(err, stdout) {
         assert.ifError(err);
         var versions = stdout.toString().split('\n').map(function(v) {
-          return v.substr(2);
+          return v.trim();
         });
         assert.ok(versions.some(function(v) { return v === testVersion; }));
       }
@@ -115,8 +127,9 @@ vows.describe('nodist cli')
       topic: function(){
         execNodist(['rm',testVersion], this.callback);
       },
-      'should remove the specified version': function(err){
-        assert.ifError(err);
+      'should remove the specified version': function(err, stdout){
+        assert.isNull(err);
+        assert.equal(stdout, '');
         assert.ok(!fs.existsSync(n.getPathToExe(testVersion)));
       },
       'nodist list': {
@@ -126,7 +139,7 @@ vows.describe('nodist cli')
         'should not list the installed version': function(err, stdout){
           assert.ifError(err);
           var versions = stdout.toString().split('\n').map(function(v){
-            return v.substr(2);
+            return v.trim();
           });
           assert.ok(!versions.some(function(v) { return v === testVersion; }));
         }
