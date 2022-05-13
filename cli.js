@@ -198,7 +198,7 @@ else if (command.match(/^npm$/i)){
       });
     });
   } else
-  if(subcmd.match(/^remove|\-$/i)){
+  if(subcmd.match(/^remove|rm|\-$/i)){
     version = argv[2];
     npm.resolveVersionLocally(version, function(er, v){
       if(er) abort(er.message+'. Sorry.');

@@ -21,7 +21,6 @@ P.promisifyAll(fs);
 P.promisifyAll(helper);
 P.promisifyAll(request);
 exec = P.promisify(exec);
-mkdirp = P.promisify(mkdirp);
 ncp = P.promisify(ncp);
 rimraf = P.promisify(rimraf);
 recursiveReaddir = P.promisify(recursiveReaddir);

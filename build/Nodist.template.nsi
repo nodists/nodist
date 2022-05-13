@@ -6,9 +6,9 @@
 
 !define APP_NAME "Nodist"
 !define COMP_NAME "Nodist"
-!define WEB_SITE "https://github.com/marcelklehr/nodist"
+!define WEB_SITE "https://github.com/nullivex/nodist"
 !define VERSION ";VERSION;.0"
-!define COPYRIGHT "Marcel Klehr  ? 2015"
+!define COPYRIGHT "Marcel Klehr  ? 2022"
 !define DESCRIPTION "Node Version Manager for Windows"
 !define LICENSE_TXT "staging\LICENSE.txt"
 !define INSTALLER_NAME "NodistSetup.exe"

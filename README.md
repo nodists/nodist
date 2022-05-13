@@ -4,7 +4,7 @@
 
 A node.js and npm version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
-*Heads up! Nodist v0.8 is here! Nodist supports cmd, Powershell, Git bash and Cygwin!*
+*Heads up! Nodist v0.10 is here! Nodist supports cmd, Powershell, Git bash and Cygwin!*
 
 ```
 C:\> nodist + 5
@@ -252,7 +252,7 @@ To see all debug messages, set the DEBUG env var before running nodist or node a
 
 ## Testing
 
-The default test suite can be ran using npm
+The default test suite can be run using npm
 
 ```
 $ npm test
@@ -282,7 +282,7 @@ Afterwards you'll find the installer in `build/out/NodistSetup.exe` and fully pr
 The chocolatey package will be in `build/out/package`, you can run `cpack` and `cpush --source https://chocolatey.org/` inside that directory (if you are a registered maintainer).
 
 ## Legal
-Copyright (c) 2012-2019 by Marcel Klehr, Bryan Tong (@nullivex)  
+Copyright (c) 2012-2022 by Marcel Klehr, Bryan Tong (@nullivex)  
 MIT License
 
 ## Changelog
@@ -290,8 +290,11 @@ MIT License
 v0.10.0
 * Fix building shims (for newer go versions) by using go modules
 * Fix getting latest npm version
-* Use last available x86 version for building
+* Use last available x86 version for building (first node 18 versions are not available for x86) 
 * Resolve symlinks for npm's node_modules
+* Use octokit lib to access github, add NODIST_GITHUB_TOKEN env variable PR#246
+* Fix `npm ls` to resolve correct version PR#240
+* Fix tests
 
 v0.9.1
 * Fix issue with deprecated call to Tar.Extract in the NPM handler.

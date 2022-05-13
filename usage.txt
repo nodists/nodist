@@ -70,3 +70,6 @@ Env vars:
                                     from (e.g. http://mymirror.com/dist).
 
     NODIST_IOJS_MIRROR              Set an alternative URL to fetch io.js exectuables from.
+
+    NODIST_GITHUB_TOKEN             Set a github token to bypass API rate limit exceeded errors
+                                    Checkout https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
