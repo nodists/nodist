@@ -124,7 +124,7 @@ async function resolveLinkedWorkspaces(dirPath) {
 
 //start by clearing the staging and tmp folders
 P.all([
-  rimraf(outDir)
+  rimraf(outDir),
 ])
   .then(function(){
     return P.all([
@@ -186,19 +186,19 @@ P.all([
   })
   .then(function(){
     console.log('Finished copying static files');
-    
+
     console.log('Compiling node shim');
     return exec('go build -o "'+stagingBin +'/node.exe" shim-node.go', { cwd: goSrcDir });
   })
   .then(function(){
     console.log('Done compiling node shim');
-    
+
     console.log('Compiling shim');
     return exec('go build -o "'+stagingBin +'/npm.exe" shim-npm.go', { cwd: goSrcDir });
   })
   .then(function() {
     console.log('Done compiling npm shim');
-    
+
     console.log('Determining latest version of node');
     return request.getAsync({
       url: 'https://nodejs.org/dist/index.json',
@@ -364,7 +364,7 @@ P.all([
      , helper.copyFileAsync(nodistDir+'/build/chocolateyuninstall.ps1', packageDir+'/tools/chocolateyuninstall.ps1')
      , helper.copyFileAsync(nodistDir+'/LICENSE.txt', packageDir+'/tools/LICENSE.txt')
      , helper.copyFileAsync(nodistDir+'/build/VERIFICATION.txt', packageDir+'/tools/VERIFICATION.txt')
-     , helper.copyFileAsync(outDir+'/NodistSetup.exe', packageDir+'/tools/Installer.exe')
+     , helper.copyFileAsync(outDir+'/NodistSetup-'+pkg.version+'.exe', packageDir+'/tools/Installer.exe')
      ]);
    })
   .then(() => {

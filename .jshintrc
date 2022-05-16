@@ -2,7 +2,7 @@
   "asi": false,
   "laxcomma": true,
   "node": true,
-  "esnext": true,
+  "esversion": 8,
   "bitwise": false,
   "eqeqeq": true,
   "immed": true,
