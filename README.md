@@ -271,6 +271,7 @@ Testing also accepts env variables for using a mirror to download from, as well 
 Building nodist requires
  * [go](https://golang.org) for compiling the shim
  * [NSIS](http://nsis.sourceforge.net/Main_Page) v3 for compiling the installer
+   * NSIS plugins will be automatically downloaded before build: 
    * NSIS Plugin: [AccessControl](http://nsis.sourceforge.net/AccessControl_plug-in)
    * NSIS Plugin: [EnVar Plugin](https://nsis.sourceforge.io/EnVar_plug-in)
  * node.js for running the build script
@@ -298,6 +299,7 @@ v0.10.0
 * Resolve symlinks for npm's node_modules to support npm >= 8
 * Use octokit lib to access github, add NODIST_GITHUB_TOKEN env variable PR#246
 * Fix `npm ls` to resolve correct version PR#240
+* Minimal node version to build nodist raised to 12
 
 v0.9.1
 * Fix issue with deprecated call to Tar.Extract in the NPM handler.

@@ -330,6 +330,10 @@ P.all([
       pkg.version
     );
     nsiTemplate = nsiTemplate.replace(
+      ';PLUGINS_PATH;',
+      path.join(nodistDir, 'build', 'nsis_plugins'),
+    );
+    nsiTemplate = nsiTemplate.replace(
       ';ADD_FILES;',
       installManifest.join('\n')
     );

@@ -18,6 +18,7 @@
 !define REG_ROOT "HKLM"
 !define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${MAIN_APP_EXE}"
 !define UNINSTALL_PATH "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
+!define PLUGINS_PATH ";PLUGINS_PATH;"
 
 ; HKLM (all users) vs HKCU (current user) defines
 !define ENV_HKLM 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
@@ -26,6 +27,13 @@
 ; make some includes
 !include "WinMessages.nsh"
 !include "x64.nsh"
+
+; add additional plugins
+!addplugindir /x86-ansi "${PLUGINS_PATH}\Plugins\x86-ansi"
+!addplugindir /x86-ansi "${PLUGINS_PATH}\Plugins\i386-ansi"
+!addplugindir /x86-unicode "${PLUGINS_PATH}\Plugins\x86-unicode"
+!addplugindir /x86-unicode "${PLUGINS_PATH}\Plugins\i386-unicode"
+!addplugindir /amd64-unicode "${PLUGINS_PATH}\Plugins\amd64-unicode"
 
 ######################################################################
 
@@ -48,9 +56,6 @@ InstallDirRegKey "${REG_ROOT}" "${REG_APP_PATH}" ""
 InstallDir "$PROGRAMFILES\Nodist"
 
 ######################################################################
-
-!include "StrFunc.nsh"
-${StrRep}
 
 !include "MUI.nsh"
 

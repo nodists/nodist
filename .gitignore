@@ -8,3 +8,4 @@ node_modules
 /pkg
 /test/tmp
 /node.exe
+/build/nsis_plugins

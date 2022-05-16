@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^18.12.0",
+    "axios": "^0.27.2",
     "bluebird": "^3.7.2",
     "debug": "^4.3.4",
     "mkdirp": "^1.0.4",
@@ -34,12 +35,14 @@
     "tar": "^6.1.11"
   },
   "devDependencies": {
+    "node-unzip-2": "^0.2.8",
     "vows": "^0.8.3"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">= 12"
   },
   "scripts": {
+    "prebuild": "node ./build/fetch_nsis_plugins.mjs",
     "build": "node ./build/build.js",
     "test": "node ./node_modules/vows/bin/vows --spec ./test/*-test.js"
   },

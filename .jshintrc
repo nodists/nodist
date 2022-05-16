@@ -2,7 +2,7 @@
   "asi": false,
   "laxcomma": true,
   "node": true,
-  "esversion": 8,
+  "esversion": 11,
   "bitwise": false,
   "eqeqeq": true,
   "immed": true,
@@ -15,5 +15,6 @@
   "unused": true,
   "trailing": true,
   "smarttabs": true,
-  "strict": true
+  "strict": true,
+  "module": true
 }
