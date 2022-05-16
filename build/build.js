@@ -193,11 +193,17 @@ P.all([
   .then(function(){
     console.log('Done compiling node shim');
 
-    console.log('Compiling shim');
+    console.log('Compiling npm shim');
     return exec('go build -o "'+stagingBin +'/npm.exe" shim-npm.go', { cwd: goSrcDir });
   })
-  .then(function() {
+  .then(function(){
     console.log('Done compiling npm shim');
+
+    console.log('Compiling npx shim');
+    return exec('go build -o "'+stagingBin +'/npx.exe" shim-npx.go', { cwd: goSrcDir });
+  })
+  .then(function() {
+    console.log('Done compiling npx shim');
 
     console.log('Determining latest version of node');
     return request.getAsync({
