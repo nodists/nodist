@@ -1,9 +1,0 @@
-VERIFICATION
-Verification is intended to assist the Chocolatey moderators and community
-in verifying that this package's contents are trustworthy.
-
-This package is published by the Nodist project itself which is sponsored
-by the Nullivex Software Consortium (NSC). This package consists of only one
-binary which is named Installer.exe this binary is an NSIS installer that
-extracts the Nodist system and sets the required environment variables to get
-Nodist operational.

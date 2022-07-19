@@ -1,4 +1,0 @@
-#!/bin/sh
-
-DIR=$(echo "$NODIST_PREFIX" | sed -e 's,\\,/,g')
-"$DIR/node.exe" "$DIR/cli" "$@"
