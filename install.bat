@@ -1,105 +1,196 @@
+:: NOTE
+:: Don't use !,()...etc in echo
+:: Set text editor charset to DOS (CP437)
+
 @echo off
-@chcp 65001
+@chcp 437
 @cls
 
-goto description
+@REM ??
+set bat="%~dpnx0"
+@REM ???
+set src="%~dp0%install"
+@REM ??????
+set dst="%ProgramFiles(x86)%\Nodist\"
+@REM ???????
+set loc="%~dp0"
+@REM ????????
+set cmd="%loc:"=%nodistx"
 
-  æœ€æ–°ã«ã—ãŸ
-  ãƒãƒ¼ã‚¸ãƒ§ãƒ³å¤ã™ãŽã¦ã‚¨ãƒ©ãƒ¼ã¨æŒ™å‹•ãŠã‹ã—ã‹ã£ãŸã®ã§
-  ãƒãƒ¼ã‚¸ãƒ§ãƒ³æ–°ã—ãã—ã™ãŽã¦ã‚‚ã‚¨ãƒ©ãƒ¼ãªã‚‹ã®ã§ä¸€è¦§åŒ–
+@REM ????
+set nodistx="%loc:"=%nodistx-0.0.1.tgz"
+@REM ??????
+set installer="%loc:"=%nodist-0.9.1.exe"
+@REM ????????
+set uninstaller="%dst:"=%uninstall.exe"
 
-  Package   ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ãŸç‰ˆ   å…ƒã€…ç‰ˆ  æœ€æ–°ç‰ˆ
-  @octokit/rest      18.12.0  18.12.0  19.0.3 å‚ç…§ã‚¨ãƒ©ãƒ¼ï¼ˆglobalThisï¼‰
-  mkdirp               0.5.1    0.5.6   1.0.4 å¼•æ•°ã‚¨ãƒ©ãƒ¼ï¼ˆinvalid options argument.ï¼‰
-  semver               7.3.7    6.3.0   7.3.7 è§£æžã‚¨ãƒ©ãƒ¼ï¼ˆTAR.GZ å†…ã«ãƒãƒ¼ã‚¸ãƒ§ãƒ³ä»¥å¤–ãŒå«ã¾ã‚Œã‚‹ã¨ä¾‹å¤–åã„ã¦ãŸï¼‰
-  tar                 6.1.11   4.4.19  6.1.11 å±•é–‹ã‚¨ãƒ©ãƒ¼ï¼ˆhttps://codeload.github.com/npm/tar.gz/v8.12.1ï¼‰
-  ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆå•é¡Œç„¡
-  rimraf               3.0.2    2.7.1   3.0.2
-  ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆå¿…è¦ç„¡ï¼ˆæœ€åˆã‹ã‚‰æœ€æ–°ç‰ˆï¼‰
-  bluebird             3.7.2    3.7.2   3.7.2
-  debug                4.3.4    4.3.4   4.3.4
-  ncp                  2.0.0    2.0.0   2.0.0
-  progress             2.0.3    2.0.3   2.0.3
-  promisepipe          3.0.0    3.0.0   3.0.0
-  recursive-readdir    2.2.2    2.2.2   2.2.2
-  request             2.88.2   2.88.2  2.88.2
+@REM ????????
+setlocal enabledelayedexpansion
+@REM ???????????
+set key="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"
 
-:description
+set system-color=color 07
+set error-color=color  4E
+set end-color=color    2F
 
-@REM è¨­å®š
+if "%1" == "nodistx" (
 
-  set src=install
-  set dst=%PROGRAMFILES(X86)%\Nodist\
-  set key=
+    title ready
 
-@REM åˆæœŸ
+     echo.
+     echo   ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+     echo   º Install new nodist packages {octocat...etc}               º
+     echo   ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+     echo. 
+             cd %dst%
+             npm install
+     echo.
+             if !ErrorLevel! == 0 (
+     echo    OK
+             ) else (
+     echo    FAIL
+             )
 
-  if "%1" == "init" (
+    title Install nodistx
 
-@REM ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã¨ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
-    cd "%dst%"
-    npm install
+     echo.
+     echo   ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+     echo   º Pack the source nodistx to npm packages                   º
+     echo   ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+     echo. 
 
-@REM NODE 11.13.0ã¨NPM 6.9.0ã¯å¤ã™ãŽ
-    nodist global 18.4.0
-    nodist npm global 8.12.1
-    
-@REM å‹•ä½œã«å¿…è¦ãªãƒ‘ãƒƒã‚±ãƒ¼ã‚¸è¶³ã‚Šãªã„ï¼ˆnode_modulesï¼‰
-    nodist npm global 6.9.0
-    nodist global 11.13.0
+             npm pack "file:%cmd:"=%" >nul
+     echo.
+             if !ErrorLevel! == 0 (
+     echo    OK
+             ) else (
+     echo    FAIL
+             )
+     echo.
+     echo   ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+     echo   º Install nodistx packages                                  º
+     echo   ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+     echo. 
+             npm install %nodistx% --force --global >nul
+             where nodistx
+     echo.
+             if !ErrorLevel! == 0 (
+     echo    OK
+             ) else (
+     echo    FAIL
+             )
+     echo.
+     echo   ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+     echo   º Let's try                                                 º
+     echo   ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+     echo. 
+             nodistx
+) else (
 
-@REM NODE 11.13.0ã¨NPM 6.9.0ã«åˆ‡ã‚Šæ›¿ãˆã¦è¿½åŠ åˆ†ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
-    cd "%dst%npmv\8.12.1" 
-    npm install
+    title Install nodist
 
-@REM NODE 18.4.0ã¨NPM 8.12.1ã«åˆ‡ã‚Šæ›¿ãˆã¾ã™ï¼ˆã“ã‚Œã§ã‚ˆã†ã‚„ãå‹•ä½œã—ã¾ã™
-    nodist global 18.4.0
-    nodist npm global 8.12.1
+     echo.
+     echo   ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+     echo   º Debug                                                     º
+     echo   ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+     echo. 
 
-@REM ãƒãƒ¼ã‚¸ãƒ§ãƒ³ç¢ºèª
-    node -v
-    npm -v
- 
-@REM çµ‚äº†
-    pause
-  )
+     echo    dst         =%dst%
+     echo    loc         =%loc%
+     echo    src         =%src%
+     echo    bat         =%bat%
+     echo    command     =%command%
+     echo    installer   =%installer%
+     echo    uninstaller =%uninstaller%
+     echo    key         =%key%
 
-@REM èµ·å‹•ï¼ˆwait-proessã®ãŸã‚
-  openfiles >nul 2>&1 
-  if %errorlevel% == 1 (
-    Powershell Start-Process -FilePath "%0" -Verb RunAs -ArgumentList %~dp0
-    exit
-  ) else (
-@REM å¤‰æ›´ï¼ˆC:\Windows\System32ãŒãƒ‡ãƒ•ã‚©
-    cd %1 && if exist "%dst%uninstall.exe" ( call:uninstall )
-@REM å°Žå…¥ï¼ˆNODISTæœ¬ä½“ã¨NODE 18.4.0ã¨NPM 8.12.1
-    call:install && start /wait install.bat init
-    exit
-  )
+     echo.
+     echo   ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+     echo   º Run this batch as admin because wait for uninstall        º
+     echo   ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+     echo.
+            openfiles >nul 2>&1
+            if !ErrorLevel! == 1 (
+                @REM run this batch as admin C:\Windows?System32, so pass the working folder as an argument.
+                Powershell Start-Process -FilePath "%bat%" -Verb RunAs -ArgumentList "%loc"
+                exit
+            ) else (
+     echo    OK
+            )
 
-:uninstall
-@REM å‰Šé™¤ï¼ˆstart /waitã—ã¦ã‚‚NSISã¯Un_aã£ã¦åˆ¥ãƒ—ãƒ­ã‚»ã‚¹ã«ã‚¢ãƒ³ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã‚’å¼•ãç¶™ãã‹ã‚‰ç›£è¦–ã§ããšå¾…æ©Ÿä¸å¯èƒ½
-   start "" "%dst%uninstall.exe"
-@REM å¾…æ©Ÿï¼ˆhttps://stackoverflow.com/questions/31684620/wait-for-uninstaller-to-finish-using-batch
-   powershell while (! (get-process Un_a -ea 0)) { sleep 1 }; wait-process Un_a
-@REM å‰Šé™¤ï¼ˆã‚¢ãƒ³ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ã¦ã‚‚æ®‹å­˜ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ãŒãŸãã•ã‚“
-   rmdir /s /q "%dst%" 2>nul
- exit /b 0
+     echo.
+     echo   ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+     echo   º Let's uninstall the already exists Nodist                 º
+     echo   ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+     echo.
+    :cntd
+            if exist %uninstaller% (
+              set wait=`powershell "(get-process Un_* -ea 0).Count"`
+              for /f "usebackq delims=" %%i in (!wait!) do set count=%%i
+              if !count! gtr 0 (
+     echo    Plaese exit !count! installers, nay key to continue
+                pause >nul
+goto cntd
+              ) else (
+                @REM https://stackoverflow.com/questions/31684620/wait-for-uninstaller-to-finish-using-batch
+                @REM start /wait uninstall.exe, NSIS takes over the uninstallation to Un_a process,
+                @REM so it cannot be monitored and cannot wait
+                start "" %uninstaller%
+                @REM admin rights just for this one code (wait-process)
+                @REM Escaping special characters (!) using the caret character (enabledelayedexpansion)
+                powershell "while (^!($proc = (get-process Un_A -ea SilentlyContinue))){ sleep 1 };"^
+                           "$handle = $proc.handle; wait-process Un_A;"^
+                           "exit $proc.exitcode;"
 
-:install
-@REM èµ·å‹•
-   start /wait "" nodist-0.9.1.exe
-@REM é‚ªé­”ï¼ˆæŒ™å‹•ãŒå¤‰ã‚ã£ã¦ã‚¨ãƒ©ãƒ¼åãã®ã§
-   del /q "%dst%package-lock.json"
-@REM å…¥åŠ›ï¼ˆå€‹äººã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³ã¯ãƒ¬ãƒ¼ãƒˆåˆ¶é™å›žé¿ã®ãŸã‚
-:loop
-   start https://github.com/settings/tokens
-   set /p "key=NODIST_GITHUB_TOKEN="=%*
-   if "%key%" == "" (
-     goto loop
-   )
-@REM è¨­å®šï¼ˆã—ãªã„ã¨ã™ããƒ¬ãƒ¼ãƒˆåˆ¶é™ã²ã£ã‹ã‹ã£ã¦ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã§ããš
-   setx NODIST_GITHUB_TOKEN "%key: =%"
-@REM æ›´æ–°ï¼ˆhttps://github.com/fealebenpae/nodist/tree/use-octokit
-   xcopy /e /y "%src%" "%dst%"
- exit /b 0
+                if !ErrorLevel! == 0 (
+     echo    OK
+                  @REM uninstalling doesn't completely delete it
+                  @REM so delete it rmdir
+                  rmdir /s /q %dst% 2>nul
+                ) else (
+     echo    FAIL
+                )
+              )
+            ) else (
+     echo    Nodist Not installed yet
+            )
+
+     echo.
+     echo   ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+     echo   º Let's install Nodist                                      º
+     echo   ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+     echo.
+            start /wait "" %installer%
+
+            if !ErrorLevel! == 0 (
+              @REM dependencies are disturbing in 2016
+              del /q "%dst:"=%package-lock.json"
+              @REM update nodist
+              xcopy /e /y /q %src% %dst% > nul
+              @REM install
+
+     echo    OK
+     echo.
+     echo   ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+     echo   º Set GitHub Token                                          º
+     echo   ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+     echo.
+              @REM bypass GitHub API rate limit
+              start "" "https://github.com/settings/tokens"
+              @REM https://stackoverflow.com/questions/51180725/batch-file-choice-indent-prompt
+    :loop
+              for /f %%a in ('"prompt $H&for %%b in (1) do rem"') do set "BS=%%a"
+              set /p "key=X!BS!   NODIST_GITHUB_TOKEN="
+              if "%key%" == "" (
+goto loop
+              )
+              @REM remove whitespace of token
+              setx NODIST_GITHUB_TOKEN "%key: =%" > nul 2>&1
+
+              @REM install nodistx
+              start "" %bat% nodistx
+            ) else (
+     echo    FAIL
+            )
+)
+

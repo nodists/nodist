@@ -1,0 +1,11 @@
+{
+  "name"        : "nodistx-installer",
+  "author"      : "Yusuke Sano <wafflook@gmail.coms>",
+  "homepage"    : "https://twitter.com/wafflook",
+  "license"     : "MIT",
+  "version"     : "0.0.1",
+  "description" : "A node.js and npm version manager（revived nodist）",
+  "scripts": {
+    "preinstall": "install.bat"
+  }
+}
