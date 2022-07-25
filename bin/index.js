@@ -6,6 +6,7 @@ const FileSystem = require('fs');
 const Spawn = require('await-spawn');
 const Inquirer = require('inquirer');
 const Commander = require('commander');
+const Package = require('../package.json');
 const InquirerRelease = require('./inquirer.js');
 const installation = 'C:\\Program Files (x86)\\Nodist\\'
 const version = {
@@ -50,44 +51,44 @@ const option = {
   Wafflook
 )=>{
   Wafflook.init();
-  // インストール済
-  Commander.command('list').alias('ls')
-       .description('list all installed node versions')
-            .action(async()=>{Wafflook.talk((await List.installed()))})
   // インストール未
   Commander.command('dist').alias('ds')
-       .description('list all available node versions')
+       .description('list all available versions')
             .action(async()=>{Wafflook.talk((await List.available()))})
+  // インストール済
+  Commander.command('list').alias('ls')
+       .description('list all installed versions')
+            .action(async()=>{Wafflook.talk((await List.installed()))})
   // バージョン追加
-  Commander.command('add')
-       .description('download the selected version')
+  Commander.command('add').alias('+')
+       .description('donwload a specific version')
             .action(async()=>{Wafflook.talk((await List.published())).then(async(selected)=>{
                   await Nodist.add(selected.talk.version,selected.talk.npm)
                 })
             })
   // バージョン削除
-  Commander.command('del')
-       .description('remove the selected version')
+  Commander.command('remmove').alias('-')
+       .description('remove a specific version')
             .action(async()=>{Wafflook.talk((await List.published())).then(async(selected)=>{
                   await Nodist.del(selected.talk.version,selected.talk.npm)
                 })
             })
-  // バージョン確認
-  Commander.command('chk')
-       .description('check the using version')
-            .action(async()=>{Wafflook.talk(
-              [(await List.published(version.use.nodejs))])
-            })
   // バージョン指定
-  Commander.command('use')
-       .description('use the version')
+  Commander.command('use').alias('*')
+       .description('use the specified version')
             .action(async()=>{Wafflook.talk((await List.installed())).then(async(selected)=>{
                   await Nodist.use(selected.talk.version,selected.talk.npm)
                 })
             })
+  // バージョン確認
+  Commander.command('check')
+       .description('check the version currently using')
+            .action(async()=>{Wafflook.talk(
+              [(await List.published(version.use.nodejs))])
+            })
   // インストール
-  Commander.command('install',{isDefault:true})
-       .description('install the selected version')
+  Commander.command('install',{isDefault:true}).alias('i')
+       .description('install specified version becomes the default use')
             .action(async ()=>{
                 Wafflook.talk((await List.published())).then(async (selected)=>{
                   if(selected.installed){
@@ -106,11 +107,11 @@ const option = {
             })
   // アンインストール
   Commander.command('uninstall')
-       .description('uninstall the selected version')
+       .description('uninstall selected version')
             .action(async ()=>{
                 Wafflook.talk((await List.installed())).then(async (selected)=>{
                   if (selected.talk.version == version.default.nodejs || selected.talk.npm == version.default.npm) {
-                    console.log('this version is do not uninstall because default use')
+                    console.log('this version is do not uninstall because nodistx use')
                   }
                   if (selected.talk.version == version.use.nodejs || selected.talk.npm == version.use.npm) {
                     console.log('this version is currently in use')
@@ -168,7 +169,9 @@ const option = {
   },
 },{
   init:function(){
-    Commander.name('nodistx')
+             Commander.name(Package.name)
+                   .version(Package.version)
+               .description(Package.description)
     Inquirer.registerPrompt('release', InquirerRelease)
   },
   talk:function(list){
