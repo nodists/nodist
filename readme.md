@@ -1,4 +1,4 @@
-wafflook/[nodistx](https://github.com/wafflook/nodist)
+wafflook/[nodistx](https://github.com/wafflook/nodistx)
 
 ## 🐿️ Nodistx
 A fork of Nodist, but `nodistx` allows you to quickly install and use different versions of node via the table-prompt.
