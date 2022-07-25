@@ -1,0 +1,46 @@
+{
+  "name": "nodist",
+  "version": "0.9.1",
+  "description": "Natural node version manager for windows",
+  "keywords": [
+    "node",
+    "version",
+    "manager",
+    "build",
+    "windows"
+  ],
+  "author": "Marcel Klehr <mklehr@gmx.net>",
+  "homepage": "https://github.com/marcelklehr/nodist",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marcelklehr/nodist/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/marcelklehr/nodist.git"
+  },
+  "dependencies": {
+    "@octokit/rest": "^18.12.0",
+    "mkdirp": "^0.5.6",
+    "bluebird": "^3.7.2",
+    "debug": "^4.3.4",
+    "ncp": "^2.0.0",
+    "progress": "2.0.3",
+    "promisepipe": "^3.0.0",
+    "recursive-readdir": "^2.2.2",
+    "request": "^2.88.2",
+    "rimraf": "^3.0.2",
+    "semver": "^7.3.7",
+    "tar": "^6.1.11"
+  },
+  "devDependencies": {
+    "vows": "^0.8.3"
+  },
+  "scripts": {
+    "build": "node ./build/build.js",
+    "test": "node ./node_modules/vows/bin/vows --spec ./test/*-test.js"
+  },
+  "os": [
+    "win32"
+  ]
+}

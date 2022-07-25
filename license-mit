@@ -1,21 +1,37 @@
 MIT License
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠈⢛⡿⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢨⣿⠃⠠⢿⣥⠀⢩⡿⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⠀⠙⠛⠀⠀
+⠀⣠⡾⠃⠀⣀⣀⣀⠀⣀⠀⢀⠀⢀⠀⣠⣤⡄⠀⢷⡄⠀⠀
+⣰⠟⠀⠀⠀⠉⠉⠉⠐⣧⣴⠿⣤⡼⠀⠀⠀⠀⠀⠀⢻⣆⠀
+⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⣿
+⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⣿⠃
+⢹⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⡟⠀
+⠀⠙⢷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡶⠋⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀
+ポイント
+　私は責任を負わない（バグがあったり
+　私は賠償を受けない（不法行為に悪用されても
+　誰でもライセンスを記載してくれたら自由に使用できる
 
-Copyright (c) 2022 Yusuke Sano <wafflook@gmail.com>
+著作権者
+　Copyright (C) 2022~ Yusuke Sano <wafflook@gmail.com>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+許諾内容
+　本ソフトウェア及び関連文書ファイル（以下「ソフトウェア」）のコピーを
+　入手する全ての人に対して無制限に扱うことを無償で許可します。これには
+　本ソフトウェアの使用や複製、変更や結合、公開や配布、再実施許諾および
+　または販売する権利、さらにソフトウェアを提供された相手に同様の権利を
+　許諾する権利も無制限に含まれます。
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+許諾条件
+　上記の著作権表示および本許諾表示を、ソフトウェアのすべての複製または
+　重要な部分に記載するものとします。
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+免責条項
+　本ソフトウェアは「現状のまま」で提供され、明示的又は暗黙的かに拘らず
+　いかなる種類の保証もされません。ここでの保証とは、商品性、特定用途の
+　適合性、権利の侵害がないことなども無制限に含まれます。
+　作成者または著作者は、契約行為、不正行為、又はそれ以外の行為において
+　本ソフトウェアに起因又は関連し、或いは使用またはその他の扱いによって
+　生じる全ての請求や損害、その他の義務について何らの責任も負いません。

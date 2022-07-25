@@ -1,11 +1,27 @@
 {
-  "name"        : "nodistx-installer",
-  "author"      : "Yusuke Sano <wafflook@gmail.coms>",
-  "homepage"    : "https://twitter.com/wafflook",
-  "license"     : "MIT",
-  "version"     : "0.0.1",
-  "description" : "A node.js and npm version manager（revived nodist）",
+  "name": "nodistx",
+  "author": "Yusuke Sano <wafflook@gmail.com>",
+  "homepage": "https://twitter.com/wafflook",
+  "license": "MIT",
+  "version": "0.0.1",
+  "description": "A node.js and npm version manager（Nodist will not die. It will revive）",
+  "bin": {
+    "nodistx": "bin/index.js"
+  },
+  "files": [
+    "bin/index.js",
+    "bin/inquirer.js"
+  ],
   "scripts": {
-    "preinstall": "install.bat"
+    "start": "node bin/index.js"
+  },
+  "dependencies": {
+    "await-spawn": "^4.0.2",
+    "chalk": "^4.1.2",
+    "cli-cursor": "^3.1.0",
+    "cli-table": "^0.3.11",
+    "commander": "^9.4.0",
+    "inquirer": "^8.2.3",
+    "semver": "^7.3.7"
   }
 }
