@@ -58,4 +58,8 @@ C:\Users\wafflook>nodistx raw `run 11.13.0 -- -v`
 ## 😊 Thanks
 fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)  
 SBoudrias/[Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)  
+<<<<<<< HEAD
 nullivex/[Nodist](https://github.com/nullivex/nodist)  
+=======
+nullivex/[Nodist](https://github.com/nullivex/nodist)  
+>>>>>>> 1b58c395a64bf4cd099bab0315607853550b8f20
