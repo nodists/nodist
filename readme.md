@@ -1,3 +1,5 @@
+wafflook/[nodistx](https://github.com/wafflook/nodist)
+
 ## 🐿️ Nodistx
 A fork of Nodist, but `nodistx` allows you to quickly install and use different versions of node via the table-prompt.
 ## 📡 Installing and Updating
@@ -57,5 +59,6 @@ C:\Users\wafflook>nodistx raw `run 11.13.0 -- -v`
 ```
 ## 😊 Thanks
 fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)  
+freMea/[Template.bat](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)  
 SBoudrias/[Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)  
 nullivex/[Nodist](https://github.com/nullivex/nodist)  
