@@ -3,7 +3,7 @@ wafflook/[nodistx](https://github.com/wafflook/nodistx)
 ## 🐿️ Nodistx
 A fork of Nodist, but `nodistx` allows you to quickly install and use different versions of node via the table-prompt.
 ## 📡 Installing and Updating
-To install or update nvm, you should run the install script. To do that, you may run the install.bat.
+To install or update nodistx, you should run the install script. To do that, you may run the install.bat.
 ## 📦 Example
 ```bat
 C:\Users\wafflook>nodistx
