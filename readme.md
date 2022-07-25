@@ -1,8 +1,8 @@
-## 🐿️ Nodistx
+## Nodistx
 A fork of Nodist, but `nodistx` allows you to quickly install and use different versions of node via the table-prompt.
-## 📡 Installing and Updating
+## Installing and Updating
 To install or update nvm, you should run the install script. To do that, you may run the install.bat.
-## 📦 Example
+## Example
 ```bat
 C:\Users\wafflook>nodistx
 Press <enter> to select <Up and Down> to move rows <Left and Right> to move pages
@@ -48,10 +48,14 @@ C:\Users\wafflook>nodistx chk
 ┌────────────┬─────────┬───────┬────────────┬────────┬────────┬─────────┬─────────┬─────┬──────────┬───────────┐
 │ 1-1 of 1   │ version │ npm   │ v8         │ uv     │ zlib   │ openssl │ modules │ lts │ security │ installed │
 ├────────────┼─────────┼───────┼────────────┼────────┼────────┼─────────┼─────────┼─────┼──────────┼───────────┤
-│ 2017-09-26 │ 8.6.0   │ 5.3.0 │ 6.0.287.53 │ 1.14.1 │ 1.2.11 │         │ 57      │     │          │           │
+│ 2017-09-26 │ 8.6.0   │ 5.3.0 │ 6.0.287.53 │ 1.14.1 │ 1.2.11 │         │ 57      │     │          │ YES       │
 └────────────┴─────────┴───────┴────────────┴────────┴────────┴─────────┴─────────┴─────┴──────────┴───────────┘
 ```
 ```bat
 C:\Users\wafflook>nodistx raw `run 11.13.0 -- -v`
 0.9.1
 ```
+## 😊 Thanks
+fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)  
+SBoudrias/[Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)  
+nullivex/[Nodist](https://github.com/nullivex/nodist)  
