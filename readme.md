@@ -57,6 +57,28 @@ C:\Users\wafflook>nodistx chk
 C:\Users\wafflook>nodistx raw `run 11.13.0 -- -v`
 0.9.1
 ```
+```bat
+C:\Users\wafflook>nodistx --help
+Usage: nodistx [options] [command]
+
+A node.js and npm version manager（Nodist will not die. It will revive）
+
+Options:
+  -V, --version   output the version number
+  -h, --help      display help for command
+
+Commands:
+  dist|ds         list all available versions
+  list|ls         list all installed versions
+  add|+           donwload a specific version
+  remmove|-       remove a specific version
+  use|*           use the specified version
+  check           check the version currently using
+  install|i       install specified version becomes the default use
+  uninstall       uninstall selected version
+  raw|r <string>  Run <string> on nodist
+  help [command]  display help for command
+```
 ## 😊 Thanks
 fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)  
 freMea/[Template.bat](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)  
