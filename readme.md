@@ -73,7 +73,7 @@ Commands:
   add|+           donwload a specific version
   remmove|-       remove a specific version
   use|*           use the specified version
-  check           check the version currently using
+  check|c         check the version currently using
   install|i       install specified version becomes the default use
   uninstall       uninstall selected version
   raw|r <string>  Run <string> on nodist
