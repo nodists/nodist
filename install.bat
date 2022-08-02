@@ -5,6 +5,7 @@
       rem   Make sure that the path is relative to the location of the batch in admin
        cd   /d "%~dp0"
       rem   allows to call variables with ! instead of % to get the expected values inside the blocks (if, for, etc.)
+     
  setlocal   enableextensions 
  setlocal   enabledelayedexpansion
 
@@ -61,15 +62,15 @@
       set   end-color=color    2F
 
       rem   self
+      set   slf="%~f0"
       set   loc="%~dp0"
       set   bat="%~dpnx0"
-      set   slf="install.bat"
       rem   nodist update packages
       set   src="%~dp0%\nodist\update"
       set   dst="%ProgramFiles(x86)%\Nodist\"
       rem   nodist installer and uninstaller location
       set   ust="%dst:"=%uninstall.exe"   
-      set   ist="%loc:"=%nodist/nodist-0.9.1.exe"
+      set   ist="%loc:"=%nodist\nodist-0.9.1.exe"
       rem   nodist use octokit rest client for github authentication
       set   NODIST_GITHUB_TOKEN=!key!
 
@@ -80,45 +81,53 @@
 if "%1" == "nodistx" (
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-     echo   บ Create package.tgz from source code of nodistx            บ
+     echo   บ Create package.tgz                                        บ
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
-     echo.
+     echo.  
       rem   https://docs.npmjs.com/cli/v6/commands/npm-pack
             npm pack . >nul
      echo.
-            if !ErrorLevel! == 0 (
-     echo    OK
-          ) else (
-     echo    FAIL
-          )
-     echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-     echo   บ Install package.tgz                                       บ
+     echo   บ Install nodistx command                                   บ
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.
       rem   C:\Program Files (x86)\Nodist\bin\nodistx.cmd
-            npm uninstall nodistx --global
             npm install "nodistx-0.0.1.tgz" --force --global >nul
-            where nodistx
      echo.
-            if !ErrorLevel! == 0 (
-     echo    OK
-          ) else (
-     echo    FAIL
-          )
+     echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+     echo   บ Replace Array.flat to lodash.flatten for nodejs 10.x      บ
+     echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+     echo.
+      rem   Always move the package to the command folder where you need it before installing it.
+      rem   don't run npm install "%loc:"=%package\inquirer-8.2.4.tgz"
+      rem   --prefix "%dst:"=%bin\node_modules\nodistx"
+      rem   because duplicate node_modules
+            cd "%dst:"=%bin\node_modules\nodistx"
+            npm install "package\ansi-styles-4.3.0.tgz"
+            npm install "package\chalk-4.1.2.tgz"
+            npm install "package\commander-9.4.0.tgz"
+            npm install "package\inquirer-8.2.4.tgz"
+            npm install "package\ora-5.4.1.tgz"
+            npm install "package\wrap-ansi-7.0.0.tgz"
+            cd %loc%
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
      echo   บ Default nodejs 11.13.0 npm 6.7.0                          บ
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.
       rem   reinstall the match version consistently in versions.json
-            nodist npm global 6.7.0 && nodist npm remove 6.9.0
+            nodist npm global 6.7.0
+            nodist npm remove 6.9.0
      echo.
-            if !ErrorLevel! == 0 (
-     echo    OK
-          ) else (
-     echo    FAIL
-          )
+     echo.
+     echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+     echo   บ Supported nodejs a more than 6.2.0 npm 3.8.6              บ
+     echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+     echo.
+       rem  Because the console won't accept cursor key input.
+            nodist global 6.2.0
+            nodist npm global 3.8.6
+     echo.
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
      echo   บ Run nodistx                                               บ
@@ -126,7 +135,8 @@ if "%1" == "nodistx" (
      echo.
       rem   https://stackoverflow.com/questions/8261156/start-new-cmd-exe-and-not-inherit-environment
       rem   download list of nodejs and npm versions.json && nodistx
-            nodist dist >nul 2>&1 && nodistx
+            nodist dist >nul 2>&1
+            nodistx
 ) else (
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
@@ -165,7 +175,11 @@ goto cntd
                            "$handle = $proc.handle; wait-process Un_A;"^
                            "exit $proc.exitcode;"
                 if !ErrorLevel! == 0 (
-                  rmdir /s /q %dst%
+                  rmdir /s /q !dst!
+                if not !ErrorLevel! == 0 (
+     echo    FAIL
+                  pause
+                )
      echo    OK
               ) else (
      echo    FAIL
@@ -173,6 +187,12 @@ goto cntd
               )
           ) else (
      echo    Nodist not installed yet
+             where npm
+                if not !ErrorLevel! == 0 (
+     echo   if node is already installed on your machine, uninstall it first.
+            pause
+            exit
+                )
           )
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
@@ -198,6 +218,10 @@ goto cntd
             if !ErrorLevel! == 0 (
               del /q "!dst:"=!package-lock.json"
               xcopy /e /y /q !src! !dst!
+              if not !ErrorLevel! == 0 (
+     echo       FAIL
+                pause && exit
+              )
      echo    OK
             ) else (
      echo    FAIL

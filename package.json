@@ -9,8 +9,8 @@
     "nodistx"     : "bin/index.js"
   },
   "files": [
-    "bin/index.js",
-    "bin/inquirer.js"
+    "bin",
+    "package"
   ],
   "scripts": {
     "start"       : "node bin/index.js"

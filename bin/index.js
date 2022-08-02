@@ -1,29 +1,66 @@
 #!/usr/bin/env node
 
-const Http = require('https');
+const Fs = require('fs');
+const Path = require('path');
+const Http = require('http');
 const Semver = require('semver');
-const FileSystem = require('fs');
-const Spawn = require('await-spawn');
 const Inquirer = require('inquirer');
 const Commander = require('commander');
+const AwaitSpawn = require('await-spawn');
 const Package = require('../package.json');
 const InquirerRelease = require('./inquirer.js');
 const installation = 'C:\\Program Files (x86)\\Nodist\\'
+
+function GetSymlinks (folder, list = []){
+  
+  function link(from,to,type){
+    Fs.unlinkSync(from);
+    Fs.symlinkSync(to, from, type)
+  }
+
+  Fs.readdirSync(folder).forEach((name)=>{
+    var path = Path.join(folder,name),
+        stat = Fs.lstatSync(path)
+    if (stat.isSymbolicLink(path)) {
+        link(path,Fs.readlinkSync(path),stat.isFile() ? 'file' : 'dir')
+        list.push(path);
+    } else if (stat.isDirectory()) {
+        GetSymlinks(path, list);
+    } 
+  })
+  return list;
+}
+
+const util = {
+  isAdmin:()=>{
+    return new Promise((resolve,reject)=>{
+      var cmd = 'net session'
+      require('child_process').exec(cmd, (err, stdout, stderr) => {
+        if(err == null){
+          resolve()
+        }else{
+          reject()
+        }
+      })
+    })
+  }
+}
+
 const version = {
   default:{
-    nodejs: '11.13.0',
-    npm: '6.7.0'
+    nodejs: '6.2.0',
+    npm: '3.8.6'
   },
   get use(){
     return {
-      nodejs:FileSystem.readFileSync(`${installation}.node-version-global`).toString().substr(1),
-      npm:FileSystem.readFileSync(`${installation}.npm-version-global`).toString()
+      nodejs:Fs.readFileSync(`${installation}.node-version-global`).toString().substr(1),
+      npm:Fs.readFileSync(`${installation}.npm-version-global`).toString()
     }
   },
   get list(){
     return {
-      nodejs:FileSystem.readdirSync (`${installation}\\v-x64`),
-      npm:FileSystem.readdirSync (`${installation}\\npmv`)
+      nodejs:Fs.readdirSync (`${installation}\\v-x64`),
+      npm:Fs.readdirSync (`${installation}\\npmv`)
     }
   },
   get json(){
@@ -37,7 +74,7 @@ const version = {
   }
 };
 const option = {
-  get spawn(){
+  get AwaitSpawn(){
     return {
       stdio: ['inherit', 'inherit', 'inherit'],
       shell: true
@@ -45,104 +82,127 @@ const option = {
   }
 };
 
-(async(
+((
   List,
   Nodist,
   Wafflook
 )=>{
+
   Wafflook.init();
+  // リセット
+  Commander.command('reset')
+       .description('list all available versions')
+            .action(()=>{Nodist.use(version.default.nodejs,version.default.npm)})
   // インストール未
   Commander.command('dist').alias('ds')
        .description('list all available versions')
-            .action(async()=>{Wafflook.talk((await List.available()))})
+            .action(()=>{Wafflook.talk((List.available()))})
   // インストール済
   Commander.command('list').alias('ls')
        .description('list all installed versions')
-            .action(async()=>{Wafflook.talk((await List.installed()))})
+            .action(()=>{Wafflook.talk((List.installed()))})
   // バージョン追加
   Commander.command('add').alias('+')
        .description('donwload a specific version')
-            .action(async()=>{Wafflook.talk((await List.published())).then(async(selected)=>{
-                  await Nodist.add(selected.talk.version,selected.talk.npm)
+            .action(()=>{Wafflook.talk((List.published())).then((selected)=>{
+                  Nodist.add(selected.talk.version,selected.talk.npm)
                 })
             })
   // バージョン削除
   Commander.command('remmove').alias('-')
        .description('remove a specific version')
-            .action(async()=>{Wafflook.talk((await List.published())).then(async(selected)=>{
-                  await Nodist.del(selected.talk.version,selected.talk.npm)
+            .action(()=>{Wafflook.talk((List.published())).then((selected)=>{
+                  Nodist.del(selected.talk.version,selected.talk.npm)
                 })
             })
   // バージョン指定
   Commander.command('use').alias('*')
        .description('use the specified version')
-            .action(async()=>{Wafflook.talk((await List.installed())).then(async(selected)=>{
-                  await Nodist.use(selected.talk.version,selected.talk.npm)
+            .action(()=>{Wafflook.talk((List.installed())).then((selected)=>{
+                  Nodist.use(selected.talk.version,selected.talk.npm)
                 })
             })
   // バージョン確認
-  Commander.command('check')
+  Commander.command('check').alias('c')
        .description('check the version currently using')
-            .action(async()=>{Wafflook.talk(
-              [(await List.published(version.use.nodejs))])
+            .action(()=>{Wafflook.talk(
+              [(List.published(version.use.nodejs))])
             })
+
+
+            
+
   // インストール
   Commander.command('install',{isDefault:true}).alias('i')
        .description('install specified version becomes the default use')
-            .action(async ()=>{
-                Wafflook.talk((await List.published())).then(async (selected)=>{
+            .action(()=>{
+              util.isAdmin().then(()=>{
+              Wafflook.talk((List.published())).then((selected)=>{
                   if(selected.installed){
                     Nodist.use(selected.talk.version,selected.talk.npm)
                   }else{
-                    // インストール前に戻す
-                    await Nodist.use(version.default.nodejs,version.default.npm)
-                    // ダウンロード並びに展開する
-                    await Nodist.add(selected.talk.version,selected.talk.npm)
-                    // 足りないパッケージをインストール（node_mdoules）
-                    await Nodist.fil(selected.talk.npm)
-                    // 足りないパッケージをインストール後にグローバルに設定する
-                    await Nodist.use(selected.talk.version,selected.talk.npm)
+                    if(Semver.lt(selected.talk.npm,version.default.npm)){
+                      console.log('oops...nodistx supports node 6.0.0 and above')
+                      console.log('if you want to install less than node 6.0.0, please use nodist')
+                    }else{
+                      console.dir(selected)
+                        // 足りないパッケージをインストール後にグローバルに設定する
+                        Nodist.use(selected.talk.version,selected.talk.npm).then(()=>{
+                          // ワークスペースにリンクされたシンボリックファイルを修復する
+                          GetSymlinks(version.folder.npm + `\\${selected.talk.npm}\\node_modules`)
+                        })
+                    }
                   }
                 })
+              }).catch(()=>{
+                AwaitSpawn(`PowerShell Start-Process nodistx.cmd -Verb RunAs`,option.AwaitSpawn)
+              })
+
+
             })
+
+
   // アンインストール
   Commander.command('uninstall')
        .description('uninstall selected version')
-            .action(async ()=>{
-                Wafflook.talk((await List.installed())).then(async (selected)=>{
-                  if (selected.talk.version == version.default.nodejs || selected.talk.npm == version.default.npm) {
-                    console.log('this version is do not uninstall because nodistx use')
-                  }
-                  if (selected.talk.version == version.use.nodejs || selected.talk.npm == version.use.npm) {
-                    console.log('this version is currently in use')
-                  }
-                  await Nodist.del(selected.talk.version,selected.talk.npm)
-                })
-            })
+            .action(()=>{
+              Wafflook.talk((List.installed())).then((selected)=>{
+                if (selected.talk.version == version.default.nodejs || selected.talk.npm == version.default.npm) {
+                  console.log('this version is do not uninstall because nodistx use')
+                }
+                if (selected.talk.version == version.use.nodejs || selected.talk.npm == version.use.npm) {
+                  console.log('this version is currently in use')
+                }
+                Nodist.del(selected.talk.version,selected.talk.npm)
+              })
+           })
   // コマンドの実行
-  Commander.command('raw')
+  Commander.command('raw').alias('r')
           .argument('<string>')
+       .description('Run <string> on nodist')
             .action((aruguments)=>{
                Nodist.exe(aruguments)
             })
+
   Commander.parse(
     process.argv
   )
+
 })({
-  available:async function(){
-    return (await this.published()).filter(release=>release.installed == false)
+  available:function(){
+    return (this.published()).filter(release=>release.installed == false)
   },
-  installed:async function(){
-    return (await this.published()).filter(release=>release.installed)
+  installed:function(){
+    return (this.published()).filter(release=>release.installed)
   },
-  published:async function(nodejs){
-    const release = (version.json).map(info=>({...info,version:Semver.clean(info.version)})),
-        installed = version.list.nodejs.reduce((all,version)=>({...all,[version]:true}),{})
+  published: function(nodejs){
+    const release = (version.json).map(info=>(Object.assign({},info,{version:Semver.clean(info.version)}))),
+        installed = version.list.nodejs.reduce((all,version)=>(Object.assign(all,{[version]:true})),{})
           release.forEach((info)=>{
             info.installed = info.version in installed ? true : false
           })
        if(nodejs){
-         return release.reduce((all,info)=>({...all,[info.version]:info}),{})[nodejs]
+         return release.reduce((all,info)=>(Object.assign({},all,{[info.version]:info})),{})[nodejs]
        }else{
          return release.sort((a, b) => {
            if (Semver.gt(a.version, b.version)) return -1
@@ -153,19 +213,19 @@ const option = {
   }
 },{
   fil:function(npm){
-    return Spawn(`cd "${version.folder.npm}\\${npm}" && npm install "${version.folder.npm}\\${npm}"`, option.spawn)
+    return AwaitSpawn(`cd "${version.folder.npm}\\${npm}" && npm install "${version.folder.npm}\\${npm}"`, option.AwaitSpawn)
   },
   use:function(node,npm) {
-    return Spawn(`nodist global "${node}" && nodist npm global "${npm}"`, option.spawn)
+    return AwaitSpawn(`nodist global "${node}" && nodist npm global "${npm}"`, option.AwaitSpawn)
   },
   del:function(node,npm){
-    return Spawn(`nodist remove "${node}" && nodist npm remove "${npm}"`, option.spawn)
+    return AwaitSpawn(`nodist remove "${node}" && nodist npm remove "${npm}"`, option.AwaitSpawn)
   },
   add:function(node,npm){
-    return Spawn(`nodist add "${node}" && nodist npm add "${npm}"`, option.spawn)
+    return AwaitSpawn(`nodist add "${node}" && nodist npm add "${npm}"`, option.AwaitSpawn)
   },
   exe:function(arg){
-    return Spawn(`nodist ${arg}`, option.spawn)
+    return AwaitSpawn(`nodist ${arg}`, option.AwaitSpawn)
   },
 },{
   init:function(){
@@ -194,6 +254,4 @@ const option = {
   // ⢹⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⡟⠀
   // ⠀⠙⢷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡶⠋⠀⠀
   // ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀
-}).catch(
-  console.error
-)
+})

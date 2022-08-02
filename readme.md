@@ -73,14 +73,14 @@ Commands:
   add|+           donwload a specific version
   remmove|-       remove a specific version
   use|*           use the specified version
-  check|c         check the version currently using
+  check           check the version currently using
   install|i       install specified version becomes the default use
   uninstall       uninstall selected version
   raw|r <string>  Run <string> on nodist
   help [command]  display help for command
 ```
 ## 😊 Thanks
-fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)  
-freMea/[Template.bat](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)  
-SBoudrias/[Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)  
-nullivex/[Nodist](https://github.com/nullivex/nodist)  
+fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)
+freMea/[Template.bat](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)
+SBoudrias/[Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)
+nullivex/[Nodist](https://github.com/nullivex/nodist)
