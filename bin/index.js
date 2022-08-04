@@ -11,51 +11,8 @@ const Package = require('../package.json');
 const InquirerRelease = require('./inquirer.js');
 const installation = 'C:\\Program Files (x86)\\Nodist'
 
-function CreateSymlinks (folder, list = []){
-  
-  function link(from,to,type){
-    Fs.unlinkSync(from);
-    Fs.symlinkSync(to, from, type)
-  }
-
-  Fs.readdirSync(folder).forEach((name)=>{
-    var path = Path.join(folder,name),
-        stat = Fs.lstatSync(path)
-    if (stat.isSymbolicLink(path)) {
-        link(path,Fs.readlinkSync(path),stat.isFile() ? 'file' : 'dir')
-        list.push(path);
-    } else if (stat.isDirectory()) {
-      CreateSymlinks(path, list);
-    } 
-  })
-  return list;
-}
-
-const util = {
-  runas:()=>{
-    return new Promise((resolve,reject)=>{
-      var cmd = 'net session'
-      require('child_process').exec(cmd, (err, stdout, stderr) => {
-        if(err){
-          AwaitSpawn(`PowerShell Start-Process nodistx.cmd -ArgumentList ${process.argv.slice(2).join(',')} -Verb RunAs`,option.AwaitSpawn)
-        }else{
-          resolve()
-        }
-      })
-    })
-  },
-  isAdmin:()=>{
-    return new Promise((resolve,reject)=>{
-      var cmd = 'net session'
-      require('child_process').exec(cmd, (err, stdout, stderr) => {
-        if(err == null){
-          resolve()
-        }else{
-          reject()
-        }
-      })
-    })
-  }
+function node_modules(version){
+  return `C:\\Program Files (x86)\\Nodist\\npmv\\${version}\\node_modules`
 }
 
 const version = {
@@ -74,9 +31,6 @@ const version = {
       nodejs:Fs.readdirSync (`${installation}\\v-x64`),
       npm:Fs.readdirSync (`${installation}\\npmv`)
     }
-  },
-  get json(){
-    return require(`${installation}\\versions.json`)
   },
   get folder(){
     return {
@@ -100,7 +54,11 @@ const option = {
   Wafflook
 )=>{
 
-  Wafflook.init();
+  Nodist.lnk('8.15.0')
+
+
+  
+  Wafflook.init()
 
   // 一覧
   Commander.command('ls').alias('list')
@@ -129,20 +87,16 @@ const option = {
             .action(from=>Wafflook.prompt({ls:List.installed,ds:List.available,rs:List.nodejsorg}[from || 'ds'].call(List)).then(specific=>{
                 Nodist.use(specific.talk.version,specific.talk.npm).then(none=>{
                   if(specific.talk.installed == false){
-                    CreateSymlinks(version.folder.npm + `\\${specific.talk.npm}\\node_modules`)
+                    Nodist.lnk(specific.talk.npm)
+
                   }
                 })
               })
             )
 
-    var cmd
-    if(/use|add/.test((cmd = Commander._findCommand(process.argv[2] || '')) && cmd.alias())){
-        util.isAdmin().then(none=>{
-          Commander.parse(process.argv)
-        }).catch(none=>AwaitSpawn(`PowerShell Start-Process nodistx.cmd -ArgumentList ${process.argv.slice(2).join(',')} -Verb RunAs`,option.AwaitSpawn))
-    }else{
-      Commander.parse(process.argv)
-    }
+    Wafflook.runas(['use','add']).catch(()=>{
+      console.dir('for symbolic links')
+    })
 
 })({
   available:function(){
@@ -152,21 +106,28 @@ const option = {
     return (this.nodejsorg()).filter(list=>list.installed)
   },
   nodejsorg:function(nodejs){
-    const support = (version.json).map(info=>(Object.assign({},info,{version:Semver.clean(info.version)}))).filter(package=>Semver.gte(package.version,version.default.nodejs)),
-        installed = version.list.nodejs.reduce((all,version)=>(Object.assign(all,{[version]:true})),{})
-          support.forEach((info)=>{
-            info.installed = info.version in installed ? true : false
-          })
-       if(nodejs){
-         return support.reduce((all,info)=>(Object.assign({},all,{[info.version]:info})),{})[nodejs]
-       }else{
-         return support.sort((a, b) => {
-           if (Semver.gt(a.version, b.version)) return -1
-           if (Semver.lt(a.version, b.version)) return +1
-           return 0
-         })
-       }
-  }
+
+
+
+
+    var json = require(`${installation}\\versions.json`),
+       clean = json.map(info=>(Object.assign({},info,{version:Semver.clean(info.version)}))),
+     support = json.filter(package=>Semver.gte(package.version,version.default.nodejs)),
+   installed = version.list.nodejs.reduce((all,version)=>(Object.assign(all,{[version]:true})),{})
+
+   support.forEach((info)=>{
+     info.installed = info.version in installed ? true : false
+   })
+     if(nodejs){
+       return support.reduce((all,info)=>(Object.assign({},all,{[info.version]:info})),{})[nodejs]
+     }else{
+       return support.sort((a, b) => {
+         if (Semver.gt(a.version, b.version)) return -1
+         if (Semver.lt(a.version, b.version)) return +1
+         return 0
+       })
+     }
+    }
 },{
   use:function(node,npm) {
     return AwaitSpawn(`nodist global "${node}" && nodist npm global "${npm}"`, option.AwaitSpawn)
@@ -176,19 +137,66 @@ const option = {
   },
   add:function(node,npm){
     return AwaitSpawn(`nodist add "${node}" && nodist npm add "${npm}"`, option.AwaitSpawn)
+  },
+  lnk(version){
+
+    (symbolic=>{
+      console.log('created symbolic links')
+      console.dir(
+        symbolic(node_modules(version))
+      )
+    })(
+      recursive = (folder, list = []) => {
+  
+        function link(from,to,type){
+          Fs.unlinkSync(from);
+          Fs.symlinkSync(to, from, type)
+        }
+      
+        Fs.readdirSync(folder).forEach((name)=>{
+          var path = Path.join(folder,name),
+              stat = Fs.lstatSync(path)
+          if (stat.isSymbolicLink(path)) {
+              link(path,Fs.readlinkSync(path),stat.isFile() ? 'file' : 'dir')
+              list.push(path)
+          } else if (stat.isDirectory()) {
+            recursive(path, list)
+          } 
+        })
+        return list
+      }
+    )
+    
   }
 },{
+  runas:(arr)=>{
+    if(new RegExp(arr.join('|')).test((cmd = Commander._findCommand(process.argv[2] || '')) && cmd.alias())){
+      return new Promise((resolve,reject)=>{
+        var cmd = 'net session'
+        var arg = process.argv.slice(2).join(',')
+        require('child_process').exec(cmd, (err, stdout, stderr) => {
+          if(err){
+            AwaitSpawn(`PowerShell Start-Process nodistx.cmd -ArgumentList ${arg} -Verb RunAs >nul`,option.AwaitSpawn).catch(reject)
+          }else{
+            Commander.parse(process.argv)
+          }
+        })
+      })
+    }else{
+      Commander.parse(process.argv)
+    }
+  },
   init:function(){
-             Commander.name(Package.name)
-                   .version(Package.version)
-               .description(Package.description)
-    Inquirer.registerPrompt('release', InquirerRelease)
+    Commander.name(Package.name)
+          .version(Package.version)
+      .description(Package.description)
+      Inquirer.registerPrompt('table', InquirerRelease)
   },
   prompt:function(list){
     return Inquirer.prompt([
       {
         name: 'talk',
-        type: 'release',
+        type: 'table',
         rows: list
       }
     ])
