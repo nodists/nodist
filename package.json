@@ -16,6 +16,7 @@
     "start"       : "node bin/index.js"
   },
   "dependencies": {
+    "lodash"      : "^4.17.21",
     "await-spawn" : "^4.0.2",
     "chalk"       : "^4.1.2",
     "cli-cursor"  : "^3.1.0",

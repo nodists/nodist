@@ -126,7 +126,7 @@ if "%1" == "nodistx" (
      echo.
        rem  Because the console won't accept cursor key input.
             nodist global 6.2.0
-            nodist npm global 3.8.6
+            nodist npm global 3.8.9
      echo.
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
@@ -188,7 +188,7 @@ goto cntd
           ) else (
      echo    Nodist not installed yet
              where npm
-                if not !ErrorLevel! == 0 (
+                if !ErrorLevel! == 0 (
      echo   if node is already installed on your machine, uninstall it first.
             pause
             exit

@@ -153,6 +153,8 @@ class TableBase extends Base {
          ' to move rows ',
          Chalk.cyan.bold("<Left and Right>"),
          ' to move pages ',
+         Chalk.cyan.bold("<CTRL + C>"),
+         ' to exit prompt ',
          '\n',
          table.toString()
       ].join('')

@@ -2,51 +2,15 @@
 
 const Fs = require('fs');
 const Path = require('path');
-const Http = require('http');
-const Semver = require('semver');
+
+const _ = require('lodash');
 const Inquirer = require('inquirer');
 const Commander = require('commander');
-const AwaitSpawn = require('await-spawn');
-const Package = require('../package.json');
 const InquirerRelease = require('./inquirer.js');
-const installation = 'C:\\Program Files (x86)\\Nodist'
 
-function node_modules(version){
-  return `C:\\Program Files (x86)\\Nodist\\npmv\\${version}\\node_modules`
-}
-
-const version = {
-  default:{
-    nodejs: '6.2.0',
-    npm: '3.8.6'
-  },
-  get use(){
-    return {
-      nodejs:Semver.clean(Fs.readFileSync(`${installation}\\.node-version-global`).toString()),
-      npm:Fs.readFileSync(`${installation}\\.npm-version-global`).toString()
-    }
-  },
-  get list(){
-    return {
-      nodejs:Fs.readdirSync (`${installation}\\v-x64`),
-      npm:Fs.readdirSync (`${installation}\\npmv`)
-    }
-  },
-  get folder(){
-    return {
-      nodejs:`${installation}\\v-x64`,
-      npm:`${installation}\\npmv`
-    }
-  }
-};
-const option = {
-  get AwaitSpawn(){
-    return {
-      stdio: ['inherit', 'inherit', 'inherit'],
-      shell: true
-    }
-  }
-};
+const Util = require('./nodist/util.js');
+const Package = require('../package.json');
+const { Spawn } = require('./nodist/process.js');
 
 ((
   List,
@@ -54,97 +18,151 @@ const option = {
   Wafflook
 )=>{
 
-  Nodist.lnk('8.15.0')
-
-
-  
   Wafflook.init()
-
-  // 一覧
-  Commander.command('ls').alias('list')
-       .description('Get a list of installed nodejs version')
-            .action(none=>Wafflook.prompt(List.installed()))
-  Commander.command('ds').alias('dist')
-       .description('Get a list of all available nodejs versions')
-            .action(none=>Wafflook.prompt(List.available()))
-  Commander.command('rs').alias('rist')
-       .description('Get a list of https://nodejs.org/dist/index.json')
-            .action(none=>Wafflook.prompt(List.nodejsorg()))
-  // 確認
-  Commander.command('by')
-       .description('Check a nodejs of currently version using by nodist')
-            .action(none=>Wafflook.prompt([List.nodejsorg(version.use.nodejs)]))
+  
   // 操作
-  Commander.command('+').alias('add')
+  Commander.command('by').alias('@')
+       .description('Check a nodejs of currently version')
+            .action(none=>Wafflook.table([List.nodejsorg(Util.use.nodejs)]))
+  Commander.command('add').alias('+')
        .description('Install a nodejs of specific version')
-            .action(none=>Wafflook.prompt(List.available()).then(specific=>Nodist.add(specific.talk.version,specific.talk.npm)))
-  Commander.command('-').alias('remove')
+            .action(none=>Wafflook.table(List.available()).then(specific=>Nodist.add(specific.talk.version,specific.talk.npm)))
+  Commander.command('remove').alias('-')
        .description('Uninstall a nodejs of specific version')
-            .action(none=>Wafflook.prompt(List.installed()).then(specific=>Nodist.del(specific.prompt.version,specific.prompt.npm)))
-  Commander.command('!').alias('use')
+            .action(none=>{
+              var list = List.installed()
+              _.remove(list,{version:Util.use.nodejs})
+              Wafflook.table(list).then(specific=>{
+                if(Util.can.remove.npm.dependencies){
+                  Nodist.del(specific.talk.version,specific.talk.npm)
+                }else{
+                  Wafflook.confirm('npm is used by other installed nodejs, do you want to remove nodejs only?').then(yes=>{
+                    Nodist.del(specific.talk.version,yes ? undefined : specific.talk.npm)
+                  })
+                }
+              })
+            })
+  Commander.command('use').alias(';')
        .description('Use a nodejs of specific version after automatically install')
        .addArgument(new Commander.Argument('[from]', 'from the ls|ds|rs versions').choices(['ls', 'ds', 'rs']))
-            .action(from=>Wafflook.prompt({ls:List.installed,ds:List.available,rs:List.nodejsorg}[from || 'ds'].call(List)).then(specific=>{
+            .action(from=>{
+              Wafflook.table({ls:List.installed,ds:List.available,rs:List.nodejsorg}[from || 'ds'].call(List)).then(specific=>{
                 Nodist.use(specific.talk.version,specific.talk.npm).then(none=>{
-                  if(specific.talk.installed == false){
-                    Nodist.lnk(specific.talk.npm)
-
-                  }
+                  Nodist.lnk(specific.talk.npm)
                 })
               })
-            )
-
-    Wafflook.runas(['use','add']).catch(()=>{
-      console.dir('for symbolic links')
-    })
+            })
+  // 一覧
+  Commander.command('list').alias('ls')
+       .description('Get a list of installed nodejs version')
+            .action(none=>Wafflook.table(List.installed()))
+  Commander.command('dist').alias('ds')
+       .description('Get a list of all available nodejs versions')
+            .action(none=>Wafflook.table(List.available()))
+  Commander.command('rist').alias('rs')
+       .description('Get a list of https://nodejs.org/dist/index.json')
+            .action(none=>Wafflook.table(List.nodejsorg()))
+  // 実行
+  Wafflook.runas(['use','add']).then((must)=>{
+    if(must){
+      Commander.parse(process.argv)
+    }
+  })
 
 })({
+  /**
+   * 新しいバージョンをインストールする時に使う
+   * @returns 未インストールのバージョンの一覧
+   */
   available:function(){
     return (this.nodejsorg()).filter(list=>list.installed == false)
   },
+  /**
+   * インストール済バージョンを利用する時に使う
+   * @returns インストール済のバージョンの一覧
+   */
   installed:function(){
     return (this.nodejsorg()).filter(list=>list.installed)
   },
+  /**
+   * このコマンドが一発
+   * インストール済から利用設定
+   * 未インストールから利用設定（自動インストール）
+   * 両方どちらからでもインストールされてなければ自動でインストールされバージョンが切り替わる
+   * @param {String} nodejs 特定のバージョンの情報だけ欲しいなら
+   * @returns Array<Object>
+   */
   nodejsorg:function(nodejs){
-
-
-
-
-    var json = require(`${installation}\\versions.json`),
-       clean = json.map(info=>(Object.assign({},info,{version:Semver.clean(info.version)}))),
-     support = json.filter(package=>Semver.gte(package.version,version.default.nodejs)),
-   installed = version.list.nodejs.reduce((all,version)=>(Object.assign(all,{[version]:true})),{})
-
-   support.forEach((info)=>{
-     info.installed = info.version in installed ? true : false
-   })
+    var list = Util.nodejsorg.json
      if(nodejs){
-       return support.reduce((all,info)=>(Object.assign({},all,{[info.version]:info})),{})[nodejs]
+       return list.reduce((all,info)=>(Object.assign({},all,{[info.version]:info})),{})[nodejs]
      }else{
-       return support.sort((a, b) => {
-         if (Semver.gt(a.version, b.version)) return -1
-         if (Semver.lt(a.version, b.version)) return +1
-         return 0
-       })
+       return list
      }
     }
 },{
+  /**
+   * バージョンを切り替える
+   * バージョンが未インストールなら自動インストール後に切り替える
+   */
   use:function(node,npm) {
-    return AwaitSpawn(`nodist global "${node}" && nodist npm global "${npm}"`, option.AwaitSpawn)
+    return Spawn([
+      `nodist global ${node}`,
+      `nodist npm global "${npm}"`
+    ].join(' && '))
   },
-  del:function(node,npm){
-    return AwaitSpawn(`nodist remove "${node}" && nodist npm remove "${npm}"`, option.AwaitSpawn)
-  },
+  /**
+   * バージョンをインストールする
+   */
   add:function(node,npm){
-    return AwaitSpawn(`nodist add "${node}" && nodist npm add "${npm}"`, option.AwaitSpawn)
+    return Spawn([
+      `nodist add ${node}`,
+      `nodist npm add "${npm}"`
+    ].join(' && '))
   },
+  /**
+   * バージョンをアンインストールする
+   */
+   del:function(node,npm){
+    return Spawn([
+      node && `nodist remove ${node}`,
+      npm && `nodist npm remove ${npm}`
+    ].filter(Boolean).join(' && '))
+  },
+  /**
+   * 要注意
+   * バージョン18系NPMはシンボリックリンクを含む
+   * https://codeload.github.com/npm/cli/tar.gz/v8.13.2（例）
+   * ファイルの種類は.symlinkで0byte解凍ソフトを変えても同じ（7Zip）
+   * 以前までnpm intallして手動で追加していたがリンクを張り直すよう修正
+   * 抽出リンク
+   * 　 dir /AL /S
+   * 対応ファイル
+   * node_modules
+   * │  libnpmaccess
+   * │  libnpmdiff
+   * │  libnpmexec
+   * │  libnpmfund
+   * │  libnpmhook
+   * │  libnpmorg
+   * │  libnpmpack
+   * │  libnpmpublish
+   * │  libnpmsearch
+   * │  libnpmteam
+   * │  libnpmversion
+   * │
+   * └─@npmcli
+   *         arborist
+   */
   lnk(version){
 
     (symbolic=>{
-      console.log('created symbolic links')
-      console.dir(
-        symbolic(node_modules(version))
-      )
+      var files = symbolic(Util.installed.npm[version].node_modules),
+         linked = files.length > 0
+         if (linked){
+           console.log('created symbolic links')
+           console.dir(files)
+         }
     })(
       recursive = (folder, list = []) => {
   
@@ -169,34 +187,55 @@ const option = {
     
   }
 },{
+  /**
+   * コマンドプロンプト再起動（管理者として）
+   * シンボリックリンクを解凍するのと張り直す処理（作り直しのため
+   * @param {Array<String>} arr 管理者権限が必要なコマンドを配列で渡します
+   * @returns {Promise}
+   */
   runas:(arr)=>{
-    if(new RegExp(arr.join('|')).test((cmd = Commander._findCommand(process.argv[2] || '')) && cmd.alias())){
+    var cmd = ''
+    if(new RegExp(arr.join('|')).test((cmd = Commander._findCommand(process.argv[2] || '')) && cmd.name())){
       return new Promise((resolve,reject)=>{
-        var cmd = 'net session'
-        var arg = process.argv.slice(2).join(',')
-        require('child_process').exec(cmd, (err, stdout, stderr) => {
+        var argv = process.argv.slice(2).join(',')
+        require('child_process').exec('net session', (err, stdout, stderr) => {
           if(err){
-            AwaitSpawn(`PowerShell Start-Process nodistx.cmd -ArgumentList ${arg} -Verb RunAs >nul`,option.AwaitSpawn).catch(reject)
+            Spawn(`PowerShell Start-Process -FilePath nodistx.cmd -ArgumentList ${argv} -Verb RunAs >nul`)
+            .catch(none=>{
+              console.log('Requires permissions to re-create symbolic links in npm.tar.gz/node_modules/workspaces')
+            })
           }else{
-            Commander.parse(process.argv)
+            resolve(true)
           }
         })
       })
     }else{
-      Commander.parse(process.argv)
+      return new Promise((resolve,reject)=>{
+        resolve(true)
+      })
     }
   },
-  init:function(){
+  init:function(){    
     Commander.name(Package.name)
           .version(Package.version)
       .description(Package.description)
       Inquirer.registerPrompt('table', InquirerRelease)
   },
-  prompt:function(list){
+  confirm:function(message){
     return Inquirer.prompt([
       {
-        name: 'talk',
+        message: message,
+        type: 'confirm',
+        default: true,
+        name: 'qus'
+      }
+    ])
+  },
+  table:function(list){
+    return Inquirer.prompt([
+      {
         type: 'table',
+        name: 'talk',
         rows: list
       }
     ])
