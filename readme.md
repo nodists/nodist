@@ -69,7 +69,7 @@ C:>nodist global 6.1.0 && nodist npm global 3.8.6
 ```bat
 C:>nodistx use ls インストールしたバージョンを選択できます
 C:>nodistx use ds インストールしてないバージョンを選択できます（自動インストールされます）
-C:>nodistx use rs インストールしてないしたに関わらず全バージョンを選択できます（https://nodejs.org/dist/index.json）
+C:>nodistx use rs インストールしてないしたを一覧化して全バージョンを選択できます（https://nodejs.org/dist/index.json）
 ```
 
 ```bat
