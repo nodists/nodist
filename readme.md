@@ -9,10 +9,13 @@ NODEJS/NPMをセットでインストールできる最速のマネージャだ�
 ## 📡 Installing and Updating
 install.batを走らせるだけ。自由が手に入る。コマンドを打つ手間から解放されV8やセキュリティリリースだったか調べる手間もない。fork元のnodistに足りない機能が追加されている。
 
+| 解決 | https://github.com/nullivex/nodist/pulls              |
+|:--:|:--------------------------------------------------------|
+| 〇 | Use the Octokit client for GitHub                       |
+
 | 解決 | https://github.com/nullivex/nodist/issues/            |
 |:--:|:--------------------------------------------------------|
 |	〇 | 无法安装 npm                                             |
-| 〇 | Use the Octokit client for GitHub                       |
 |	〇 | Invalid Version: libnpmversion-v3.0.1.                  |
 |	〇 | npm 8.6, authorization header missing & symlink problem |
 
