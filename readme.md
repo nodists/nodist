@@ -36,7 +36,8 @@ C:>nodist global 6.1.0 && nodist npm global 3.8.6
      <tr>
        <td>ansi-styles-4.3.0.tgz</td>
        <td rowspan='6'>
-         <p>lfkdsj</p>
+         <p>v6.2.0で走らせるために依存パッケージにポリフィルを適用した。</p>
+         <p>v6.2.0で動作するか修正した場合に確認の必要あり。</p>
          <ul>
            <li>nodejs v6.2.0</li>
            <li>npm 3.8.9</li>
