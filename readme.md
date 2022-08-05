@@ -34,7 +34,7 @@ C:>nodist global 6.1.0 && nodist npm global 3.8.6
 
 ## 📦 Example
 
-dfsalkdsjajklsdf
+`nodistx use`だけ
 
 ```bat
 C:>nodistx
