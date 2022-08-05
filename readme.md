@@ -56,8 +56,6 @@ Commands:
   dist|ds         Get a list of all available nodejs versions
   rist|rs         Get a list of https://nodejs.org/dist/index.json
   help [command]  display help for command
-
-C:\Users\wafflook>
 ```
 ## 😊 Thanks
 * fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)
