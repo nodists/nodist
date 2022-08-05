@@ -95,7 +95,7 @@ if "%1" == "nodistx" (
             npm install "nodistx-0.0.1.tgz" --force --global >nul
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-     echo   บ Replace Array.flat to lodash.flatten for nodejs 10.x      บ
+     echo   บ Update nodist dependencies for support nodejs v6.2.0      บ
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.
       rem   Always move the package to the command folder where you need it before installing it.

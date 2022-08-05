@@ -1,5 +1,7 @@
 const Fs = require('fs');
 const Path = require('path');
+
+const _ = require('lodash');
 const Semver = require('semver');
 
 (()=>{
@@ -29,11 +31,11 @@ const Semver = require('semver');
           return{
             get remove(){
               return{
-                get npm(){
+                npm(version){
                   return{
                     get dependencies(){
-                      return _(nodist.nodejsorg.json)
-                      .filter('installed').groupBy('npm').value().length == 0
+
+                      return _(nodist.nodejsorg.json).filter('installed').groupBy('npm').get(version).length == 1
                     }
                   }
                 }

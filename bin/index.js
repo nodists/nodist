@@ -33,7 +33,7 @@ const { Spawn } = require('./nodist/process.js');
               var list = List.installed()
               _.remove(list,{version:Util.use.nodejs})
               Wafflook.table(list).then(specific=>{
-                if(Util.can.remove.npm.dependencies){
+                if(Util.can.remove.npm(specific.talk.npm).dependencies){
                   Nodist.del(specific.talk.version,specific.talk.npm)
                 }else{
                   Wafflook.confirm('npm is used by other installed nodejs, do you want to remove nodejs only?').then(yes=>{
@@ -46,7 +46,7 @@ const { Spawn } = require('./nodist/process.js');
        .description('Use a nodejs of specific version after automatically install')
        .addArgument(new Commander.Argument('[from]', 'from the ls|ds|rs versions').choices(['ls', 'ds', 'rs']))
             .action(from=>{
-              Wafflook.table({ls:List.installed,ds:List.available,rs:List.nodejsorg}[from || 'ds'].call(List)).then(specific=>{
+              Wafflook.table({ls:List.installed,ds:List.available,rs:List.nodejsorg}[from || 'rs'].call(List)).then(specific=>{
                 Nodist.use(specific.talk.version,specific.talk.npm).then(none=>{
                   Nodist.lnk(specific.talk.npm)
                 })
@@ -160,7 +160,7 @@ const { Spawn } = require('./nodist/process.js');
       var files = symbolic(Util.installed.npm[version].node_modules),
          linked = files.length > 0
          if (linked){
-           console.log('created symbolic links')
+           console.log('\ncreated symbolic links')
            console.dir(files)
          }
     })(
