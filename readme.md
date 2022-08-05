@@ -16,7 +16,7 @@ install.batを走らせるだけ。自由が手に入る。コマンドを打つ
 |	〇 | Invalid Version: libnpmversion-v3.0.1.                  |
 |	〇 | npm 8.6, authorization header missing & symlink problem |
 
-
+fsda
 
 
 
