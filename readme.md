@@ -31,7 +31,7 @@ C:>nodist global 6.1.0 && nodist npm global 3.8.6
 
 ## 📦 Example
 
-`nodistx use`を走らせるとバージョンが切り替わる
+`nodistx use`を走らせるとバージョンが切り替わる。node_modules/シンボリックリンクが張り直されるから正しく動く。このシンボリックリンクを作るのに管理者権限がいるから、add/useコマンドは自動的にRUNASで起動を促す
 
 ```bat
 C:>nodistx use ls インストールしたバージョンを選択できます
