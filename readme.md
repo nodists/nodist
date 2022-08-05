@@ -32,11 +32,10 @@ C:>nodist global 6.1.0 && nodist npm global 3.8.6
 * nodejs v6.2.0
 * npm 3.8.9
 
-
-
-
-
 ## 📦 Example
+
+dfsalkdsjajklsdf
+
 ```bat
 C:>nodistx
 Usage: nodistx [options] [command]
