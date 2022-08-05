@@ -6,7 +6,8 @@ NODEJS/NPMをセットでインストールできる最速のマネージャだ�
 ![usage](https://user-images.githubusercontent.com/98066622/182986552-9a5a82ed-65e9-4066-a1e4-21d18acc382c.gif)
 
 ## 📡 Installing and Updating
-To install or update nodistx, you should run the install script. To do that, you may run the install.bat.
+install.batを走らせるだけ。自由が手に入る。コマンドを打つ手間から解放されV8やセキュリティリリースだったか調べる手間もない。このコマンドを走らせる者は人生の準備が出来ているしプログラマとしての逞しさが手に入る
+
 ## 📦 Example
 ```bat
 C:\Users\wafflook>nodistx
