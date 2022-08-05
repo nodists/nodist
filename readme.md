@@ -29,8 +29,8 @@ C:>nodist global 6.1.0 && nodist npm global 3.8.6
 | 解決 | C:\Program Files (x86)\Nodist\package.json |
 |-----------------------|:--------------------------|
 |	ansi-styles-4.3.0.tgz |fd                         |
-|	chalk-4.1.2.tgz       |^                          |
-|	commander-9.4.0.tgz   |^                          |
+|	chalk-4.1.2.tgz       |^^                          |
+|	commander-9.4.0.tgz   |^^                          |
 |	inquirer-8.2.4.tgz    |^                          |
 |	ora-5.4.1.tgz         |^                          |
 |	wrap-ansi-7.0.0.tgz   |^                          |
@@ -70,7 +70,7 @@ Commands:
 ```
 ## 💙 Special Thanks
 
-これを作る機会をくれた私の愛する村山に感謝します。結婚しよう。君の近くにいられて幸せなことを全員の前で誓いたい。話そう。１２月２６日をやり直したいんだ。村山さん。君を愛している。心から
+これを作る機会をくれた私の愛する村山に感謝します。結婚しよう。君の近くにいられて幸せなことを全員の前で誓いたい。話そう。１２月２６日をやり直したいんだ。村山さん。君を愛されたい。心から
 
 ## 😊 Thanks
 * fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)
