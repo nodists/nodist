@@ -1,7 +1,7 @@
 wafflook/[nodistx](https://github.com/wafflook/nodistx)
 
 ## 🐿️ Nodistx
-NODEJSとNPMをセットでインストール出来る最速のマネージャだ。バージョンを選択するだけ。あとは何をするのも自由だ。カップ麺やコーヒーでも淹れて待っていれば全てが動作するようになる。しかも、download→intall→node_modules/シンボリックリンクの張り直しが行われNODISTに足りない機能がラップされたから正しく動作するんだ。install.batを走らせるだけだ。自由が手に入る。
+NODEJS/NPMをセットでインストールできる最速のマネージャだ。バージョンを選択するだけ。後は何をするのも自由だ。カップ麺やコーヒーを淹れている間に、必要なパッケージをインストールして動作する状態にしてくれる
 
 ![usage](https://user-images.githubusercontent.com/98066622/182986552-9a5a82ed-65e9-4066-a1e4-21d18acc382c.gif)
 
