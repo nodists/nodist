@@ -55,6 +55,7 @@ C:\Users\wafflook>
 ```
 ## 😊 Thanks
 * fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)
+* eduardoboucas/[inquirer-table-prompt](https://github.com/eduardoboucas/inquirer-table-prompt)
 * freMea/[Template.bat](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)
 * SBoudrias/[Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)
 * nullivex/[Nodist](https://github.com/nullivex/nodist)
