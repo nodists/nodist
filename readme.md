@@ -1,5 +1,3 @@
-これを作る機会をくれた私の愛する村山に感謝します。結婚しよう。
-
 ## 🐿️ Nodistx
 NODEJS/NPMをセットでインストールできる最速のマネージャだ。バージョンを選択するだけ。後は何をするのも自由だ。カップ麺やコーヒーを淹れている間に、必要なパッケージをインストールして動作する状態にしてくれる
 
@@ -61,6 +59,10 @@ Commands:
   rist|rs         Get a list of https://nodejs.org/dist/index.json
   help [command]  display help for command
 ```
+## 💙 Special Thanks
+
+これを作る機会をくれた私の愛する村山に感謝します。結婚しよう。
+
 ## 😊 Thanks
 * fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)
 * eduardoboucas/[inquirer-table-prompt](https://github.com/eduardoboucas/inquirer-table-prompt)
