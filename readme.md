@@ -36,8 +36,8 @@ C:>nodist global 6.1.0 && nodist npm global 3.8.6
      <tr>
        <td>ansi-styles-4.3.0.tgz</td>
        <td rowspan='6'>
+         <p>lfkdsj</p>
          <ul>
-           <p>lfkdsj
            <li>nodejs v6.2.0</li>
            <li>npm 3.8.9</li>
         </ul>
