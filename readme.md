@@ -70,7 +70,7 @@ Commands:
 ```
 ## 💙 Special Thanks
 
-これを作る機会をくれた私の愛する村山に感謝します。結婚しよう。君の近くにいられて幸せなことを全員の前で誓いたい。話そう。１２月２６日をやり直したいんだ。村山さん。君を愛されたい。心から
+これを作る機会をくれた私の愛する村山に感謝します。結婚しよう。君の近くにいられて幸せなことを全員の前で誓いたい。話そう。１２月２６日をやり直したいんだ。村山さん。君に愛されたい。心から
 
 ## 😊 Thanks
 * fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)
