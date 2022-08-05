@@ -7,7 +7,7 @@ NODEJS/NPMをセットでインストールできる最速のマネージャだ�
 ![usage](https://user-images.githubusercontent.com/98066622/182986552-9a5a82ed-65e9-4066-a1e4-21d18acc382c.gif)
 
 ## 📡 Installing and Updating
-install.batを走らせるだけ。自由が手に入る。コマンドを打つ手間から解放されV8やセキュリティリリースだったか調べる手間もない。fork元のnodistに足りない機能が追加されている。
+install.batを走らせるだけ。自由が手に入る。コマンドを打つ手間から解放されV8やセキュリティリリースだったか調べる手間いらず。足りない機能を追加して修正した。
 
 | 解決 | https://github.com/nullivex/nodist/pulls              |
 |:--:|:--------------------------------------------------------|
