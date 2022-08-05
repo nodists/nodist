@@ -26,6 +26,15 @@ install.batを走らせるだけ。自由が手に入る。コマンドを打つ
 C:>nodist global 6.1.0 && nodist npm global 3.8.6
 ```
 
+| 解決 | C:\Program Files (x86)\Nodist\package.json |
+|-----------------------|:--------------------------|
+|	ansi-styles-4.3.0.tgz |fd                         |
+|	chalk-4.1.2.tgz       |^                          |
+|	commander-9.4.0.tgz   |^                          |
+|	inquirer-8.2.4.tgz    |^                          |
+|	ora-5.4.1.tgz         |^                          |
+|	wrap-ansi-7.0.0.tgz   |^                          |
+
 * nodejs v6.2.0
 * npm 3.8.9
 
