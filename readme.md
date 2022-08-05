@@ -1,7 +1,10 @@
 wafflook/[nodistx](https://github.com/wafflook/nodistx)
 
 ## 🐿️ Nodistx
-A fork of Nodist, but `nodistx` allows you to quickly install and use different versions of node via the table-prompt.
+NODEJSとNPMをセットでインストール出来る最速のマネージャだ。バージョンを選択するだけ。あとは何をするのも自由だ。カップ麺やコーヒーでも淹れて待っていれば全てが動作するようになる。しかも、download→intall→node_modules/シンボリックリンクの張り直しが行われNODISTに足りない機能がラップされたから正しく動作するんだ。install.batを走らせるだけだ。自由が手に入る。
+
+![usage](https://user-images.githubusercontent.com/98066622/182986552-9a5a82ed-65e9-4066-a1e4-21d18acc382c.gif)
+
 ## 📡 Installing and Updating
 To install or update nodistx, you should run the install script. To do that, you may run the install.bat.
 ## 📦 Example
