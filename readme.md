@@ -102,3 +102,7 @@ Commands:
 * freMea/[Template.bat](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)
 * SBoudrias/[Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)
 * nullivex/[Nodist](https://github.com/nullivex/nodist)
+
+
+https://github.com/npm/npm/issues/19719
+https://www.dostips.com/forum/viewtopic.php?t=7054
