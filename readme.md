@@ -108,3 +108,5 @@ https://github.com/npm/npm/issues/19719
 https://www.dostips.com/forum/viewtopic.php?t=7054
 http://scripting.cocolog-nifty.com/blog/2007/03/unix_tee_11d0.html
 https://stackoverflow.com/questions/10711839/using-a-custom-tee-command-for-bat-file/10719322#10719322
+
+https://stackoverflow.com/questions/13257571/call-command-vs-start-with-wait-option
