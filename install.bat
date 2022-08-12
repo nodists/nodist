@@ -30,10 +30,13 @@ if not defined process (
               powershell start-process -filepath %bat% -verb runas
               exit
             )
+      
+      set  "NODIST_PREFIX=%dst:"=%"
       set  "PATH=%PATH%;%dst:"=%\bin"
-      set   NODIST_IOJS_MIRROR=https://iojs.org/dist
-      set   NODIST_NODE_MIRROR=https://nodejs.org/dist
-      set   NODIST_GITHUB_TOKEN=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
+      set  "NODE_PATH=%dst:"=%\bin\node_modules"
+      set  "NODIST_IOJS_MIRROR=https://iojs.org/dist"
+      set  "NODIST_NODE_MIRROR=https://nodejs.org/dist"
+      set  "NODIST_GITHUB_TOKEN=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2"
       set   process=1
 call:next
 )
