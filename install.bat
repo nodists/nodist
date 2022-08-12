@@ -169,8 +169,7 @@ call:next
      echo   บ Earlier versions do not does not work key input inquirer  บ
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.
-            cd %cmd% > nul
-            echo %cmd%
+            cd %cmd%
             (
               npm install "package\ansi-styles-4.3.0.tgz"
               npm install "package\chalk-4.1.2.tgz"
