@@ -66,9 +66,9 @@ C:>nodist global 6.1.0 && nodist npm global 3.8.6
 `nodistx use`を走らせるとバージョンが切り替わる。node_modules/シンボリックリンクが張り直されるから正しく動く。このシンボリックリンクを作るのに管理者権限がいるから、add/useコマンドは自動的にRUNASで起動を促す
 
 ```bat
-C:>nodistx global ls インストールしたバージョンを選択できます
-C:>nodistx global ds インストールしてないバージョンを選択できます（自動インストールされます）
-C:>nodistx global rs インストールしてないしたを一覧化して全バージョンを選択できます（https://nodejs.org/dist/index.json）
+C:>nodistx use ls インストールしたバージョンを選択できます
+C:>nodistx use ds インストールしてないバージョンを選択できます（自動インストールされます）
+C:>nodistx use rs インストールしてないしたを一覧化して全バージョンを選択できます（https://nodejs.org/dist/index.json）
 ```
 
 ```bat
@@ -78,22 +78,21 @@ Usage: nodistx [options] [command]
 A node.js and npm version manager（Nodist will not die. It will revive）
 
 Options:
-  -V, --version   output the version number
-  -h, --help      display help for command
+  -V, --version      output the version number
+  -h, --help         display help for command
 
 Commands:
-  list|ls         Get a list of installed nodejs version
-  dist|ds         Get a list of all available nodejs versions
-  rist|rs         Get a list of https://nodejs.org/dist/index.json
-  run|r           Run <args> with a version matching the provided requirement
-  add|+           Install a nodejs of specific version
-  remove|-        Uninstall a nodejs of specific version
-  env [from]      Use a nodejs of specific version for the current console only (process.env)
-  local [from]    Use a nodejs of specific version for the current working working only (.(node or npm)version)
-  global [from]   Use a nodejs of specific version for the global (C:Program Files (x86)Nodist.(node or
-                  npm)-version-global)
-  use             Check a nodejs version
-  help [command]  display help for command
+  list|ls            Get a list of installed nodejs version
+  dist|ds            Get a list of all available nodejs versions
+  rist|rs            Get a list of https://nodejs.org/dist/index.json
+  run|r              Run <args> with a version matching the provided requirement
+  add|+              Install a nodejs of specific version
+  remove|-           Uninstall a nodejs of specific version
+  env [from]         Use a nodejs of specific version for the current console only (process.env)
+  local [from]       Use a nodejs of specific version for the current working working only (.(node or npm)version)
+  global|use [from]  Use a nodejs of specific version for the global (C:Program Files (x86)Nodist.(node or npm)-version-global)
+  current            Check a current nodejs version
+  help [command]     display help for command
 ```
 ## 💙 Special Thanks
 
