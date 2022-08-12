@@ -112,10 +112,7 @@ Commands:
 * freMea/[My batch/cmd template](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)
 * lewish/[asciiflow: ASCIIFlow](https://github.com/lewish/asciiflow)
 
-
-
-
-実装済
+## 👍 Support
 ```
 nodist                          List all installed node versions.
 nodist list
@@ -142,12 +139,12 @@ nodist env <ver-req>            Set the requirement for the current environment 
 nodist run <ver-req> -- <args>  Run <args> with a version matching the provided requirement
 nodist r <ver-req> -- <args>    (will abort if no matching version is installed).
 ```
-追加済
+## 👍 New
 ```
 nodist rist                     List all from https://nodejs.org/dist/index.json
 nodist rs
 ```
-未実装
+## 👍 Other
 ```
 nodist bin <ver-req>            Get the path to the specified node <version>
                                 (installs the node <version>, if necessary).
