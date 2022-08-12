@@ -15,6 +15,7 @@ install.batを走らせるだけ。このインストーラはGITHUB CLIENTを�
 |	〇 | 无法安装 npm                                             |
 |	〇 | Invalid Version: libnpmversion-v3.0.1.                  |
 |	〇 | npm 8.6, authorization header missing & symlink problem |
+
 このバッチファイルはNODISTのインストールを行うが、依存パッケージを最新にして既存のNODISTが存在すれば削除する（C:\Program Files (x86)\Nodist）更に、レート制限にひっかからないようGITHUBのAPI KEY の設定を促す
 ## 💻 Support latest >= nodejs/npm
 
