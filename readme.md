@@ -209,6 +209,8 @@ nodist -v                       Display nodist version.
   *     }
   *   ]
   */
+```
+``` javascript
  /*
   * 関係
   *   ┌────┐   ┌───┐
@@ -231,6 +233,8 @@ nodist -v                       Display nodist version.
   *              └───┘          └──────┘
   * 
   */
+```
+``` javascript
   /*
    * 使用
    *   ┌──────────────┐
@@ -248,6 +252,8 @@ nodist -v                       Display nodist version.
    *                    4.NODISTの設定ファイル（GLOBAL）
    * 　                    C:\Program Files (x86)\Nodist\.(node and npm)-version-global
    */
+ ```
+ ``` javascript
   /*
    * 権限
    *   ＮＰＭは圧縮ファイル内にシンボリックリンクを含みます
