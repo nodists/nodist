@@ -16,7 +16,8 @@
       rem   uninstall nodist and then install
       set   ust="%dst:"=%\uninstall.exe"   
       set   ist="%loc:"=%\nodist\nodist-0.9.1.exe"
-      set   bin="%dst:"=%\bin\node_modules\nodistx"
+      rem   installed nodistx command location
+      set   cmd="%dst:"=%\bin\node_modules\nodistx"
 
 if not defined process (
      echo.
@@ -29,6 +30,7 @@ if not defined process (
               powershell start-process -filepath %bat% -verb runas
               exit
             )
+      set  "PATH=%PATH%;%dst:"=%\bin"
       set   NODIST_IOJS_MIRROR=https://iojs.org/dist
       set   NODIST_NODE_MIRROR=https://nodejs.org/dist
       set   NODIST_GITHUB_TOKEN=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
@@ -164,8 +166,8 @@ call:next
      echo   บ Earlier versions do not does not work key input inquirer  บ
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.
-            cd %bin%
-            echo %bin%
+            cd %cmd% > nul
+            echo %cmd%
             (
               npm install "package\ansi-styles-4.3.0.tgz"
               npm install "package\chalk-4.1.2.tgz"
@@ -230,7 +232,7 @@ if %process% equ 5 (
      echo    dst=%dst%
      echo    ust=%ust%
      echo    ist=%ist%
-     echo    bin=%bin%
+     echo    cmd=%cmd%
 exit /b 0
 :sleep
       rem   call:sleep 5 (second)
