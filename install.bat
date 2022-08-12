@@ -17,10 +17,6 @@
       set   ust="%dst:"=%\uninstall.exe"   
       set   ist="%loc:"=%\nodist\nodist-0.9.1.exe"
       set   bin="%dst:"=%\bin\node_modules\nodistx"
-      rem   set nodist variables
-      set   NODIST_IOJS_MIRROR=https://iojs.org/dist
-      set   NODIST_NODE_MIRROR=https://nodejs.org/dist
-      set   NODIST_GITHUB_TOKEN=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
 
 if not defined process (
      echo.
@@ -33,7 +29,10 @@ if not defined process (
               powershell start-process -filepath %bat% -verb runas
               exit
             )
-set process=1
+      set   NODIST_IOJS_MIRROR=https://iojs.org/dist
+      set   NODIST_NODE_MIRROR=https://nodejs.org/dist
+      set   NODIST_GITHUB_TOKEN=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
+      set   process=1
 call:next
 )
 if %process% equ 1 (
@@ -118,10 +117,14 @@ call:scan   NODIST_NODE_MIRROR
      echo   บ e.g. ghp_16C7e42F292c6912E7710c838347Ae178B4a             บ
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.
-            rem start "" "https://github.com/settings/tokens"
-            rem start "" rundll32.exe sysdm.cpl,EditEnvironmentVariables
+            start "" "https://github.com/settings/tokens"
+            start "" rundll32.exe sysdm.cpl,EditEnvironmentVariables
 call:scan   NODIST_GITHUB_TOKEN
      setx   NODIST_GITHUB_TOKEN "!NODIST_GITHUB_TOKEN: =!" >nul
+call:next
+call:self
+)
+if %process% equ 3 (
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
      echo   บ udpate nodist dependencies                                บ
@@ -145,10 +148,6 @@ call:scan   NODIST_GITHUB_TOKEN
             npm install
             npm install 2>&1 | %tee% | findstr "ERR" ^
             && pause && exit
-call:next
-call:self
-)
-if %process% equ 3 (
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
      echo   บ Install nodistx from npm pack this will install globally  บ
@@ -157,7 +156,7 @@ if %process% equ 3 (
      echo.
             cd %loc%
             npm pack . >nul
-            npm install "nodistx-0.0.1.tgz" --global --force
+            npm install "nodistx-1.0.0.tgz" --global --force
 call:next
      echo.
      echo   ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
@@ -205,7 +204,7 @@ call:next
      echo   บ from nodejs.org/dist/index.json                           บ
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.
-            call nodist dist >nul 2>&1
+            call nodist.cmd dist >nul 2>&1
 call:next
 call:self
 )
@@ -215,8 +214,7 @@ if %process% equ 5 (
      echo   บ Welcome to nodistx                                        บ 
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.    
-            call nodistx --help
-            exit
+            start /wait /b "" nodistx.cmd --help
 )
 :debug
       rem   call:debug
@@ -256,7 +254,7 @@ exit /b 0
 :self
       rem   call:self
              set /a process+=1
-             start /wait /b /d !loc! "" !bat!
+             start /wait /b /d %loc% "" %bat%
              exit
 exit /b 0
 :scan
@@ -265,6 +263,6 @@ exit /b 0
             for /f %%a in ('"prompt $H&for %%b in (1) do rem"') do set "BS=%%a"
             set /p "%1=X!BS!   %1="
             if "%1" == "" (
-       goto continue
+              goto continue
             ) 
 exit /b 0

@@ -1,7 +1,7 @@
 ## 🐿️ Nodistx
 NODEJS/NPMをセットでインストールできる最速のマネージャだ。バージョンを選択するだけ。後は何をするのも自由だ。カップ麺やコーヒーを淹れている間に、必要なパッケージをインストールして動作する状態にしてくれる
 
-![usage](https://user-images.githubusercontent.com/98066622/182986552-9a5a82ed-65e9-4066-a1e4-21d18acc382c.gif)
+![usage](docs/usage.gif)
 
 ## 📡 Installing
 install.batを走らせるだけ。このインストーラはGITHUB CLIENTを最新にして本家ISSUEのいくつかの問題を解決する
@@ -85,13 +85,14 @@ Commands:
   list|ls            Get a list of installed nodejs version
   dist|ds            Get a list of all available nodejs versions
   rist|rs            Get a list of https://nodejs.org/dist/index.json
-  run|r              Run <args> with a version matching the provided requirement
   add|+              Install a nodejs of specific version
   remove|-           Uninstall a nodejs of specific version
   env [from]         Use a nodejs of specific version for the current console only (process.env)
   local [from]       Use a nodejs of specific version for the current working working only (.(node or npm)version)
-  global|use [from]  Use a nodejs of specific version for the global (C:Program Files (x86)Nodist.(node or npm)-version-global)
-  current            Check a current nodejs version
+  global|use [from]  Use a nodejs of specific version for the global (C:Program Files (x86)Nodist.(node or
+                     npm)-version-global)
+  version            Check a current nodejs version
+  run|r              Run <args> with a version matching the provided requirement
   help [command]     display help for command
 ```
 ## 💙 Special Thanks
@@ -103,11 +104,15 @@ Commands:
 * madumal7/[npm ERR! Cannot read property 'startsWith' of null · Issue #19719 · npm/npm](https://github.com/npm/npm/issues/19719)
 * dbenham/[windows - Using a custom Tee command for .bat file - Stack Overflow](https://stackoverflow.com/questions/10711839/using-a-custom-tee-command-for-bat-file/10719322#10719322)
 * dbenham/[How to catch DEL errors? It's possible? - DosTips.com](https://www.dostips.com/forum/viewtopic.php?t=7054)
-* fealebenpae/[Use the Octokit client for GitHub](https://github.com/nullivex/nodist/pull/246)
-* eduardoboucas/[inquirer-table-prompt](https://github.com/eduardoboucas/inquirer-table-prompt)
-* freMea/[Template.bat](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)
-* SBoudrias/[Inquirer.js](https://github.com/SBoudrias/Inquirer.js/)
-* nullivex/[Nodist](https://github.com/nullivex/nodist)
+* fealebenpae/[Use the Octokit client for GitHub by fealebenpae · Pull Request #246 · nullivex/nodist](https://github.com/nullivex/nodist/pull/246)
+* eduardoboucas/[inquirer-table-prompt: A table-like prompt for Inquirer](https://github.com/eduardoboucas/inquirer-table-prompt)
+* freMea/[My batch/cmd template](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)
+* SBoudrias/[Inquirer.js: A collection of common interactive command line user interfaces.](https://github.com/SBoudrias/Inquirer.js/)
+* lewish/[asciiflow: ASCIIFlow](https://github.com/lewish/asciiflow)
+* nullivex/[nodist: Natural node.js and npm version manager for windows.](https://github.com/nullivex/nodist)
+
+
+Sebastian/[cmd - Is there a command to refresh environment variables from the command prompt in Windows? - Stack Overflow](https://stackoverflow.com/questions/171588/is-there-a-command-to-refresh-environment-variables-from-the-command-prompt-in-w)
 
 実装済
 ```

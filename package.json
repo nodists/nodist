@@ -1,9 +1,9 @@
 {
   "name"          : "nodistx",
   "author"        : "Yusuke Sano <wafflook@gmail.com>",
-  "homepage"      : "https://twitter.com/wafflook",
+  "homepage"      : "https://github.com/wafflook/nodistx",
   "license"       : "MIT",
-  "version"       : "0.0.1",
+  "version"       : "1.0.0",
   "description"   : "A node.js and npm version manager（Nodist will not die. It will revive）",
   "bin": {
     "nodistx"     : "bin/index.js"

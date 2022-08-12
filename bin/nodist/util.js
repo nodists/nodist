@@ -6,12 +6,12 @@ const Semver = require('semver');
 
 (()=>{
   /**
-   * 設定値の取得を纏めたかった
-   * あらゆる場所にバージョン名とかインストール先ちりばめたらやばい
+   * 設定値を纏めます
+   * バージョン名やインストール先を返します
    */
   Object.defineProperty(global,'nodist',{
     /**
-     * アーキテクチャによってインストール先が変わるから将来的に対応する予定
+     * 本来インストール先はアーキテクチャ毎に異なります
      * @param {Number} bit 64 or 32
      */
     set(bit){
@@ -24,7 +24,7 @@ const Semver = require('semver');
       var path = 'C:\\Program Files (x86)\\Nodist'
       /**
        * ゲッターの定義
-       * nodist.use().nodejsと書くよりnodist.use.nodejsとしたほうが綺麗
+       * nodist.use().nodejsと書くよりnodist.use.nodejsとしたほうが綺麗なので
        */
       return {
         get can(){
@@ -43,9 +43,10 @@ const Semver = require('semver');
           }
         },
         /**
-         * 現在使用中のバージョンを返す
-         * バージョンの生値から'v'を消して返す（nodejsのバージョンにはv接頭辞がある）
-         * nodistはダウンロードとインストール終わってなくてもバージョンを保存するから注意
+         * 現在使用中のグローバルのバージョンを返します
+         * バージョンの生値から'v'を消します（nodejsのバージョン名にはv接頭辞があります）
+         * nodistはダウンロードとインストール前にバージョンファイルを更新するため注意が必要です
+         * @returns {String}
          */
         get use(){
           return{
@@ -54,7 +55,8 @@ const Semver = require('semver');
           }
         },
         /**
-         * インストール済のバージョンを返す
+         * インストール済のＮＯＤＥの一覧を返します
+         * @returns {Array<Object>} x.x.x:{}
          */
         get installed(){
           return{
@@ -68,10 +70,9 @@ const Semver = require('semver');
               },{})
             },
             /**
-             * Array<Object>で返す
-             * x.x.x:{node_modules:path}として返す
-             * 選択されたバージョンがインストール済か確かめたりする
-             * シンボリックリンクを張り直すのにnode_mdoulesのパスが必要だった
+             * インストール済のＮＰＭの一覧を返します
+             * シンボリック張り替えるためnode_modulesを含みます
+             * @returns {Array<Object>} x.x.x:{node_modules:path}
              */
             get npm(){
               return Fs.readdirSync(`${path}\\npmv`).reduce((list,version)=>{
@@ -85,10 +86,13 @@ const Semver = require('semver');
           }
         },
         /**
-         * nodist distの実行結果を読み取る
-         * https://iojs.org/dist/index.json
-         * https://nodejs.org/dist/index.json
-         * C:\Program Files (x86)\Nodist\versions.json
+         * リリースの一覧を返します
+         *   データ元
+         *     https://iojs.org/dist/index.json
+         *     https://nodejs.org/dist/index.json
+         *   参照場所
+         *     C:\Program Files (x86)\Nodist\versions.json
+         * @returns {Array<Object>} 
          */
         get nodejsorg(){
           return{
