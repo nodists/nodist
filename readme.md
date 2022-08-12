@@ -17,7 +17,7 @@ install.batを走らせるだけ。このインストーラはGITHUB CLIENTを�
 |	〇 | npm 8.6, authorization header missing & symlink problem |
 
 このバッチファイルはNODISTのインストールを行うが、依存パッケージを最新にして既存のNODISTが存在すれば削除する（C:\Program Files (x86)\Nodist）更に、レート制限にひっかからないようGITHUBのAPI KEY の設定を促す
-## 💻 Support latest >= v6.2.0/3.8.9
+## 💻 Support version latest >= v6.2.0/3.8.9
 
 これ未満のバージョンをインストールしたいならNODIST本体のコマンドを走らせてほしい。こうする理由は入力を受け付けなくなるからだ。v6.1.0からカーソルキーが反応しなくなって一覧を操作できない。原因わかる方々いる？
 
@@ -111,8 +111,10 @@ Commands:
 * dbenham/[How to catch DEL errors? It's possible? - DosTips.com](https://www.dostips.com/forum/viewtopic.php?t=7054)
 * freMea/[My batch/cmd template](https://gist.github.com/freMea/0e907150d14e68f26794207fbeec8fa0)
 * lewish/[asciiflow: ASCIIFlow](https://github.com/lewish/asciiflow)
+## 👍 Supported nodist commands
 
-## 👍 Support
+NODISTのコマンドをラップした一覧ですが、バージョン指定はNODISTX側でTABLE-PROMPTに置き換えられています。足りるとおもいます
+
 ```
 nodist                          List all installed node versions.
 nodist list
@@ -127,7 +129,6 @@ nodist + <version>              if any set requirement matches this version, thi
 nodist rm <version>             Uninstall the latest installed version matching <version>;
 nodist - <version>              if any set requirement matches this <version>, it will try to reference another installed version.
 
-nodist <ver-req>                Set the global version requirement;
 nodist global <ver-req>         installs the specified node version if it hasn't been installed.
 
 nodist local <ver-req>          Set the local requirement for this directory and its subdirectories;
@@ -139,13 +140,21 @@ nodist env <ver-req>            Set the requirement for the current environment 
 nodist run <ver-req> -- <args>  Run <args> with a version matching the provided requirement
 nodist r <ver-req> -- <args>    (will abort if no matching version is installed).
 ```
-## 👍 New
+## 👍 new commands
+
+リリース全一覧を取得するコマンドです。installedフラグを追加しています。インストール済はlist、未インストールはdistに置き換えました
+
 ```
 nodist rist                     List all from https://nodejs.org/dist/index.json
 nodist rs
 ```
-## 👍 Other
+## 👍 low
+
+これらのコマンドをnodistxはサポートしません。nodistで利用してください。これらは高級であろうとするnodistxの対象の範囲外となります
+
 ```
+nodist <ver-req>                Set the global version requirement;
+
 nodist bin <ver-req>            Get the path to the specified node <version>
                                 (installs the node <version>, if necessary).
 
