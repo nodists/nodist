@@ -142,4 +142,21 @@ nodist r <ver-req> -- <args>    (will abort if no matching version is installed)
 nodist rist                     List all from https://nodejs.org/dist/index.json
 nodist rs
 ```
+未実装
+```
+nodist bin <ver-req>            Get the path to the specified node <version>
+                                (installs the node <version>, if necessary).
 
+nodist path <ver-req>           Get the path to the specified node <version> directory
+                                (installs the node <version>, if necessary).
+
+nodist npm <ver-req>            Set the global npm version requirement.
+                                (installs the npm <version>, if necessary).
+
+nodist npm match                Activate the npm version matching the active node version
+                                (active node version depends on env/local/global requirements).
+
+nodist --help                   Display this help.
+
+nodist -v                       Display nodist version.
+```
