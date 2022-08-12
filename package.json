@@ -1,46 +1,28 @@
 {
-  "name": "nodist",
-  "version": "0.9.1",
-  "description": "Natural node version manager for windows",
-  "keywords": [
-    "node",
-    "version",
-    "manager",
-    "build",
-    "windows"
-  ],
-  "author": "Marcel Klehr <mklehr@gmx.net>",
-  "homepage": "https://github.com/marcelklehr/nodist",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/marcelklehr/nodist/issues"
+  "name"          : "nodistx",
+  "author"        : "Yusuke Sano <wafflook@gmail.com>",
+  "homepage"      : "https://github.com/wafflook/nodistx",
+  "license"       : "MIT",
+  "version"       : "1.0.0",
+  "description"   : "A node.js and npm version manager（Nodist will not die. It will revive）",
+  "bin": {
+    "nodistx"     : "bin/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/marcelklehr/nodist.git"
+  "files": [
+    "bin",
+    "package"
+  ],
+  "scripts": {
+    "start"       : "node bin/index.js"
   },
   "dependencies": {
-    "bluebird": "^3.5.3",
-    "debug": "^4.1.1",
-    "github": "nullivex/node-github",
-    "mkdirp": "~0.5",
-    "ncp": "^2.0.0",
-    "progress": "2.x",
-    "promisepipe": "^3.0.0",
-    "recursive-readdir": "^2.2.2",
-    "request": "~2.88.0",
-    "rimraf": "~2",
-    "semver": "^6.0.0",
-    "tar": "4.x"
-  },
-  "devDependencies": {
-    "vows": "^0.8.3"
-  },
-  "scripts": {
-    "build": "node ./build/build.js",
-    "test": "node ./node_modules/vows/bin/vows --spec ./test/*-test.js"
-  },
-  "os": [
-    "win32"
-  ]
+    "lodash"      : "^4.17.21",
+    "await-spawn" : "^4.0.2",
+    "chalk"       : "^4.1.2",
+    "cli-cursor"  : "^3.1.0",
+    "cli-table"   : "^0.3.11",
+    "commander"   : "^9.4.0",
+    "inquirer"    : "^8.2.3",
+    "semver"      : "^7.3.7"
+  }
 }
