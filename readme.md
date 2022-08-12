@@ -4,7 +4,7 @@ NODEJS/NPMをセットでインストールできる最速のマネージャだ�
 ![usage](https://user-images.githubusercontent.com/98066622/182986552-9a5a82ed-65e9-4066-a1e4-21d18acc382c.gif)
 
 ## 📡 Installing
-install.batを走らせるだけ。このインストーラはGITHUB CLIENTを最新にして本家ISSUEのいくつかの問題を解決するこのバッチファイルはNODISTのインストールを行うが、依存パッケージを最新にして既存のNODISTが存在すれば削除する（C:\Program Files (x86)\Nodist）更に、レート制限にひっかからないようGITHUBのAPI KEY の設定を促す
+install.batを走らせるだけ。このインストーラはGITHUB CLIENTを最新にして本家ISSUEのいくつかの問題を解決する
 
 | 解決 | https://github.com/nullivex/nodist/pulls              |
 |:--:|:--------------------------------------------------------|
@@ -15,6 +15,7 @@ install.batを走らせるだけ。このインストーラはGITHUB CLIENTを�
 |	〇 | 无法安装 npm                                             |
 |	〇 | Invalid Version: libnpmversion-v3.0.1.                  |
 |	〇 | npm 8.6, authorization header missing & symlink problem |
+このバッチファイルはNODISTのインストールを行うが、依存パッケージを最新にして既存のNODISTが存在すれば削除する（C:\Program Files (x86)\Nodist）更に、レート制限にひっかからないようGITHUBのAPI KEY の設定を促す
 ## 💻 Support latest >= nodejs/npm
 
 これ未満のバージョンをインストールしたいならNODIST本体のコマンドを走らせてほしい。こうする理由は入力を受け付けなくなるからだ。v6.1.0からカーソルキーが反応しなくなって一覧を操作できない。原因わかる方々いる？
