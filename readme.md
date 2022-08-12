@@ -1,4 +1,37 @@
-## 🐿️ Nodistx
+実装済
+```
+nodist                          List all installed node versions.
+nodist list
+nodist ls
+
+nodist dist                     List all available (not installed) node versions.
+nodist ds
+
+nodist add <version>            Install the latest published version matching <version>;
+nodist + <version>              if any set requirement matches this version, this will get referenced in the future.
+
+nodist rm <version>             Uninstall the latest installed version matching <version>;
+nodist - <version>              if any set requirement matches this <version>, it will try to reference another installed version.
+
+nodist <ver-req>                Set the global version requirement;
+nodist global <ver-req>         installs the specified node version if it hasn't been installed.
+
+nodist local <ver-req>          Set the local requirement for this directory and its subdirectories;
+                                adds or updates the ./node-version file.
+
+nodist env <ver-req>            Set the requirement for the current environment only
+                                (usually the current terminal window).
+
+nodist run <ver-req> -- <args>  Run <args> with a version matching the provided requirement
+nodist r <ver-req> -- <args>    (will abort if no matching version is installed).
+```
+追加済
+```
+nodist rist                     List all from https://nodejs.org/dist/index.json
+nodist rs
+```
+
+🐿️ Nodistx
 NODEJS/NPMをセットでインストールできる最速のマネージャだ。バージョンを選択するだけ。後は何をするのも自由だ。カップ麺やコーヒーを淹れている間に、必要なパッケージをインストールして動作する状態にしてくれる
 
 ![usage](https://user-images.githubusercontent.com/98066622/182986552-9a5a82ed-65e9-4066-a1e4-21d18acc382c.gif)
