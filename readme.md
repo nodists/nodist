@@ -113,7 +113,7 @@ Commands:
 * lewish/[asciiflow: ASCIIFlow](https://github.com/lewish/asciiflow)
 ## 👍 Supported nodist commands
 
-NODISTのコマンドをラップした一覧ですが、バージョン指定はNODISTX側でTABLE-PROMPTに置き換えられています。足りるとおもいます
+NODISTのコマンドをラップした一覧です。バージョン指定はNODISTX側でTABLE-PROMPTに置き換えられています
 
 ```
 nodist                          List all installed node versions.
@@ -142,7 +142,7 @@ nodist r <ver-req> -- <args>    (will abort if no matching version is installed)
 ```
 ## 👍 new commands
 
-リリース全一覧を取得するコマンドです。installedフラグを追加しています。インストール済はlist、未インストールはdistに置き換えました
+リリース全一覧を取得します。インストール済はlistから未インストールはdistから抽出できます。installedフラグを追加したのでインストール済か否かをリリース全一覧から確認できます。list/dist/rist ３つから一覧を選択できます
 
 ```
 nodist rist                     List all from https://nodejs.org/dist/index.json
@@ -150,7 +150,7 @@ nodist rs
 ```
 ## 👍 low
 
-これらのコマンドをnodistxはサポートしません。nodistで利用してください。これらは高級であろうとするnodistxの対象の範囲外となります
+サポート外です。
 
 ```
 nodist <ver-req>                Set the global version requirement;
