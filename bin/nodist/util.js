@@ -33,8 +33,7 @@ const Semver = require('semver');
               return{
                 npm(version){
                   return{
-                    get dependencies(){
-
+                    get one(){
                       return _(nodist.nodejsorg.json).filter('installed').groupBy('npm').get(version).length == 1
                     }
                   }

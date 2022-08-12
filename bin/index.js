@@ -4,13 +4,14 @@ const Fs = require('fs');
 const Path = require('path');
 
 const _ = require('lodash');
+const SemVer = require('semver');
 const Inquirer = require('inquirer');
 const Commander = require('commander');
+const AwaitSpawn = require('await-Spawn');
 const InquirerRelease = require('./inquirer.js');
 
 const Util = require('./nodist/util.js');
 const Package = require('../package.json');
-const { Spawn } = require('./nodist/process.js');
 
 ((
   List,
@@ -19,77 +20,155 @@ const { Spawn } = require('./nodist/process.js');
 )=>{
 
   Wafflook.init()
-  
-  // 操作
-  Commander.command('by').alias('@')
-       .description('Check a nodejs of currently version')
-            .action(none=>Wafflook.table([List.nodejsorg(Util.use.nodejs)]))
-  Commander.command('add').alias('+')
-       .description('Install a nodejs of specific version')
-            .action(none=>Wafflook.table(List.available()).then(specific=>Nodist.add(specific.talk.version,specific.talk.npm)))
-  Commander.command('remove').alias('-')
-       .description('Uninstall a nodejs of specific version')
-            .action(none=>{
-              var list = List.installed()
-              _.remove(list,{version:Util.use.nodejs})
-              Wafflook.table(list).then(specific=>{
-                if(Util.can.remove.npm(specific.talk.npm).dependencies){
-                  Nodist.del(specific.talk.version,specific.talk.npm)
-                }else{
-                  Wafflook.confirm('npm is used by other installed nodejs, do you want to remove nodejs only?').then(yes=>{
-                    Nodist.del(specific.talk.version,yes ? undefined : specific.talk.npm)
-                  })
-                }
-              })
-            })
-  Commander.command('use').alias(';')
-       .description('Use a nodejs of specific version after automatically install')
-       .addArgument(new Commander.Argument('[from]', 'from the ls|ds|rs versions').choices(['ls', 'ds', 'rs']))
-            .action(from=>{
-              Wafflook.table({ls:List.installed,ds:List.available,rs:List.nodejsorg}[from || 'rs'].call(List)).then(specific=>{
-                Nodist.use(specific.talk.version,specific.talk.npm).then(none=>{
-                  Nodist.lnk(specific.talk.npm)
-                })
-              })
-            })
-  // 一覧
-  Commander.command('list').alias('ls')
+
+  /*
+   * 取得
+   * 　一覧です
+   * 　　全てのリリースの一覧を（取得）
+   * 　　インストール済の一覧を（取得）と（削除）
+   * 　　未インストールの一覧を（取得）と（追加）
+   * 　できます。更に上記の３つから（使用）できます
+   * 追加
+   * 削除
+   * 　注意です
+   * 　　使用中のバージョンは非表示です
+   * 　　削除するＮＰＭが他ＮＯＤＥにあれば確認します
+   * 使用
+   * 　優先順位です
+   * 　　1.環境変数
+   * 　　2.作業フォルダ
+   * 　　3.PACKAGE.ENGINES
+   * 　　4.NODISTの設定ファイル
+   * 　1>2>3>4の順でNODISTは使用するバージョンを選択します
+   * 確認
+   * ほか
+   * 備考
+   * 　定義は以下です
+   * 　  1.環境変数はPROCESS.ENVからNODIST_(NODE and NPM)_VERSION
+   * 　　2.作業フォルダはフォルダ内又は親フォルダから.(node and npm)-version
+   * 　　3.PACKAGE.ENGINESはフォルダ内のpackage.jsonから{engines:{node:'',npm:''}}
+   * 　　4.NODISTの設定ファイルはC:\Program Files (x86)\Nodist\.(node and npm)-version-global
+   * 注意
+   * 　ＮＰＭは圧縮ファイル内にシンボリックリンクを含みます。そのためインストール時に管理者権限が必要です
+   */
+  /*
+   * 取得
+   */
+  Commander.command('list',{isDefault:true}).alias('ls')
        .description('Get a list of installed nodejs version')
-            .action(none=>Wafflook.table(List.installed()))
+            .action(none=>Wafflook.table(List.installed()))s
   Commander.command('dist').alias('ds')
        .description('Get a list of all available nodejs versions')
             .action(none=>Wafflook.table(List.available()))
   Commander.command('rist').alias('rs')
        .description('Get a list of https://nodejs.org/dist/index.json')
             .action(none=>Wafflook.table(List.nodejsorg()))
-  // 実行
-  Wafflook.runas(['use','add']).then((must)=>{
+  /*
+   * 追加
+   */
+  Commander.command('add').alias('+')
+       .description('Install a nodejs of specific version')
+            .action(none=>{
+              Wafflook.table(List.available()).then(specific=>{
+                Nodist.add(specific.talk.version,specific.talk.npm)
+              })
+            })
+  /*
+   * 削除
+   */
+  Commander.command('remove').alias('-')
+       .description('Uninstall a nodejs of specific version')
+            .action(none=>{
+              var list = List.installed()
+              // 使用中のバージョンは隠す消されたら困る
+              _.remove(list,{version:Util.use.nodejs})
+              Wafflook.table(list).then(specific=>{
+                // ＮＯＤＥ１個に依存するだけならそのまま削除
+                if(Util.can.remove.npm(specific.talk.npm).one){
+                  Nodist.del(specific.talk.version,specific.talk.npm)
+                }else{
+                  // ＮＯＤＥ複数に依存してたらＮＯＤＥだけ消すか確認
+                  Wafflook.confirm('npm is used by other installed nodejs, do you want to remove nodejs only?').then(yes=>{
+                    Nodist.del(specific.talk.version,yes ? undefined : specific.talk.npm)
+                  })
+                }
+              })
+            })
+  /*
+   * 使用
+   */
+  Commander.command('env')
+       .description('Use a nodejs of specific version for the current console only (process.env)')
+       .addArgument(new Commander.Argument('[from]', 'from the ls|ds|rs versions').choices(['ls', 'ds', 'rs']))
+            .action(from=>{
+              Wafflook.table({ls:List.installed,ds:List.available,rs:List.nodejsorg}[from || 'rs'].call(List)).then(specific=>{
+                Nodist.env(specific.talk.version,specific.talk.npm).then(none=>{
+                  Nodist.lnk(specific.talk.npm)
+                })
+              })
+            })
+  Commander.command('local')
+       .description('Use a nodejs of specific version for the current working working only (.(node or npm)version)')
+       .addArgument(new Commander.Argument('[from]', 'from the ls|ds|rs versions').choices(['ls', 'ds', 'rs']))
+            .action(from=>{
+              Wafflook.table({ls:List.installed,ds:List.available,rs:List.nodejsorg}[from || 'rs'].call(List)).then(specific=>{
+                Nodist.local(specific.talk.version,specific.talk.npm).then(none=>{
+                  Nodist.lnk(specific.talk.npm)
+                })
+              })
+            })
+  Commander.command('global').alias('use')
+       .description('Use a nodejs of specific version for the global (C:\Program Files (x86)\Nodist\.(node or npm)-version-global)')
+       .addArgument(new Commander.Argument('[from]', 'from the ls|ds|rs versions').choices(['ls', 'ds', 'rs']))
+            .action(from=>{
+              Wafflook.table({ls:List.installed,ds:List.available,rs:List.nodejsorg}[from || 'rs'].call(List)).then(specific=>{
+                Nodist.global(specific.talk.version,specific.talk.npm).then(none=>{
+                  Nodist.lnk(specific.talk.npm)
+                })
+              })
+            })
+  /*
+   * 確認
+   */
+  Commander.command('current')
+       .description('Check a current nodejs version')
+            .action(none=>{
+              Nodist.ver().then((version)=>{
+                Wafflook.table([List.nodejsorg(SemVer.clean(version)
+                )])
+              })
+            })
+  /*
+   * ほか
+   */
+  Commander.command('run').alias('r')
+       .description('Run <args> with a version matching the provided requirement')
+            .action(none=>{
+              Nodist.run(process.argv.slice(3))
+            })
+  Wafflook.runas(['add','env','local','global']).then((must)=>{
     if(must){
       Commander.parse(process.argv)
     }
   })
-
 })({
   /**
-   * 新しいバージョンをインストールする時に使う
-   * @returns 未インストールのバージョンの一覧
+   * 未インストールのバージョンの一覧を取得
+   * @returns Array<Object>
    */
   available:function(){
     return (this.nodejsorg()).filter(list=>list.installed == false)
   },
   /**
-   * インストール済バージョンを利用する時に使う
-   * @returns インストール済のバージョンの一覧
+   * インストール済のバージョンの一覧を取得
+   * @returns Array<Object>
    */
   installed:function(){
     return (this.nodejsorg()).filter(list=>list.installed)
   },
   /**
-   * このコマンドが一発
-   * インストール済から利用設定
-   * 未インストールから利用設定（自動インストール）
-   * 両方どちらからでもインストールされてなければ自動でインストールされバージョンが切り替わる
-   * @param {String} nodejs 特定のバージョンの情報だけ欲しいなら
+   * 全てのリリースのバージョンの一覧を取得
+   * @param {String} nodejs 特定のバージョンだけを抽出
    * @returns Array<Object>
    */
   nodejsorg:function(nodejs){
@@ -101,40 +180,69 @@ const { Spawn } = require('./nodist/process.js');
      }
     }
 },{
-  /**
-   * バージョンを切り替える
-   * バージョンが未インストールなら自動インストール後に切り替える
-   */
-  use:function(node,npm) {
-    return Spawn([
+  ver:function() {
+    return AwaitSpawn('node -v',[],{
+      shell: true,
+      stdio: ['inherit', 'pipe', 'inherit']
+    })
+  },
+  env:function(node,npm) {
+    return AwaitSpawn([
+      `nodist env ${node}`,
+      `nodist npm env ${npm}`
+    ].join(' && '),[],{
+      shell: true,
+      stdio: ['inherit', 'inherit', 'inherit']
+    })
+  },
+  local:function(node,npm) {
+    return AwaitSpawn([
+      `nodist local ${node}`,
+      `nodist npm local ${npm}`
+    ].join(' && '),[],{
+      shell: true,
+      stdio: ['inherit', 'inherit', 'inherit']
+    })
+  },
+  global:function(node,npm) {
+    return AwaitSpawn([
       `nodist global ${node}`,
-      `nodist npm global "${npm}"`
-    ].join(' && '))
+      `nodist npm ${npm}`
+    ].join(' && '),[],{
+      shell: true,
+      stdio: ['inherit', 'inherit', 'inherit']
+    })
   },
-  /**
-   * バージョンをインストールする
-   */
   add:function(node,npm){
-    return Spawn([
+    return AwaitSpawn([
       `nodist add ${node}`,
-      `nodist npm add "${npm}"`
-    ].join(' && '))
+      `nodist npm add ${npm}`
+    ].join(' && '),[],{
+      shell: true,
+      stdio: ['inherit', 'inherit', 'inherit']
+    })
   },
-  /**
-   * バージョンをアンインストールする
-   */
-   del:function(node,npm){
-    return Spawn([
+  del:function(node,npm){
+    return AwaitSpawn([
       node && `nodist remove ${node}`,
       npm && `nodist npm remove ${npm}`
-    ].filter(Boolean).join(' && '))
+    ].filter(Boolean).join(' && '),[],{
+      shell: true,
+      stdio: ['inherit', 'inherit', 'inherit']
+    })
+   },
+   run:function(){
+    return AwaitSpawn(`nodist run`,arguments,{
+      shell: true,
+      stdio: ['inherit', 'inherit', 'inherit']
+    })
   },
   /**
    * 要注意
-   * バージョン18系NPMはシンボリックリンクを含む
+   * ＮＰＭはシンボリックリンクを含む
    * https://codeload.github.com/npm/cli/tar.gz/v8.13.2（例）
    * ファイルの種類は.symlinkで0byte解凍ソフトを変えても同じ（7Zip）
-   * 以前までnpm intallして手動で追加していたがリンクを張り直すよう修正
+   * 展開には管理者権限が必要です。そのためいくつかのコマンドはRUNASされます
    * 抽出リンク
    * 　 dir /AL /S
    * 対応ファイル
@@ -153,6 +261,10 @@ const { Spawn } = require('./nodist/process.js');
    * │
    * └─@npmcli
    *         arborist
+   */
+  /**
+   * シンボリックリンクの張替
+   * @param {String} version 張り替えたいＮＰＭのバージョン
    */
   lnk(version){
 
@@ -188,9 +300,8 @@ const { Spawn } = require('./nodist/process.js');
   }
 },{
   /**
-   * コマンドプロンプト再起動（管理者として）
-   * シンボリックリンクを解凍するのと張り直す処理（作り直しのため
-   * @param {Array<String>} arr 管理者権限が必要なコマンドを配列で渡します
+   * 再起動
+   * @param {Array<String>} 管理者権限が必要なコマンドの一覧
    * @returns {Promise}
    */
   runas:(arr)=>{
@@ -215,12 +326,20 @@ const { Spawn } = require('./nodist/process.js');
       })
     }
   },
+  /**
+   * 初期化
+   */
   init:function(){    
     Commander.name(Package.name)
           .version(Package.version)
       .description(Package.description)
       Inquirer.registerPrompt('table', InquirerRelease)
   },
+  /**
+   * 確認
+   * @param {String} メッセージ
+   * @returns 
+   */
   confirm:function(message){
     return Inquirer.prompt([
       {
@@ -231,6 +350,11 @@ const { Spawn } = require('./nodist/process.js');
       }
     ])
   },
+  /**
+   * 表示
+   * @param {Array<Object>} テーブルプロンプト
+   * @returns 
+   */
   table:function(list){
     return Inquirer.prompt([
       {

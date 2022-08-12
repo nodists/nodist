@@ -5,10 +5,13 @@ const AwaitSpawn = require('await-Spawn');
  * @returns {Promise}
  */
 module.exports = {
+
+
+  
   Spawn(){
     [].push.call(arguments,{
       shell: true,
-      stdio: ['inherit', 'inherit', 'inherit']
+      stdio: ['inherit', 'pipe', 'inherit']
     })
     return AwaitSpawn.apply(this,arguments)
   }
