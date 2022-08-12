@@ -4,7 +4,7 @@ NODEJS/NPMをセットでインストールできる最速のマネージャだ�
 ![usage](https://user-images.githubusercontent.com/98066622/182986552-9a5a82ed-65e9-4066-a1e4-21d18acc382c.gif)
 
 ## 📡 Installing
-install.batを走らせるだけ。自由が手に入る。コマンドを打つ手間から解放されV8やセキュリティリリースだったか調べる手間いらず。足りない機能を追加して修正した。
+install.batを走らせるだけ。このインストーラはGITHUB CLIENTを最新にして本家ISSUEのいくつかの問題を解決する
 
 | 解決 | https://github.com/nullivex/nodist/pulls              |
 |:--:|:--------------------------------------------------------|
