@@ -80,6 +80,11 @@ call:next
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.
             start /wait "" %ist%
+            where npm
+            if errorlevel 1 (
+              pause
+              exit
+            )
 call:next
 call:self
 )
@@ -169,7 +174,8 @@ call:next
      echo   บ Earlier versions do not does not work key input inquirer  บ
      echo   ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
      echo.
-            cd %cmd%
+            cd %cmd% > nul
+            echo %cmd%
             (
               npm install "package\ansi-styles-4.3.0.tgz"
               npm install "package\chalk-4.1.2.tgz"
