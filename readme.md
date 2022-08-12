@@ -165,3 +165,113 @@ nodist --help                   Display this help.
 
 nodist -v                       Display nodist version.
 ```
+
+``` javascript
+ /*
+  * 基本
+  *   nodist dist
+  *   https://iojs.org/dist/index.json
+  *   https://nodejs.org/dist/index.json
+  *   C:\Program Files (x86)\Nodist\versions.json
+  *   [
+  *     {
+  *       "version":"v18.5.0",
+  *       "date":"2022-07-06",
+  *       "files":[
+  *         "aix-ppc64",
+  *         "headers",
+  *         "linux-arm64",
+  *         "linux-armv7l",
+  *         "linux-ppc64le",
+  *         "linux-s390x",
+  *         "linux-x64",
+  *         "osx-arm64-tar",
+  *         "osx-x64-pkg",
+  *         "osx-x64-tar",
+  *         "src",
+  *         "win-x64-7z",
+  *         "win-x64-exe",
+  *         "win-x64-msi",
+  *         "win-x64-zip",
+  *         "win-x86-7z",
+  *         "win-x86-exe",
+  *         "win-x86-msi",
+  *         "win-x86-zip"
+  *       ],
+  *       "npm":"8.12.1",
+  *       "v8":"10.2.154.4",
+  *       "uv":"1.43.0",
+  *       "zlib":"1.2.11",
+  *       "openssl":"3.0.5+quic",
+  *       "modules":"108",
+  *       "lts":false,
+  *       "security":true
+  *     }
+  *   ]
+  */
+ /*
+  * 関係
+  *   ┌────┐   ┌───┐
+  *   │NODE├───│NPM| ＮＰＭは複数のＮＯＤＥに依存します
+  *   └────┘1 n└───┘ 
+  * 
+  *     8.12.1/npm
+  *      ├─v18.4.0
+  *      └─v18.5.0
+  * 操作
+  *   ┌────┐ 
+  *   │RIST│ all list
+  *   └─┬──┘
+  *     ├────────────────────┐
+  *   ┌─┴──┐               ┌─┴──┐
+  *   │DIST│ not installed │LIST│ installed list
+  *   └──┬─┘               └──┬─┘
+  *      │       ┌───┐        │ ┌──────┐
+  *      └───────│ADD|        └─│REMOVE| 現在使用中のバージョンは非表示です
+  *              └───┘          └──────┘
+  * 
+  */
+  /*
+   * 使用
+   *   ┌──────────────┐
+   *   │LIST/DIST/RIST│
+   *   └──────┬───────┘
+   *          │       ┌────────────────┐
+   *          └───────│ENV/LOCAL/GLOBAL│ 1>2>3>4の順で選択されます
+   *                  └────────────────┘
+   * 　　               1.環境変数（ENV）
+   *                       PROCESS.ENVからNODIST_(NODE and NPM)_VERSION
+   * 　　               2.作業フォルダ（LOCAL）
+   *                       フォルダ内または親フォルダから.(node and npm)-version
+   *                    3.PACKAGE.ENGINES
+   *                       フォルダ内のpackage.jsonから{engines:{node:'', npm:'' }}
+   *                    4.NODISTの設定ファイル（GLOBAL）
+   * 　                    C:\Program Files (x86)\Nodist\.(node and npm)-version-global
+   */
+  /*
+   * 権限
+   *   ＮＰＭは圧縮ファイル内にシンボリックリンクを含みます
+   *   https://codeload.github.com/npm/cli/tar.gz/v8.13.2（例）
+   *   ファイルの種類は.symlinkで0byte解凍ソフトを変えても同じ（7Zip）
+   *   シンボリックファイルを展開する処理のあるコマンドは全てRUNASします
+   *
+   *     抽出リンク
+   *       dir /AL /S
+   *     シンボリックファイル
+   *       node_modules
+   *         │  libnpmaccess
+   *         │  libnpmdiff
+   *         │  libnpmexec
+   *         │  libnpmfund
+   *         │  libnpmhook
+   *         │  libnpmorg
+   *         │  libnpmpack
+   *         │  libnpmpublish
+   *         │  libnpmsearch
+   *         │  libnpmteam
+   *         │  libnpmversion
+   *　       │
+   *         └─@npmcli
+   *             arborist
+   */
+  ```
