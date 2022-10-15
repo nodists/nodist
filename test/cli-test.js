@@ -2,13 +2,12 @@
 var vows = require('vows');
 var debug = require('debug')('nodist:test');
 var assert = require('assert');
-var nodist = require('../lib/nodist.js');
 var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
 var rimraf = require('rimraf');
+var { testPath, createNodistInstance } = require('./helper');
 
-var testPath = path.resolve(__dirname + '/tmp');
 var testVersion = '4.2.1';
 
 //populate proxy if we can
@@ -31,12 +30,7 @@ if ((process.env.NODIST_TESTS_CLEAN || '1') === '1') {
 }
 
 //setup new nodist
-var n = new nodist(
-  process.env.NODIST_NODE_MIRROR || 'https://nodejs.org/dist',
-  process.env.NODIST_IOJS_MIRROR || 'https://iojs.org/dist',
-  path.resolve(testPath)
-);
-
+var n = createNodistInstance();
 
 /**
  * Exec Nodist for Testing

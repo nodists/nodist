@@ -56,5 +56,6 @@ Promise.all(
   fs.writeFileSync(nsisPluginsInstalledFile, 'plugins installed');
   console.log('Finished downloading NSIS plugins');
   plugins.forEach(plugin => console.log(` - ${plugin}`));
+  // TODO: remove files from tmp folder
 });
 
