@@ -92,6 +92,11 @@ var installManifest = [];
 var uninstallManifest = [];
 var uninstallFolders = [];
 
+//build file filter
+var buildFileFilter = [
+  /testing-bundledeps/
+];
+
 //lets get started by doing some bootstrapping
 console.log('Welcome to the Nodist Builder');
 console.log('  before going further we need to prep our staging folder');
@@ -307,6 +312,15 @@ P.all([
       var folder = path.dirname(file);
       var relativeFolder = folder.replace(stagingDir,'');
       var relativeFile = file.replace(stagingDir,'');
+      // check for a filter entry
+      var isFiltered = false;
+      buildFileFilter.forEach(function(filter) {
+        if (file.match(filter)) isFiltered = true;
+      });
+      if (isFiltered) {
+        console.log('Skipping because of filter ' + file);
+        return false;
+      }
       //change the folder and add it
       if(!currentFolder || folder !== currentFolder){
         currentFolder = folder;
