@@ -1,0 +1,31 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'
+
+jobs:
+  run-build:
+    runs-on: windows-2022
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+      - run: npm ci
+      - name: Copy Node.exe to repository directory
+        run: Copy-Item (Get-Command node.exe | Select-Object -ExpandProperty Definition) .
+      - run: npm test
+      - run: npm run build
+      - name: Create release draft
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/out/NodistSetup-*.exe"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true

@@ -11,7 +11,6 @@ var rimraf = require('rimraf');
 var tar = require('tar');
 var zlib = require('zlib');
 
-var github = require('../lib/github');
 var helper = require('../lib/build');
 var pkg = require('../package.json');
 
@@ -19,12 +18,9 @@ var pkg = require('../package.json');
 
 //make some promises
 P.promisifyAll(fs);
-P.promisifyAll(github);
-P.promisifyAll(github.releases);
 P.promisifyAll(helper);
 P.promisifyAll(request);
 exec = P.promisify(exec);
-mkdirp = P.promisify(mkdirp);
 ncp = P.promisify(ncp);
 rimraf = P.promisify(rimraf);
 recursiveReaddir = P.promisify(recursiveReaddir);
@@ -80,12 +76,13 @@ var stagingLib = path.join(stagingDir,'lib');
 var nodistDir = path.resolve(path.dirname(__dirname));
 var nodistBin = path.join(nodistDir,'bin');
 var nodistLib = path.join(nodistDir,'lib');
+var goSrcDir = path.join(nodistDir,'src');
 
 var npm = new (require('../lib/npm'))({nodistDir: stagingDir});
 
 //default npm version to the latest at the time of writing
-var npmVersion = '3.3.8';
-var nodeVersion = '4.2.1';
+var npmVersion = '6.14.16';
+var nodeVersion = '16.15.0';
 
 var versionPathx86 = '';
 var versionPathx64 = '';
@@ -99,9 +96,35 @@ var uninstallFolders = [];
 console.log('Welcome to the Nodist Builder');
 console.log('  before going further we need to prep our staging folder');
 
+//defining helper functions
+function getLatestNodeVersionFor(nodeVersions, fileType) {
+  for (var key in nodeVersions) {
+    if (nodeVersions[key].files.includes(fileType)) {
+      return nodeVersions[key].version;
+    }
+  }
+}
+
+async function resolveLinkedWorkspaces(dirPath) {
+  let movedLinks = 0;
+  const files = await fs.readdirAsync(dirPath, { withFileTypes: true });
+  const dirPromises = [];
+  for (const file of files) {
+    const filePath = path.join(dirPath, file.name);
+    if (file.isSymbolicLink()) {
+      const linkTarget = await fs.readlinkAsync(filePath);
+      await fs.renameAsync(path.join(dirPath, linkTarget), filePath);
+      movedLinks++;
+    } else if (file.isDirectory()) {
+      dirPromises.push(resolveLinkedWorkspaces(filePath));
+    }
+  }
+  return (await Promise.all(dirPromises)).reduce((sum, num) => sum + num, movedLinks);
+}
+
 //start by clearing the staging and tmp folders
 P.all([
-  rimraf(outDir)
+  rimraf(outDir),
 ])
   .then(function(){
     return P.all([
@@ -143,7 +166,7 @@ P.all([
       helper.copyFileAsync(
         nodistLib + '/build.js',stagingLib + '/build.js'),
       helper.copyFileAsync(
-        nodistLib + '/github.js',stagingLib + '/github.js'),
+        nodistLib + '/octokit.js',stagingLib + '/octokit.js'),
       helper.copyFileAsync(
         nodistLib + '/nodist.js',stagingLib + '/nodist.js'),
       helper.copyFileAsync(
@@ -163,19 +186,25 @@ P.all([
   })
   .then(function(){
     console.log('Finished copying static files');
-    
+
     console.log('Compiling node shim');
-    return exec('go build -o "'+stagingBin +'/node.exe" src/shim-node.go');
+    return exec('go build -o "'+stagingBin +'/node.exe" shim-node.go', { cwd: goSrcDir });
   })
   .then(function(){
     console.log('Done compiling node shim');
-    
-    console.log('Compiling shim');
-    return exec('go build -o "'+stagingBin +'/npm.exe" src/shim-npm.go');
+
+    console.log('Compiling npm shim');
+    return exec('go build -o "'+stagingBin +'/npm.exe" shim-npm.go', { cwd: goSrcDir });
+  })
+  .then(function(){
+    console.log('Done compiling npm shim');
+
+    console.log('Compiling npx shim');
+    return exec('go build -o "'+stagingBin +'/npx.exe" shim-npx.go', { cwd: goSrcDir });
   })
   .then(function() {
-    console.log('Done compiling npm shim');
-    
+    console.log('Done compiling npx shim');
+
     console.log('Determining latest version of node');
     return request.getAsync({
       url: 'https://nodejs.org/dist/index.json',
@@ -183,7 +212,7 @@ P.all([
     });
   })
   .then(function(res){
-    nodeVersion = res.body[0].version;
+    nodeVersion = getLatestNodeVersionFor(res.body, 'win-x86-exe');
     nodeLatestUrlx86 = nodeLatestUrlx86.replace('VERSION',nodeVersion);
     nodeLatestUrlx64 = nodeLatestUrlx64.replace('VERSION',nodeVersion);
     console.log('Latest version of Node ' + nodeVersion);
@@ -255,8 +284,16 @@ P.all([
     console.log('Install node_modules for distribution');
     return exec('npm install',{cwd: stagingDir});
   })
-  .spread(function(){
+  .then(function() {
     console.log('Installation complete');
+    return resolveLinkedWorkspaces(path.join(stagingNpmDir, npmVersion.replace('v', ''), 'node_modules'));
+  })
+  .then(function(movedLinks) {
+    if (movedLinks) {
+      console.log(`Resolved ${movedLinks} symlinks in node_modules folder`);
+    }
+  })
+  .then(function() {
     console.log('Build Nodist.nsi');
     return recursiveReaddir(stagingDir);
   })
@@ -291,6 +328,10 @@ P.all([
     nsiTemplate = nsiTemplate.replace(
       ';VERSION;',
       pkg.version
+    );
+    nsiTemplate = nsiTemplate.replace(
+      ';PLUGINS_PATH;',
+      path.join(nodistDir, 'build', 'nsis_plugins'),
     );
     nsiTemplate = nsiTemplate.replace(
       ';ADD_FILES;',
@@ -333,7 +374,7 @@ P.all([
      , helper.copyFileAsync(nodistDir+'/build/chocolateyuninstall.ps1', packageDir+'/tools/chocolateyuninstall.ps1')
      , helper.copyFileAsync(nodistDir+'/LICENSE.txt', packageDir+'/tools/LICENSE.txt')
      , helper.copyFileAsync(nodistDir+'/build/VERIFICATION.txt', packageDir+'/tools/VERIFICATION.txt')
-     , helper.copyFileAsync(outDir+'/NodistSetup.exe', packageDir+'/tools/Installer.exe')
+     , helper.copyFileAsync(outDir+'/NodistSetup-'+pkg.version+'.exe', packageDir+'/tools/Installer.exe')
      ]);
    })
   .then(() => {

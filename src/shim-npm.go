@@ -6,10 +6,10 @@ import (
   "os/exec"
   "os/signal"
   "syscall"
-  "./lib/nodist"
+  nodist "github.com/nullivex/nodist/lib"
 )
 
-import . "github.com/computes/go-debug"
+import . "github.com/visionmedia/go-debug"
 
 var debug = Debug("nodist:shim-npm")
 

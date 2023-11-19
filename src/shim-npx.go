@@ -3,7 +3,7 @@ package main
 import (
   "fmt"
   "os"
-  "path/filepath"
+  "errors"
   "os/exec"
   "os/signal"
   "syscall"
@@ -12,7 +12,7 @@ import (
 
 import . "github.com/visionmedia/go-debug"
 
-var debug = Debug("nodist:shim-node")
+var debug = Debug("nodist:shim-npx")
 
 func main() {
   if "" == os.Getenv("NODIST_PREFIX") {
@@ -27,9 +27,8 @@ func main() {
     os.Exit(46)
   }
 
-  debug("current target directory: %s", dir)
+  // Determine node version first
 
-  // Determine version spec
   spec := nodist.GetCurrentNodeVersionSpec(dir)
 
   if spec == "" {
@@ -37,51 +36,65 @@ func main() {
     os.Exit(41)
   }
 
-  debug("Current version spec: %s", spec)
-
   version, err := nodist.ResolveNodeVersion(spec)
 
   if err != nil {
-    fmt.Println("Sorry, there's a problem with nodist. Couldn't resolve version spec %s: %s", spec, err.Error())
+    fmt.Println("Sorry, there's a problem with nodist. Couldn't resolve node version spec %s: %s", spec, err.Error())
     os.Exit(44)
   }
 
-  debug("found matching version: %s", version)
-
-  // Determine architecture
-
-  x64 := false
-
-  if wantX64 := os.Getenv("NODIST_X64"); wantX64 != "" {
-    x64 = (wantX64 == "1")
+  if version == "" {
+    fmt.Println("Sorry, there's a problem with nodist. Couldn't find an installed node version that matches version spec ", spec)
+    os.Exit(45)
   }
-  debug("Determined architecture: x64:%s", x64)
+
+  debug("determined node version: %s", version)
+
+  // Determine npm version
+
+  npmSpec := nodist.GetCurrentNpmVersionSpec(dir)
+  debug("current npm version spec: %s", npmSpec)
+
+  if npmSpec == "" {
+    fmt.Println("Sorry, there's a problem with nodist. Couldn't decide which npm version to use. Please set a version.")
+    os.Exit(41)
+  }
+
+  npmVersion, err := nodist.ResolveNpmVersion(npmSpec, version)
+
+  if err != nil {
+    fmt.Println("Sorry, there's a problem with nodist. Couldn't resolve npm version spec", npmSpec, ":", err.Error())
+    os.Exit(44)
+  }
+
+  debug("determined npm version: %s", npmVersion)
 
   // Set up binary path
 
-  var path string
-  var nodebin string
+  path := os.Getenv("NODIST_PREFIX")+"/npmv"
 
-  path = os.Getenv("NODIST_PREFIX")+"/v"
+  path = path+"/"+npmVersion
+  npxbin := path+"/bin/npx-cli.js"
 
-  if x64 {
-    path += "-x64"
+  if _, err := os.Stat(npxbin); errors.Is(err, os.ErrNotExist) {
+    fmt.Println("Npx not found for selected npm version:", npmVersion);
+    os.Exit(47);
   }
 
-  path = path+"/"+version
-  nodebin = path+"/node.exe"
-  debug("Going to execute the following binary: %s", nodebin)
+  args := []string{npxbin}
+  args = append(args, os.Args[1:]...)
 
-  // Run node!
+  // Run npm!
 
-  cmd := exec.Command(nodebin, os.Args[1:]...)
-
-  // Proxy stdio
+  cmd := exec.Command("node", args...)
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
   cmd.Stdin = os.Stdin
+  cmd.Env = os.Environ()
+  cmd.Env = append(cmd.Env, "NODIST_NODE_VERSION="+version)// Lock the node version for all child processes
   // Set npm prefix correctly. Can't do this in installer, since npm doesn't know where to look (it looks at /v/x.x.x/ by default, so we'd have to put an npmrc in every version folder, which is overkill)
-  cmd.Env = append(os.Environ(), "npm_config_prefix="+os.Getenv("NODIST_PREFIX")+"/bin")
+  cmd.Env = append(cmd.Env, "npm_config_prefix="+os.Getenv("NODIST_PREFIX")+"/bin")
+
 
   // Proxy signals
   sigc := make(chan os.Signal, 1)
@@ -108,27 +121,7 @@ func main() {
   }
 }
 
-func getTargetDirectory() (dir string, err error) {
-  if len(os.Args) < 2 {
-    dir, err = os.Getwd()
-    if err != nil {
-      return
-    }
-    return
-  }else{
-    targetFile := os.Args[1]
-    dir = filepath.Dir(targetFile)
-
-    if filepath.IsAbs(dir) {
-      return
-    }
-
-    var cwd string
-    cwd, err = os.Getwd()
-    if err != nil {
-      return
-    }
-    dir = filepath.Join(cwd, dir)
-    return
-  }
+func getTargetDirectory() (dir string, returnedError error) {
+  dir, returnedError = os.Getwd()
+  return
 }

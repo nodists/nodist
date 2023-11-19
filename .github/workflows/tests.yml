@@ -1,0 +1,28 @@
+name: run-tests
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+
+jobs:
+  run-tests:
+    runs-on: windows-2022
+
+    strategy:
+      matrix:
+        node-versions: [16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm ci
+      - name: Copy Node.exe to repository directory
+        run: Copy-Item (Get-Command node.exe | Select-Object -ExpandProperty Definition) .
+      - run: npm test

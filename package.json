@@ -1,6 +1,6 @@
 {
   "name": "nodist",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "Natural node version manager for windows",
   "keywords": [
     "node",
@@ -10,33 +10,39 @@
     "windows"
   ],
   "author": "Marcel Klehr <mklehr@gmx.net>",
-  "homepage": "https://github.com/marcelklehr/nodist",
+  "homepage": "https://github.com/nullivex/nodist",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/marcelklehr/nodist/issues"
+    "url": "https://github.com/nullivex/nodist/issues"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/marcelklehr/nodist.git"
+    "url": "https://github.com/nullivex/nodist.git"
   },
   "dependencies": {
-    "bluebird": "^3.5.3",
-    "debug": "^4.1.1",
-    "github": "nullivex/node-github",
-    "mkdirp": "~0.5",
+    "@octokit/rest": "^18.12.0",
+    "axios": "^0.27.2",
+    "bluebird": "^3.7.2",
+    "debug": "^4.3.4",
+    "mkdirp": "^1.0.4",
     "ncp": "^2.0.0",
-    "progress": "2.x",
+    "progress": "^2.0.3",
     "promisepipe": "^3.0.0",
     "recursive-readdir": "^2.2.2",
     "request": "~2.88.0",
-    "rimraf": "~2",
-    "semver": "^6.0.0",
-    "tar": "4.x"
+    "rimraf": "^3.0.2",
+    "semver": "^7.3.7",
+    "tar": "^6.1.11"
   },
   "devDependencies": {
+    "node-unzip-2": "^0.2.8",
     "vows": "^0.8.3"
   },
+  "engines": {
+    "node": ">= 12"
+  },
   "scripts": {
+    "prebuild": "node ./build/fetch_nsis_plugins.mjs",
     "build": "node ./build/build.js",
     "test": "node ./node_modules/vows/bin/vows --spec ./test/*-test.js"
   },

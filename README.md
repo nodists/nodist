@@ -4,7 +4,7 @@
 
 A node.js and npm version manager for the windows folks out there. Inspired by [n](https://github.com/visionmedia/n). And [nodenv](https://github.com/OiNutter/nodenv).
 
-*Heads up! Nodist v0.8 is here! Nodist supports cmd, Powershell, Git bash and Cygwin!*
+*Heads up! Nodist v0.10 is here! Nodist supports cmd, Powershell, Git bash and Cygwin!*
 
 ```
 C:\> nodist + 5
@@ -58,7 +58,7 @@ source ~/.bashrc
 ```
 
 ### Activating nodist in PowerShell
-You might need to 'Unblock' the file `bin\nodist.ps1` by right clicking on it in the Explorer and selecting that menu entry.
+You might need to 'Unblock' the file `bin\nodist.ps1` by right-clicking on it in the Explorer and selecting that menu entry.
 
 If you cannot see the unblock option after right-clicking > Properties in Explorer you can also perform the unblock via the following PowerShell command:
 
@@ -121,12 +121,14 @@ When you're just running node, the *directory of interest* is the directory of t
 
 Package.json inspection is turned off by default as of nodist v0.8.5. You can turn it on by setting `NODIST_INSPECT_PACKAGEJSON=1`.
 
-### npm
-Any instances of node invoked by npm will be locked to the same version npm runs on.
+### npm / npx
+Any instances of node invoked by npm/npx will be locked to the same version npm/npx runs on.
 
 Currently, all node and npm versions share the same global npm module space.
 
 If you have installed native modules (globally or locally) you may have to run `npm rebuild` after changing the node version (implicitly or explicitly). There is an [open issue](https://github.com/marcelklehr/nodist/issues/169) about how to avoid rebuilding globally installed native modules, feedback/input is welcome.
+
+The npx shim will try to run the npx shipped with the currently selected npm version.
 
 ### Commands
 *All commands automatically install the latest matching version before setting the version pattern.*
@@ -223,6 +225,12 @@ call nodist env 4.x
 # Enable package.json inspection: Nodist will check the engines field of the package.json file of scripts to be executed and use the node version specified there. Turned off by default as of v0.8.5.
 ```
 
+```
+> set NODIST_GITHUB_TOKEN=your_github_personal_access_token
+# By default Nodist makes request to the GitHub API to list npm releases without any authentication, which is subject to [rate limiting](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting). By using your own [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) Nodist will be able to make more requests per hour.
+# Note: for security purposes it's best to use a token just for Nodist. The `repo:public_repo` scope should be more than sufficient.
+```
+
 ## Details
 Node executables are stored in `NODIST_PREFIX\v` and `NODIST_PREFIX\v-x64`, npm versions in `NODIST_PREFIX\npmv.
 The global `node.exe` is a shim and chooses the right node version to run based on the various version settings. The same applies for npm.
@@ -246,7 +254,7 @@ To see all debug messages, set the DEBUG env var before running nodist or node a
 
 ## Testing
 
-The default test suite can be ran using npm
+The default test suite can be run using npm
 
 ```
 $ npm test
@@ -262,25 +270,36 @@ Testing also accepts env variables for using a mirror to download from, as well 
 ## Building
 Building nodist requires
  * [go](https://golang.org) for compiling the shim
- * [NSIS](http://nsis.sourceforge.net/Main_Page) v3 for compiling the installer (use the large strings build to avoid errors when manipulating PATH)
+ * [NSIS](http://nsis.sourceforge.net/Main_Page) v3 for compiling the installer
+   * NSIS plugins will be automatically downloaded before build: 
    * NSIS Plugin: [AccessControl](http://nsis.sourceforge.net/AccessControl_plug-in)
+   * NSIS Plugin: [EnVar Plugin](https://nsis.sourceforge.io/EnVar_plug-in)
  * node.js for running the build script
  * and npm for installing nodist's dependencies
- * Finally you need to `go get github.com/marcelklehr/semver github.com/computes/go-debug`
 
 If you have met all requirements, run the build command:
 
 ```
 > npm run build
 ```
-Afterwards you'll find the installer in `build/out/NodistSetup.exe` and fully prepared installation folder in `build/out/staging` (you could zip this, for example).
+Afterwards you'll find the installer in `build/out/NodistSetup-vX.X.X.exe` and fully prepared installation folder in `build/out/staging` (you could zip this, for example).
 The chocolatey package will be in `build/out/package`, you can run `cpack` and `cpush --source https://chocolatey.org/` inside that directory (if you are a registered maintainer).
 
 ## Legal
-Copyright (c) 2012-2019 by Marcel Klehr, Bryan Tong (@nullivex)  
+Copyright (c) 2012-2022 by Marcel Klehr, Bryan Tong (@nullivex)  
 MIT License
 
 ## Changelog
+
+v0.10.0
+* Fix building shims (for newer go versions) by using go modules
+* Add npx shim (works only for npm versions that ship with npx)
+* Fix getting latest npm version
+* Use last available x86 version for building (first node 18 versions are not available for x86) 
+* Resolve symlinks for npm's node_modules to support npm >= 8
+* Use octokit lib to access github, add NODIST_GITHUB_TOKEN env variable PR#246
+* Fix `npm ls` to resolve correct version PR#240
+* Minimal node version to build nodist raised to 12
 
 v0.9.1
 * Fix issue with deprecated call to Tar.Extract in the NPM handler.

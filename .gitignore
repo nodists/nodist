@@ -5,3 +5,7 @@ node_modules
 /.idea
 /build/out
 /npmv
+/pkg
+/test/tmp
+/node.exe
+/build/nsis_plugins

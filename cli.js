@@ -83,7 +83,7 @@ var wantX64 = (+process.env.NODIST_X64) === 1;
 var envVersion = process.env.NODIST_NODE_VERSION ?
   process.env.NODIST_NODE_VERSION.replace(/"/g, '') : process.env.NODIST_NODE_VERSION;
 var npmEnvVersion = process.env.NODIST_NPM_VERSION ?
-  process.env.NODIST_NPM_VERSION.replace(/"/g, '') : process.NODIST_NPM_VERSION
+  process.env.NODIST_NPM_VERSION.replace(/"/g, '') : process.env.NODIST_NPM_VERSION;
 
 // Create a nodist instance
 var n = new nodist(
@@ -198,7 +198,7 @@ else if (command.match(/^npm$/i)){
       });
     });
   } else
-  if(subcmd.match(/^remove|\-$/i)){
+  if(subcmd.match(/^remove|rm|\-$/i)){
     version = argv[2];
     npm.resolveVersionLocally(version, function(er, v){
       if(er) abort(er.message+'. Sorry.');

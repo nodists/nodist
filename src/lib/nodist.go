@@ -1,4 +1,4 @@
-package nodist
+package lib
 
 import (
   "errors"
@@ -10,7 +10,7 @@ import (
   "github.com/marcelklehr/semver"
 )
 
-import . "github.com/computes/go-debug"
+import . "github.com/visionmedia/go-debug"
 
 var debug = Debug("nodist:shim")
 const pathSep = string(os.PathSeparator)
@@ -131,7 +131,7 @@ func resolveVersion(spec string, installed []*semver.Version) (version string, e
   }
 
   if spec == "latest" {
-    version = installed[len(installed)-1].String()
+    version = installed[0].String()
   }else{
     for _, v := range installed {
       debug("checking %s against %s", v.String(), spec)
