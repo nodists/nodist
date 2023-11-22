@@ -6,7 +6,7 @@ import (
   "os/exec"
   "os/signal"
   "syscall"
-  nodist "github.com/nullivex/nodist/lib"
+  nodist "github.com/nodists/nodist/lib"
 )
 
 import . "github.com/visionmedia/go-debug"

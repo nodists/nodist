@@ -1,4 +1,4 @@
-module github.com/nullivex/nodist
+module github.com/nodists/nodist
 
 go 1.12
 

@@ -29,7 +29,7 @@ C:\> nodist
 
 Over the past months several problems have presented themselves, which are due to the way nodist works and are hard to fix:
 
-* process signals: Nodist employs a wrapper executable to shim the functionality of Node. Since Windows doesn't have signals, sending a SIGTERM, or similar will probably not be propagated to the actual node process, but get stuck in the shim. (see [#173](https://github.com/marcelklehr/nodist/issues/173))
+* process signals: Nodist employs a wrapper executable to shim the functionality of Node. Since Windows doesn't have signals, sending a SIGTERM, or similar will probably not be propagated to the actual node process, but get stuck in the shim. (see [#173](https://github.com/nodists/nodist/issues/173))
 * native modules: Since the node version changes at the mercy of the shim executable, based on env vars, target directory and the global setting, and availability of node versions, it is possible that locally or globally installed node modules that depend on a specific version of node (usually native modules and downloaders) stop working. `npm rebuild` makes things work again in these cases.
 
 
@@ -38,7 +38,7 @@ Nodist was designed to replace any existing node.js installation, so *if node is
 
 ### with the installer
 
-1. Download the installer [from the releases page](https://github.com/marcelklehr/nodist/releases)
+1. Download the installer [from the releases page](https://github.com/nodists/nodist/releases)
 2. Run the installer and follow the install wizard
 
 ### via chocolatey
@@ -126,7 +126,7 @@ Any instances of node invoked by npm/npx will be locked to the same version npm/
 
 Currently, all node and npm versions share the same global npm module space.
 
-If you have installed native modules (globally or locally) you may have to run `npm rebuild` after changing the node version (implicitly or explicitly). There is an [open issue](https://github.com/marcelklehr/nodist/issues/169) about how to avoid rebuilding globally installed native modules, feedback/input is welcome.
+If you have installed native modules (globally or locally) you may have to run `npm rebuild` after changing the node version (implicitly or explicitly). There is an [open issue](https://github.com/nodists/nodist/issues/169) about how to avoid rebuilding globally installed native modules, feedback/input is welcome.
 
 The npx shim will try to run the npx shipped with the currently selected npm version.
 
@@ -238,7 +238,7 @@ The global `node.exe` is a shim and chooses the right node version to run based 
 As the global node version will be subject to change, `nodist` comes with its own dedicated node binary.
 
 ## Got ideas?  Doesn't work for you? Want to give feedback?
-[File an issue](https://github.com/marcelklehr/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
+[File an issue](https://github.com/nodists/nodist/issues) and tell me what you'd change or add or what doesn't work for you. Every issue is welcome!
 
 ## Malware warnings
 Nodist is not a virus. Nonetheless, some malware detection tools report the Nodist installer
@@ -286,12 +286,12 @@ Afterwards you'll find the installer in `build/out/NodistSetup-vX.X.X.exe` and f
 The chocolatey package will be in `build/out/package`, you can run `cpack` and `cpush --source https://chocolatey.org/` inside that directory (if you are a registered maintainer).
 
 ## Legal
-Copyright (c) 2012-2022 by Marcel Klehr, Bryan Tong (@nullivex)  
+Copyright (c) 2012-2023 by Marcel Klehr, Bryan Tong (@nullivex)  
 MIT License
 
 ## Changelog
 
-v0.10.0
+v0.10.1
 * Fix building shims (for newer go versions) by using go modules
 * Add npx shim (works only for npm versions that ship with npx)
 * Fix getting latest npm version
