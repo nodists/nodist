@@ -7,16 +7,16 @@
     <authors>Marcel Klehr</authors>
     <owners>Marcel Klehr</owners>
     <summary>A Node.js version manager.</summary>
-    <description>A Node.js and io.js version manager. Inspired by n and nodenv. See github page https://github.com/nullivex/nodist for documentation.</description>
-    <projectUrl>https://github.com/nullivex/nodist</projectUrl>
-    <projectSourceUrl>https://github.com/nullivex/nodist</projectSourceUrl>
-    <docsUrl>https://raw.githubusercontent.com/nullivex/nodist/master/usage.txt</docsUrl>
-    <bugTrackerUrl>https://github.com/marcelklehr/nullivex/issues</bugTrackerUrl>
+    <description>A Node.js and io.js version manager. Inspired by n and nodenv. See github page https://github.com/nodists/nodist for documentation.</description>
+    <projectUrl>https://github.com/nodists/nodist</projectUrl>
+    <projectSourceUrl>https://github.com/nodists/nodist</projectSourceUrl>
+    <docsUrl>https://raw.githubusercontent.com/nodists/nodist/master/usage.txt</docsUrl>
+    <bugTrackerUrl>https://github.com/nodists/nodist/issues</bugTrackerUrl>
     <tags>node nodejs javascript admin nvm version management</tags>
-    <copyright>2013-2022</copyright>
-    <licenseUrl>https://github.com/nullivex/nodist/blob/master/LICENSE.txt</licenseUrl>
+    <copyright>2013-2023</copyright>
+    <licenseUrl>https://github.com/nodists/nodist/blob/master/LICENSE.txt</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes>https://github.com/nullivex/nodist#changelog</releaseNotes>
+    <releaseNotes>https://github.com/nodists/nodist#changelog</releaseNotes>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />

@@ -1,7 +1,7 @@
 /*
 This is a shim for the npm binary shim of Nodist.
 It exists, so that WebStorm is happy.
-See https://github.com/marcelklehr/nodist/issues/158
+See https://github.com/nodists/nodist/issues/158
 Instructions:
   1. Create the following directory: `Nodist\bin\bin`
   2. Place this file in the new directory
