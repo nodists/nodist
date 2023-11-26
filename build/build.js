@@ -178,19 +178,19 @@ P.all([
     console.log('Finished copying static files');
 
     console.log('Compiling node shim');
-    return exec('go build -o "'+stagingBin +'/node.exe" shim-node.go', { cwd: goSrcDir });
+    return exec('go build -o "'+stagingBin +'/node.exe" ./cmd/node', { cwd: goSrcDir });
   })
   .then(function(){
     console.log('Done compiling node shim');
 
     console.log('Compiling npm shim');
-    return exec('go build -o "'+stagingBin +'/npm.exe" shim-npm.go', { cwd: goSrcDir });
+    return exec('go build -o "'+stagingBin +'/npm.exe" ./cmd/npm', { cwd: goSrcDir });
   })
   .then(function(){
     console.log('Done compiling npm shim');
 
     console.log('Compiling npx shim');
-    return exec('go build -o "'+stagingBin +'/npx.exe" shim-npx.go', { cwd: goSrcDir });
+    return exec('go build -o "'+stagingBin +'/npx.exe" ./cmd/npx', { cwd: goSrcDir });
   })
   .then(function() {
     console.log('Done compiling npx shim');

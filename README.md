@@ -291,8 +291,9 @@ MIT License
 
 ## Changelog
 
-v0.10.1
+v0.10.2
 * Fix building shims (for newer go versions) by using go modules
+* Fix npm shim to use correct node version
 * Add npx shim (works only for npm versions that ship with npx)
 * Fix getting latest npm version
 * Use last available x86 version for building (first node 18 versions are not available for x86) 
