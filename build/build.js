@@ -5,6 +5,7 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var ncp = require('ncp');
 var path = require('path');
+var semver = require('semver');
 var recursiveReaddir = require('recursive-readdir');
 var request = require('request');
 var rimraf = require('rimraf');
@@ -83,6 +84,7 @@ var npm = new (require('../lib/npm'))({nodistDir: stagingDir});
 //default npm version to the latest at the time of writing
 var npmVersion = '6.14.16';
 var nodeVersion = '16.15.0';
+var maxNodeMainVersion = '^20';
 
 var versionPathx86 = '';
 var versionPathx64 = '';
@@ -102,29 +104,12 @@ console.log('Welcome to the Nodist Builder');
 console.log('  before going further we need to prep our staging folder');
 
 //defining helper functions
-function getLatestNodeVersionFor(nodeVersions, fileType) {
+function getLatestUsableNodeVersionFor(nodeVersions, fileType) {
   for (var key in nodeVersions) {
-    if (nodeVersions[key].files.includes(fileType)) {
-      return nodeVersions[key].version;
+    if (nodeVersions[key].files.includes(fileType) && semver.satisfies(nodeVersions[key].version, maxNodeMainVersion)) {
+      return { nodeVersion: nodeVersions[key].version, npmVersion: nodeVersions[key].npm };
     }
   }
-}
-
-async function resolveLinkedWorkspaces(dirPath) {
-  let movedLinks = 0;
-  const files = await fs.readdirAsync(dirPath, { withFileTypes: true });
-  const dirPromises = [];
-  for (const file of files) {
-    const filePath = path.join(dirPath, file.name);
-    if (file.isSymbolicLink()) {
-      const linkTarget = await fs.readlinkAsync(filePath);
-      await fs.renameAsync(path.join(dirPath, linkTarget), filePath);
-      movedLinks++;
-    } else if (file.isDirectory()) {
-      dirPromises.push(resolveLinkedWorkspaces(filePath));
-    }
-  }
-  return (await Promise.all(dirPromises)).reduce((sum, num) => sum + num, movedLinks);
 }
 
 //start by clearing the staging and tmp folders
@@ -217,7 +202,7 @@ P.all([
     });
   })
   .then(function(res){
-    nodeVersion = getLatestNodeVersionFor(res.body, 'win-x86-exe');
+    ({ nodeVersion, npmVersion } = getLatestUsableNodeVersionFor(res.body, 'win-x86-exe'));
     nodeLatestUrlx86 = nodeLatestUrlx86.replace('VERSION',nodeVersion);
     nodeLatestUrlx64 = nodeLatestUrlx64.replace('VERSION',nodeVersion);
     console.log('Latest version of Node ' + nodeVersion);
@@ -253,14 +238,9 @@ P.all([
     );
   })
   .then(function(){
-    console.log('Figure out the latest version of NPM');
-    return npm.latestVersion();
-  })
-  .then(function(version){
-    npmVersion = version;
-    var downloadLink = npm.downloadUrl(version);
-    console.log('Determined latest NPM as ' + npmVersion);
-    console.log('Downloading latest NPM from ' + downloadLink);
+    var downloadLink = npm.downloadUrl(npmVersion);
+    console.log('Determined matching NPM as ' + npmVersion);
+    console.log('Downloading matching NPM from ' + downloadLink);
     return Promise.resolve()
     .then(() => mkdirp(stagingNpmDir+'/'+npmVersion.replace('v','')))
     .then(() => {
@@ -291,7 +271,7 @@ P.all([
   })
   .then(function() {
     console.log('Installation complete');
-    return resolveLinkedWorkspaces(path.join(stagingNpmDir, npmVersion.replace('v', ''), 'node_modules'));
+    return helper.resolveLinkedWorkspaces(path.join(stagingNpmDir, npmVersion.replace('v', '')), false);
   })
   .then(function(movedLinks) {
     if (movedLinks) {
