@@ -1,6 +1,6 @@
 module github.com/nodists/nodist
 
-go 1.12
+go 1.20
 
 require (
 	github.com/marcelklehr/semver v0.0.0-20160716173943-4590ea5640ed // indirect
