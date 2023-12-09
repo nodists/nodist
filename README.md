@@ -291,6 +291,9 @@ MIT License
 
 ## Changelog
 
+v0.10.3
+* Fix installing of npm versions
+
 v0.10.2
 * Fix building shims (for newer go versions) by using go modules
 * Fix npm shim to use correct node version

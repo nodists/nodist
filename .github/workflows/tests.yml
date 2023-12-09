@@ -22,3 +22,6 @@ jobs:
       - name: Copy Node.exe to repository directory
         run: Copy-Item (Get-Command node.exe | Select-Object -ExpandProperty Definition) .
       - run: npm test
+        env:
+          NODIST_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
